@@ -29,12 +29,9 @@ public class LoginServlet extends HttpServlet implements Serializable {
             user = (User) request.getSession().getAttribute("user");
         }
 
-        Boolean loggedin = (request.getSession().getAttribute("loggedin") != null) ? (Boolean) (request
-                .getSession().getAttribute("loggedin")) : false;
-        String username = (request.getParameter("username") != null) ? request
-                .getParameter("username") : "";
-        String password = (request.getParameter("password") != null) ? request
-                .getParameter("password") : "";
+        Boolean loggedin = (request.getSession().getAttribute("loggedin") != null) ? true : false;
+        String username = (request.getParameter("username") != null) ? request.getParameter("username") : "";
+        String password = (request.getParameter("password") != null) ? request.getParameter("password") : "";
         if (loggedin != null && loggedin) {
             user.setValid(true);
         }

@@ -30,7 +30,7 @@
 
 <body>
 <%@ page
-        import="crm.irfan.User, crm.irfan.entity.Birim, crm.irfan.entity.Hammadde, java.util.List" %>
+        import="crm.irfan.User, crm.irfan.entity.Birim, crm.irfan.entity.Firma, crm.irfan.entity.Hammadde, java.util.List" %>
 
 <%
     Boolean loggedin = (Boolean) session.getAttribute("loggedin");
@@ -103,7 +103,6 @@
                     <select class="form-control" name="hambirim">
                         <%
                             List<Birim> birim = (List<Birim>) request.getAttribute("birim");
-                            int sayac0 = 0;
                             for (Birim b : birim) {
                         %>
                         <option value='<%=b.getId()%>'><%=b.getAd() %>
@@ -116,10 +115,21 @@
             </div>
             <div class="form-group">
                 <label for="hamfirma" class="col-xs-3 control-label">Tedarikçi: </label>
-
+                
                 <div class="col-xs-8">
-                    <input type="text" class="form-control" name="hamfirma" ng-model="hamfirma" placeholder="Tedarikçi">
+                    <select class="form-control" name="hamfirma">
+                        <%
+                            List<Firma> firma = (List<Firma>) request.getAttribute("firma");
+                            for (Firma f : firma) {
+                        %>
+                        <option value='<%=f.getId()%>'><%=f.getAd() %>
+                        </option>
+                        <%
+                            }
+                        %>
+                    </select>
                 </div>
+
             </div>
             <div class="form-group">
                 <label class="col-xs-3 control-label">&nbsp;</label>
