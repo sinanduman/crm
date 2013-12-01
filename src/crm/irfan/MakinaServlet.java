@@ -23,9 +23,6 @@ public class MakinaServlet extends HttpServlet {
 
         List<Makina> makina = new ArrayList<Makina>();
         makina = DAOFunctions.makinaListeGetirTum();
-        for (Makina m : makina) {
-            System.out.println(m.getId().toString() + " : " + m.getAd() + " : " + m.getKod());
-        }
 
         request.setAttribute("makina", makina);
         request.getRequestDispatcher("makina.jsp").forward(request, response);

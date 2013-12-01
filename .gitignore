@@ -5,6 +5,7 @@ build/
 .classpath
 .project
 .settings/
+.idea/
 .DS_Store
 # ignore all target directories
 target/

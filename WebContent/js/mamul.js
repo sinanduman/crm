@@ -64,13 +64,12 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		$scope.yenibilesen = {};
 	}
 
-	
-
 	$scope.edit = function(id) {
 		for(i in $scope.bilesenler) {
 			if($scope.bilesenler[i].id == id) {
-				console.log($scope.bilesenler[i].uretimtip);
-				if($scope.bilesenler[i].uretimtip=="Montaj"){
+				console.log($scope.bilesenler[i].uretimtipid);
+				/* 1: Uretim, 2: Montaj */
+				if($scope.bilesenler[i].uretimtipid==2){
 					$scope.off();
 					$scope.showState();
 				}

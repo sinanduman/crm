@@ -14,10 +14,11 @@
     <title>Irfan Plastik</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.css" >
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/docs.css">
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="shortcut icon" href="img/favicon.ico">
 
