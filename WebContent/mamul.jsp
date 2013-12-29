@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 <!doctype html>
 <html lang="en" ng-app="mamulApp">
 <head>
@@ -11,15 +12,13 @@
 	<title>Irfan Plastik</title>
 
 	<!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css" >
+	<link rel="stylesheet" href="css/bootstrap.css">
 
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="css/docs.css">
-    <link rel="stylesheet" href="css/fonts.css">
-    <link rel="stylesheet" href="css/font-awesome.css">
-    <link rel="shortcut icon" href="img/favicon.ico">
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="css/docs.css">
+	<link rel="stylesheet" href="css/fonts.css">
+	<link rel="stylesheet" href="css/font-awesome.css">
 	
-
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
 	<script src="assets/js/html5shiv.js"></script>
@@ -27,14 +26,13 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
-
 <%
+	User user = (User) session.getAttribute("user");
 	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
+	if (loggedin == null || user == null) {
 		request.getRequestDispatcher("login.jsp").forward(request, response);
 	}
-	User user = (User) session.getAttribute("user");
+	
 %>
 
 <jsp:include page="navigate.jsp">
@@ -43,7 +41,7 @@
 
 <div class="container" ng-controller="MamulCtrl">
 	<div class="row text-warning" style="text-align:center;">
-		<label class="text-warning">Mamül Bileşen Ekleme</label>
+		<label class="text-danger">Mamül Bileşen Ekleme</label>
 	</div>
 	<div class="row" >
 		<form class="form-horizontal" role="form" name="mamulform" method="post" action="/HelloWorld/mamul">
@@ -53,6 +51,36 @@
 					<input type="text" class="form-control" name="mamulad" ng-model="mamulad" placeholder="Mamül Adı">
 				</div>
 			</div>
+			<div class="form-group">
+				<label for="mamulkod" class="col-xs-3 control-label">Kodu: </label>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" name="mamulkod" ng-model="mamulkod" placeholder="Mamül Kodu">
+				</div>
+			</div>			
+			<div class="form-group">
+				<label for="mamulcevrim" class="col-xs-3 control-label">Çevrim Süresi(sn): </label>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" name="mamulcevrim" ng-model="mamulcevrim" placeholder="Çevrim Süresi">
+				</div>
+			</div>
+			<div class="form-group">
+                <label for="mamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
+                <div class="col-xs-8">
+                    <select class="form-control" name="mamulfirma">
+                        <%
+                            List<Firma> firma = (List<Firma>) request.getAttribute("firma");
+                            for (Firma f : firma) {
+                        %>
+                        <option value='<%=f.getId()%>'><%=f.getAd() %>
+                        </option>
+                        <%
+                            }
+                        %>
+                    </select>
+                </div>
+
+            </div>
+			<hr/>
 			<div class="form-group">
 				<label class="col-xs-3 control-label"></label>
 				<div class="col-xs-8">
@@ -75,8 +103,8 @@
 				<div class="col-xs-8">
 					<select class="form-control" id="hammadde" name="hammadde">
 						<%
-							List<Hammadde> hammadde = (List<Hammadde>) request.getAttribute("hammadde");
-							for (Hammadde h : hammadde) {
+							List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
+							for (Bilesen h : hammadde) {
 						%>
 						<option value='<%=h.getId()%>'><%=h.getAd() %>
 						</option>
@@ -91,10 +119,10 @@
 				<div class="col-xs-8">
 					<select class="form-control" id="yarimamul" name="yarimamul">
 						<%
-							List<YariMamul> yarimamul = (List<YariMamul>) request.getAttribute("yarimamul");
-							for (YariMamul y : yarimamul) {
+							List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
+							for (Bilesen y : yarimamul) {
 						%>
-						<option value='<%=y.getId()%>'><%=y.getAd() %>
+						<option value='<%= y.getId() %>'><%=y.getAd() %>
 						</option>
 						<%
 							}
@@ -110,7 +138,7 @@
 							List<Birim> birim = (List<Birim>) request.getAttribute("birim");
 							for (Birim b : birim) {
 						%>
-						<option value='<%=b.getId()%>'><%=b.getAd() %>
+						<option value='<%= b.getId() %>'><%=b.getAd() %>
 						</option>
 						<%
 							}
@@ -168,7 +196,7 @@
 		</form>
 	</div>
 	<%
-		List<Mamul> mamul = (List<Mamul>) request.getAttribute("mamul");
+		List<Bilesen> mamul = (List<Bilesen>) request.getAttribute("mamul");
 		int sayac = 0;
 	%>
 
@@ -177,11 +205,12 @@
 			<div class="col-sm-3"></div>
 			<div class="col-sm-8">
 				<table class="table table-striped table-bordered">
-					<% for (Mamul m : mamul) { %>
+					<% for (Bilesen m : mamul) { %>
 					<% if (sayac++ == 0) { %>
 					<tr>
 						<th><label>Kod</label></th>
 						<th><label>Adı</label></th>
+						<th><label>Çevrim Süresi</label></th>
 						<th><label>Aksiyon</label></th>
 					</tr>
 					<% } %>
@@ -190,12 +219,12 @@
 						</td>
 						<td><%= m.getAd() %>
 						</td>
+						<td><%= m.getCevrimsuresi() %>
+						</td>
 						<td>
-							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>">
-								<button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button>
+							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button>
 							</a>
-							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>">
-								<button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button>
+							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button>
 							</a>
 						</td>
 					</tr>

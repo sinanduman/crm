@@ -3,16 +3,17 @@ package crm.irfan;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import crm.irfan.entity.Bilesen;
+import crm.irfan.entity.BilesenTip;
 import crm.irfan.entity.Birim;
+import crm.irfan.entity.Firma;
 import crm.irfan.entity.Hammadde;
-import crm.irfan.entity.Mamul;
 import crm.irfan.entity.YariMamul;
 
 public class MamulServlet extends HttpServlet {
@@ -28,16 +29,20 @@ public class MamulServlet extends HttpServlet {
         List<Birim> birim = new ArrayList<Birim>();
         birim = DAOFunctions.birimListeGetirTum();
         
-        List<Hammadde> hammadde = new ArrayList<Hammadde>();
-        hammadde = DAOFunctions.hammaddeListeGetirTum();
+        List<Firma> firma = new ArrayList<Firma>();
+        firma = DAOFunctions.firmaListeGetirTum();
         
-        List<YariMamul> yarimamul = new ArrayList<YariMamul>();
-        yarimamul = DAOFunctions.yarimamulListeGetirTum();
+        List<Bilesen> hammadde = new ArrayList<Bilesen>();
+        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
         
-        List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetirTum();
+        List<Bilesen> yarimamul = new ArrayList<Bilesen>();
+        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL);
+        
+        List<Bilesen> mamul = new ArrayList<Bilesen>();
+        mamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
         
         request.setAttribute("birim", birim);
+        request.setAttribute("firma", firma);
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("yarimamul", yarimamul);
         request.setAttribute("mamul", mamul);
@@ -48,42 +53,63 @@ public class MamulServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        Map<String, String[]> map = request.getParameterMap();
-        Object[] keys = map.keySet().toArray();
-        for (int k = 0; k < keys.length; k++) {
-            String[] pars = request.getParameterValues((String) keys[k]);
-            System.out.println("==" + k + "==" + keys[k] + "==");
-            for (int j = 0; j < pars.length; j++) {
-                if (j > 0)
-                    System.out.print(", ");
-                System.out.print("'" + pars[j] + "'");
-            }
-            System.out.println("==");
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
+        int newMamulID = DAOFunctions.mamulEkle(
+                new String(request.getParameter("mamulad").getBytes("UTF-8")),
+                new String(request.getParameter("mamulkod").getBytes("UTF-8")),
+                new String(request.getParameter("mamulcevrim").getBytes("UTF-8")),
+                new String(request.getParameter("mamulfirma").getBytes("UTF-8"))
+                );
+
+        /* if Error occured */
+        if(newMamulID == -1) {
+            System.out.println("Hata Olustu!..");
+        }
+        else {
+            System.out.println(newMamulID);
+        }
+        int bilesenSayisi = Integer.valueOf(request.getParameter("bilesen_length"));
+        int bilesenResult = -1;
+        for(int i=0; i< bilesenSayisi; i++) {
+            String bilesen  = request.getParameter("bilesen_" + i);
+            String uretimtip= request.getParameter("uretimtip_" + i);            
+            String birim    = request.getParameter("birim_" + i);
+            String miktar   = request.getParameter("miktar_" + i);
+            
+            bilesenResult = DAOFunctions.mamulBilesenEkle(
+                    newMamulID,
+                    Integer.valueOf(bilesen),
+                    Integer.valueOf(uretimtip),                    
+                    Integer.valueOf(birim),
+                    Integer.valueOf(miktar)
+            );
         }
         
-        /*
-         * request.setCharacterEncoding("UTF-8");
-         * response.setContentType("text/html; charset=UTF-8");
-         * response.setCharacterEncoding("UTF-8");
-         * 
-         * List<Hammadde> hammadde = new ArrayList<Hammadde>(); hammadde =
-         * DAOFunctions.hammaddeEkle( new
-         * String(request.getParameter("hamkod").getBytes("UTF-8")), new
-         * String(request.getParameter("hamad").getBytes("UTF-8")), new
-         * String(request.getParameter("hambirim").getBytes("UTF-8")), new
-         * String(request.getParameter("hamfirma").getBytes("UTF-8")) );
-         * 
-         * List<Birim> birim = new ArrayList<Birim>(); birim =
-         * DAOFunctions.birimListeGetirTum();
-         * 
-         * List<YariMamul> yarimamul = new ArrayList<YariMamul>(); yarimamul =
-         * DAOFunctions.yarimamulListeGetirTum();
-         * 
-         * request.setAttribute("birim", birim);
-         * request.setAttribute("hammadde", hammadde);
-         * request.setAttribute("yarimamul", yarimamul);
-         * request.getRequestDispatcher("mamul.jsp").forward(request, response);
-         */
+        List<Birim> birim = new ArrayList<Birim>();
+        birim = DAOFunctions.birimListeGetirTum();
+        
+        List<Firma> firma = new ArrayList<Firma>();
+        firma = DAOFunctions.firmaListeGetirTum();
+        
+        List<Bilesen> hammadde = new ArrayList<Bilesen>();
+        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
+        
+        List<Bilesen> yarimamul = new ArrayList<Bilesen>();
+        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL);
+        
+        List<Bilesen> mamul = new ArrayList<Bilesen>();
+        mamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
+        
+        request.setAttribute("birim", birim);
+        request.setAttribute("firma", firma);
+        request.setAttribute("hammadde", hammadde);
+        request.setAttribute("yarimamul", yarimamul);
+        request.setAttribute("mamul", mamul);
+        
+        request.getRequestDispatcher("mamul.jsp").forward(request, response);
         
     }
     

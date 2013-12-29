@@ -8,19 +8,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="img/favicon.ico">
-    <link href='http://fonts.googleapis.com/css?family=Dosis:400,500,600,300' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700' rel='stylesheet' type='text/css'>
-
     <title>Irfan Plastik</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css" >
+    <link rel="stylesheet" href="css/bootstrap.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/docs.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/font-awesome.css">
-    <link rel="shortcut icon" href="img/favicon.ico">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -28,10 +24,8 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
-
 <body>
-<%@ page
-        import="crm.irfan.User, crm.irfan.entity.Birim, crm.irfan.entity.Firma, crm.irfan.entity.Hammadde, java.util.List" %>
+<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
 <%
     Boolean loggedin = (Boolean) session.getAttribute("loggedin");
@@ -47,7 +41,7 @@
 
 <div class="container">
     <div class="row text-warning" style="text-align:center;">
-        <label class="text-warning">Hammadde Ekleme</label>
+        <label class="text-danger">Hammadde Ekleme</label>
     </div>
     <script type="text/javascript">
         function HammaddeEkleCtrl($scope, $http) {
@@ -61,8 +55,7 @@
                     crossDomain: true,
                     data: {username: $scope.adsoy, password: $scope.gorev},
                     headers: {
-                        Accept: "text/plain; charset=utf-8",
-                        "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+                        Accept: "text/plain; charset=utf-8", "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
                     },
                     success: function (data, textStatus, xhr) {
                         console.log(data);
@@ -105,10 +98,16 @@
                         <%
                             List<Birim> birim = (List<Birim>) request.getAttribute("birim");
                             for (Birim b : birim) {
-                        %>
-                        <option value='<%=b.getId()%>'><%=b.getAd() %>
-                        </option>
-                        <%
+                                if (BirimTip.GRAM.value() == b.getId()){
+                                    %>
+                                    <option value='<%=b.getId()%>' selected><%=b.getAd() %></option>
+                                    <%
+                                }
+                                else{
+                                    %>
+                                    <option value='<%=b.getId()%>'><%=b.getAd() %></option>
+                                    <%
+                                }
                             }
                         %>
                     </select>
@@ -142,7 +141,7 @@
         </form>
     </div>
     <%
-        List<Hammadde> hammadde = (List<Hammadde>) request.getAttribute("hammadde");
+        List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
         int sayac = 0;
     %>
 
@@ -151,7 +150,7 @@
             <div class="col-sm-3"></div>
             <div class="col-sm-8">
                 <table class="table table-striped table-bordered">
-                    <% for (Hammadde h : hammadde) { %>
+                    <% for (Bilesen h : hammadde) { %>
                     <% if (sayac++ == 0) { %>
                     <tr>
                         <th><label>Hammadde Kodu</label></th>

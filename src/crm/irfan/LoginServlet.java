@@ -24,11 +24,7 @@ public class LoginServlet extends HttpServlet implements Serializable {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = new User();
-        if ((User) request.getSession().getAttribute("user") != null) {
-            user = (User) request.getSession().getAttribute("user");
-        }
-
+        User user = (request.getSession().getAttribute("user") != null) ? (User) request.getSession().getAttribute("user") : (new User());        
         Boolean loggedin = (request.getSession().getAttribute("loggedin") != null) ? true : false;
         String username = (request.getParameter("username") != null) ? request.getParameter("username") : "";
         String password = (request.getParameter("password") != null) ? request.getParameter("password") : "";

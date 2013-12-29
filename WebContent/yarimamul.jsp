@@ -8,19 +8,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="img/favicon.ico">
-    <link href='http://fonts.googleapis.com/css?family=Dosis:400,500,600,300' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700' rel='stylesheet' type='text/css'>
-
     <title>Irfan Plastik</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css" >
+    <link rel="stylesheet" href="css/bootstrap.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/docs.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/font-awesome.css">
-    <link rel="shortcut icon" href="img/favicon.ico">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -28,9 +24,8 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
-
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.YariMamul, java.util.List" %>
+<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
 <%
     Boolean loggedin = (Boolean) session.getAttribute("loggedin");
@@ -46,7 +41,7 @@
 
 <div class="container">
     <div class="row text-warning" style="text-align:center;">
-        <label class="text-warning">Yarımamül Ekleme</label>
+        <label class="text-danger">Yarımamül Ekleme</label>
     </div>
     <script type="text/javascript">
         function YariMamulEkleCtrl($scope, $http) {
@@ -83,19 +78,59 @@
     <div class="row" ng-controller="YariMamulEkleCtrl">
         <form class="form-horizontal" role="form" method="post" action="/HelloWorld/yarimamul">
             <div class="form-group">
-                <label for="yarimamulkod" class="col-xs-3 control-label">Kodu (İrsaliye): </label>
+                <label for="yarimamulkod" class="col-xs-3 control-label">Yarımamül Kodu: </label>
 
                 <div class="col-xs-8">
                     <input type="text" class="form-control" name="yarimamulkod" ng-model="yarimamulkod"
-                           placeholder="Kodu (İrsaliye)">
+                           placeholder="Yarımamül Kodu">
                 </div>
             </div>
             <div class="form-group">
-                <label for="yarimamulad" class="col-xs-3 control-label">Adı: </label>
+                <label for="yarimamulad" class="col-xs-3 control-label">Yarımamül Adı: </label>
 
                 <div class="col-xs-8">
                     <input type="text" class="form-control" name="yarimamulad" ng-model="yarimamulad"
                            placeholder="Yarımamül Adı">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="yarimamulbirim" class="col-xs-3 control-label">Birim: </label>
+
+                <div class="col-xs-8">
+                    <select class="form-control" name="yarimamulbirim">
+                        <%
+                            List<Birim> birim = (List<Birim>) request.getAttribute("birim");
+                            for (Birim b : birim) {
+                                if (BirimTip.ADET.value() == b.getId()){
+                                    %>
+                                    <option value='<%=b.getId()%>' selected><%=b.getAd() %></option>
+                                    <%
+                                }
+                                else{
+                                    %>
+                                    <option value='<%=b.getId()%>'><%=b.getAd() %></option>
+                                    <%
+                                }
+                            }
+                        %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="yarimamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
+                
+                <div class="col-xs-8">
+                    <select class="form-control" name="yarimamulfirma">
+                        <%
+                            List<Firma> firma = (List<Firma>) request.getAttribute("firma");
+                            for (Firma f : firma) {
+                        %>
+                        <option value='<%=f.getId()%>'><%=f.getAd() %>
+                        </option>
+                        <%
+                            }
+                        %>
+                    </select>
                 </div>
             </div>
             <div class="form-group">
@@ -108,7 +143,7 @@
         </form>
     </div>
     <%
-        List<YariMamul> yarimamul = (List<YariMamul>) request.getAttribute("yarimamul");
+        List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
         int sayac = 0;
     %>
 
@@ -117,7 +152,7 @@
             <div class="col-sm-3"></div>
             <div class="col-sm-8">
                 <table class="table table-striped table-bordered">
-                    <% for (YariMamul y : yarimamul) { %>
+                    <% for (Bilesen y : yarimamul) { %>
                     <% if (sayac++ == 0) { %>
                     <tr>
                         <th><label>Kod</label></th>

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import crm.irfan.entity.Bilesen;
+import crm.irfan.entity.BilesenTip;
 import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
 import crm.irfan.entity.Hammadde;
@@ -23,18 +25,8 @@ public class HammaddeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
-        List<Hammadde> hammadde = new ArrayList<Hammadde>();
-        hammadde = DAOFunctions.hammaddeListeGetirTum();
-        /*for (Hammadde h : hammadde) {
-            System.out.println(h.getId().toString() +
-                    " : " + h.getKod() +
-                    " : " + h.getAd() +
-                    " : " + h.getBirimid() +
-                    " : " + h.getBirimad() +
-                    " : " + h.getFirmaid() +
-                    " : " + h.getFirmaad()
-            );
-        }*/
+        List<Bilesen> hammadde = new ArrayList<Bilesen>();
+        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
 
         List<Birim> birim = new ArrayList<Birim>();
         birim = DAOFunctions.birimListeGetirTum();

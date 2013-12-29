@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import crm.irfan.entity.Bilesen;
+import crm.irfan.entity.BilesenTip;
+import crm.irfan.entity.Birim;
+import crm.irfan.entity.Firma;
 import crm.irfan.entity.YariMamul;
 
 public class YariMamulServlet extends HttpServlet {
@@ -21,10 +25,18 @@ public class YariMamulServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<YariMamul> yarimamul = new ArrayList<YariMamul>();
-        yarimamul = DAOFunctions.yarimamulListeGetirTum();
+        List<Bilesen> yarimamul = new ArrayList<Bilesen>();
+        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL);
+        
+        List<Birim> birim = new ArrayList<Birim>();
+        birim = DAOFunctions.birimListeGetirTum();
+        
+        List<Firma> firma = new ArrayList<Firma>();
+        firma = DAOFunctions.firmaListeGetirTum();
 
         request.setAttribute("yarimamul", yarimamul);
+        request.setAttribute("birim", birim);
+        request.setAttribute("firma", firma);
         request.getRequestDispatcher("yarimamul.jsp").forward(request, response);
     }
 
@@ -38,10 +50,20 @@ public class YariMamulServlet extends HttpServlet {
         List<YariMamul> yarimamul = new ArrayList<YariMamul>();
         yarimamul = DAOFunctions.yarimamulEkle(
                 new String(request.getParameter("yarimamulkod").getBytes("UTF-8")), 
-                new String(request.getParameter("yarimamulad").getBytes("UTF-8"))
+                new String(request.getParameter("yarimamulad").getBytes("UTF-8")),
+                new String(request.getParameter("yarimamulbirim").getBytes("UTF-8")),
+                new String(request.getParameter("yarimamulfirma").getBytes("UTF-8"))
                 );
+        
+        List<Birim> birim = new ArrayList<Birim>();
+        birim = DAOFunctions.birimListeGetirTum();
+        
+        List<Firma> firma = new ArrayList<Firma>();
+        firma = DAOFunctions.firmaListeGetirTum();
 
         request.setAttribute("yarimamul", yarimamul);
+        request.setAttribute("birim", birim);
+        request.setAttribute("firma", firma);
         request.getRequestDispatcher("yarimamul.jsp").forward(request, response);
 
     }

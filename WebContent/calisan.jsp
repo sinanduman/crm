@@ -11,13 +11,12 @@
     <title>Irfan Plastik</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css" >
+    <link rel="stylesheet" href="css/bootstrap.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/docs.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/font-awesome.css">
-    <link rel="shortcut icon" href="img/favicon.ico">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -25,7 +24,6 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
-
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.Calisan,java.util.List" %>
 

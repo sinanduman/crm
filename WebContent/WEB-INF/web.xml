@@ -104,5 +104,79 @@
     <servlet-mapping>
         <servlet-name>MakinaServlet</servlet-name>
         <url-pattern>/makina</url-pattern>
+    </servlet-mapping>    
+    <servlet>
+        <description></description>
+        <display-name>MamulStokServlet</display-name>
+        <servlet-name>MamulStokServlet</servlet-name>
+        <servlet-class>crm.irfan.MamulStokServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MamulStokServlet</servlet-name>
+        <url-pattern>/mamulstok</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <description></description>
+        <display-name>HammaddeStokServlet</display-name>
+        <servlet-name>HammaddeStokServlet</servlet-name>
+        <servlet-class>crm.irfan.HammaddeStokServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HammaddeStokServlet</servlet-name>
+        <url-pattern>/hammaddestok</url-pattern>
+    </servlet-mapping>    
+    <servlet>
+        <description></description>
+        <display-name>YariMamulStokServlet</display-name>
+        <servlet-name>YariMamulStokServlet</servlet-name>
+        <servlet-class>crm.irfan.YariMamulStokServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>YariMamulStokServlet</servlet-name>
+        <url-pattern>/yarimamulstok</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description></description>
+        <display-name>SiparisServlet</display-name>
+        <servlet-name>SiparisServlet</servlet-name>
+        <servlet-class>crm.irfan.SiparisServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SiparisServlet</servlet-name>
+        <url-pattern>/siparis</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description></description>
+        <display-name>BekleyenSiparisServlet</display-name>
+        <servlet-name>BekleyenSiparisServlet</servlet-name>
+        <servlet-class>crm.irfan.BekleyenSiparisServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BekleyenSiparisServlet</servlet-name>
+        <url-pattern>/bekleyensiparis</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <description></description>
+        <display-name>TamamlananSiparisServlet</display-name>
+        <servlet-name>TamamlananSiparisServlet</servlet-name>
+        <servlet-class>crm.irfan.TamamlananSiparisServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TamamlananSiparisServlet</servlet-name>
+        <url-pattern>/tamamlanansiparis</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <description></description>
+        <display-name>UretimPlanServlet</display-name>
+        <servlet-name>UretimPlanServlet</servlet-name>
+        <servlet-class>crm.irfan.UretimPlanServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UretimPlanServlet</servlet-name>
+        <url-pattern>/uretimplan</url-pattern>
+    </servlet-mapping> 
+    
+    
 </web-app>
