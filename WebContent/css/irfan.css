@@ -1,0 +1,28 @@
+.updateHref, .okHref, .deleteHref, .icerikHref {
+	font-size: 11px;
+}
+.updateHref {
+	background-color: darkseagreen;
+}
+.okHref {
+	background-color: chocolate;
+}
+.icerikHref {
+	background-color: goldenrod;
+}
+.deleteHref {
+	background-color: red;
+}
+.tableplan{
+	width:100%;
+	background-color:#E1DFBA;
+	/*background-color:##E6E6E6;*/
+	border-top:2px solid darkkhaki;
+}
+.tableplan tr {
+	border-bottom:1px solid darkkhaki;
+}
+.tableplan td {
+	vertical-align: top;
+	padding: 5px 2px 5px 2px;
+}
