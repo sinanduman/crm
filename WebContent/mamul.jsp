@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
 	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
@@ -35,28 +36,37 @@
 	
 %>
 
+<%
+	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
+	List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
+	List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
+	List<Bilesen> mamul = (List<Bilesen>) request.getAttribute("mamul");
+	List<MamulBilesen> mamulbilesen = (List<MamulBilesen>) request.getAttribute("mamulbilesen");
+%>
+
 <jsp:include page="navigate.jsp">
 	<jsp:param value="user" name="user"/>
 </jsp:include>
 
 <div class="container" ng-controller="MamulCtrl">
-	<div class="row text-warning" style="text-align:center;">
-		<label class="text-danger">Mamül Bileşen Ekleme</label>
+	<div class="row text-danger" style="text-align:center;">
+		<label class="text-danger">Mamül Ekleme</label>
 	</div>
 	<div class="row" >
 		<form class="form-horizontal" role="form" name="mamulform" method="post" action="/HelloWorld/mamul">
+			
 			<div class="form-group">
-				<label for="mamulad" class="col-xs-3 control-label">Adı: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="mamulad" ng-model="mamulad" placeholder="Mamül Adı">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="mamulkod" class="col-xs-3 control-label">Kodu: </label>
+				<label for="mamulkod" class="col-xs-3 control-label">Mamül Kodu: </label>
 				<div class="col-xs-8">
 					<input type="text" class="form-control" name="mamulkod" ng-model="mamulkod" placeholder="Mamül Kodu">
 				</div>
 			</div>			
+			<div class="form-group">
+				<label for="mamulad" class="col-xs-3 control-label">Mamül Adı: </label>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" name="mamulad" ng-model="mamulad" placeholder="Mamül Adı">
+				</div>
+			</div>
 			<div class="form-group">
 				<label for="mamulcevrim" class="col-xs-3 control-label">Çevrim Süresi(sn): </label>
 				<div class="col-xs-8">
@@ -64,36 +74,44 @@
 				</div>
 			</div>
 			<div class="form-group">
-                <label for="mamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
-                <div class="col-xs-8">
-                    <select class="form-control" name="mamulfirma">
-                        <%
-                            List<Firma> firma = (List<Firma>) request.getAttribute("firma");
-                            for (Firma f : firma) {
-                        %>
-                        <option value='<%=f.getId()%>'><%=f.getAd() %>
-                        </option>
-                        <%
-                            }
-                        %>
-                    </select>
-                </div>
+				<label for="mamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
+				<div class="col-xs-8">
+					<select class="form-control" name="mamulfirma">
+						<%
+							for (Firma f : firma) {
+						%>
+						<option value='<%=f.getId()%>'><%=f.getAd() %>
+						</option>
+						<%
+							}
+						%>
+					</select>
+				</div>
 
-            </div>
+			</div>
+			<div class="form-group">
+				<label for="mamuluretimsekli" class="col-xs-3 control-label">Üretim Şekli: </label>
+				<div class="col-xs-8">
+					<select class="form-control" name="mamuluretimsekli">
+						<option value='<%= UretimTip.Makina.value() %>'><%= UretimTip.Makina.name() %></option>
+						<option value='<%= UretimTip.Montaj.value() %>'><%= UretimTip.Montaj.name() %></option>
+					</select>
+				</div>
+			</div>
 			<hr/>
 			<div class="form-group">
 				<label class="col-xs-3 control-label"></label>
 				<div class="col-xs-8">
 					<div class="radio">
-						<label>
-							<input type="radio" name="optionsRadios" value="Uretim" id="optionsRadios1" checked ng-click="on()">
-							Üretim
+						<label class="text-success strong">
+							<input type="radio" name="bilesenTipRadio" value="Hammadde" checked ng-click="on()">
+							Hammadde
 						</label>
 					</div>
 					<div class="radio">
-						<label>
-							<input type="radio" name="optionsRadios" value="Montaj" id="optionsRadios2" ng-click="off()">
-							Montaj
+						<label class="text-danger strong">
+							<input type="radio" name="bilesenTipRadio" value="Yarımamül" ng-click="off()">
+							Yarımamül
 						</label>
 					</div>
 				</div>
@@ -103,7 +121,6 @@
 				<div class="col-xs-8">
 					<select class="form-control" id="hammadde" name="hammadde">
 						<%
-							List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
 							for (Bilesen h : hammadde) {
 						%>
 						<option value='<%=h.getId()%>'><%=h.getAd() %>
@@ -119,7 +136,6 @@
 				<div class="col-xs-8">
 					<select class="form-control" id="yarimamul" name="yarimamul">
 						<%
-							List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 							for (Bilesen y : yarimamul) {
 						%>
 						<option value='<%= y.getId() %>'><%=y.getAd() %>
@@ -131,16 +147,14 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="birim" class="col-xs-3 control-label">Birim: </label>
+				<label for="birimid" class="col-xs-3 control-label">Birim: </label>
 				<div class="col-xs-8">
-					<select class="form-control" id="birim" name="birim">
+					<select class="form-control" id="birimid" name="birimid">
 						<%
-							List<Birim> birim = (List<Birim>) request.getAttribute("birim");
-							for (Birim b : birim) {
-						%>
-						<option value='<%= b.getId() %>'><%=b.getAd() %>
-						</option>
-						<%
+							for (BirimTip bt : BirimTip.values()) {
+								%>
+								<option value='<%=bt.value()%>'><%=bt.ad() %></option>
+								<%
 							}
 						%>
 					</select>
@@ -159,76 +173,118 @@
 					<input type="hidden" ng-model="yenibilesen.hammaddead" />
 					<input type="hidden" ng-model="yenibilesen.birimad" />
 					<input type="hidden" ng-model="yenibilesen.id" />
-					<button type="button" ng-click="saveContact()" class="btn btn-warning">Bileşen Kaydet</button>
+					<button type="button" ng-click="saveBilesen()" name="bilesen_ekle" id="bilesen_ekle"  class="btn btn-warning">Bileşen Ekle</button>
 				</div>
 			</div>
-			<table class="table table-striped table-bordered">
+			<table class="tableplan">
 			<tr>
-				<th>Hammadde/Yarımamül</th>
-				<th>Birim</th>
-				<th>Tip</th>
-				<th>Miktar</th>
-				<th>Aksiyon</th>
+				<td class="text-success">Hammadde/Yarımamül</td>
+				<td class="text-success">Birim</td>
+				<td class="text-success">Miktar</td>
+				<td class="text-success">Tip</td>
+				<td class="text-success">Aksiyon</td>
 			</tr>
 			<tr ng-repeat="bilesen in bilesenler">
 				<td>{{ bilesen.bilesenad }}</td>
 				<td>{{ bilesen.birimad }}</td>
-				<td>{{ bilesen.uretimtip }}</td>
 				<td>{{ bilesen.miktar }}</td>
+				<td>{{ bilesen.uretimtip }}</td>
 				<td>
-					<a href="#" ng-click="edit(bilesen.id)">Güncelle</a> | 
-					<a href="#" ng-click="del(bilesen.id)">Sil</a>
+					<a href="#" ng-click="edit(bilesen.id)">Güncelle</a> | <a href="#" ng-click="del(bilesen.id)">Sil</a>
 					<input type="hidden" name="uretimtip_{{bilesen.id}}" value="{{ bilesen.uretimtipid }}">
-					<input type="hidden" name="bilesen_{{bilesen.id}}" value="{{ bilesen.bilesenid }}">
-					<input type="hidden" name="birim_{{bilesen.id}}" value="{{ bilesen.birimid }}">
+					<input type="hidden" name="bilesenid_{{bilesen.id}}" value="{{ bilesen.bilesenid }}">
 					<input type="hidden" name="miktar_{{bilesen.id}}" value="{{ bilesen.miktar }}">
+					<input type="hidden" name="birimid_{{bilesen.id}}" value="{{ bilesen.birimid }}">
 				</td>
 			</tr>
 			</table>
 			<div class="form-group">
 				<label class="col-xs-3 control-label">&nbsp;</label>
 				<div class="col-xs-8">
-					<button type="submit" class="btn btn-warning">Ekle</button>
+					<button type="button" class="btn btn-warning" ng-click="saveMamul()">Mamül Ekle</button>
 					<input type="hidden" name="bilesen_length" ng-model="bilesen_length" value="{{ bilesenler.length }}">
 				</div>
 			</div>
 
 		</form>
 	</div>
-	<%
-		List<Bilesen> mamul = (List<Bilesen>) request.getAttribute("mamul");
-		int sayac = 0;
-	%>
 
-	<div class="row">
+	<div class="row" style="font-size:12px;">
 		<div class="container">
-			<div class="col-sm-3"></div>
-			<div class="col-sm-8">
-				<table class="table table-striped table-bordered">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10">
+				<table class="tableplan">
+					<% int sayac = 0; %>
 					<% for (Bilesen m : mamul) { %>
 					<% if (sayac++ == 0) { %>
 					<tr>
-						<th><label>Kod</label></th>
-						<th><label>Adı</label></th>
-						<th><label>Çevrim Süresi</label></th>
-						<th><label>Aksiyon</label></th>
+						<td><label class="text-success">Kod</label></td>
+						<td><label class="text-success">Adı</label></td>
+						<td><label class="text-success">Çevrim Süresi</label></td>
+						<td><label class="text-success">Firma</label></td>
+						<td><label class="text-success">Aksiyon</label></td>
 					</tr>
 					<% } %>
-					<tr>
-						<td><%= m.getId() %>
-						</td>
-						<td><%= m.getAd() %>
-						</td>
-						<td><%= m.getCevrimsuresi() %>
+					<form name="action_form<%=m.getId()%>" id="action_form<%=m.getId()%>">
+					<tr id="tr<%=m.getId()%>">
+						<td><input type="text" value="<%= m.getKod() %>" name="liste_kod" id="liste_kod"></td>
+						<td><input type="text" value="<%= m.getAd() %>" name="liste_ad" id="liste_ad"></td>
+						<td><input type="text" value="<%= m.getCevrimsuresi() %>" name="liste_cevrimsuresi" id="liste_cevrimsuresi" style="width:80px;"></td>
+						<td>
+							<select id="liste_firmaid" name="liste_firmaid">
+							<%
+								for (Firma f : firma) {
+									if (f.getId() == m.getFirmaid() ){
+										%>
+										<option value='<%=f.getId() %>' selected><%=f.getAd() %></option>
+										<%
+									}
+									else{
+										%>
+										<option value='<%=f.getId()%>'><%=f.getAd() %></option>
+										<%
+									}
+								}
+							%>
+							</select>
 						</td>
 						<td>
-							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button>
-							</a>
-							<a href="/HelloWorld/mamul/<%= m.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button>
-							</a>
+							<input class="icerikHref" type="button" value="İçerik &darr;" onclick="javascript:hideshow('#tr_mam_detay<%= m.getId() %>');">
+							<input class="updateHref" type="button" id="updateButton<%=m.getId()%>" value="Gün. &rarr;" onclick="javascript:updateMamulGo('/HelloWorld/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);">
+							<input class="deleteHref" type="button" id="deleteButton<%=m.getId()%>" value="Sil &rarr;" onclick="javascript:deleteMamulGo('/HelloWorld/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);">
 						</td>
 					</tr>
-					<% } %>
+					<tr id="tr_mam_detay<%= m.getId() %>" style="display:none;">
+						<td colspan="5">
+							<table style="width:100%;" class="tableplan">
+								<% int sayacbilesen = 0; %>
+								<% for (MamulBilesen j : mamulbilesen) {%>
+								<% if ( j.getMamulid() == m.getId() ){ %>
+								<% if ( (sayacbilesen++ == 0) ){ %>
+								<tr>
+									<td><label class="text-info">Sıra No</label></td>
+									<td><label class="text-info">Bileşen Adı</label></td>
+									<td><label class="text-info">Bileşen Kodu</label></td>
+									<td><label class="text-info">Tür</label></td>
+									<td><label class="text-info">Birim</label></td>
+									<td><label class="text-info">Miktarı</label></td>
+								</tr>
+								<% } %><%-- if tablo baslik --%>
+								<tr>
+									<td><%= sayacbilesen %></td>
+									<td><%= j.getBilesenad() %></td>
+									<td><%= j.getBilesenkod() %></td>
+									<td><%= j.getBilesentipad() %></td>
+									<td><%= j.getBirimad() %></td>
+									<td><%= j.getMiktar() %></td>
+								</tr>
+								<% } %><%-- if  j== m--%>
+								<% } %> <%-- mamulbilesen --%>
+							</table>
+						</td>
+					</tr>
+					</form>
+					<% } %> <%-- mamul --%>
 				</table>
 			</div>
 			<div class="col-sm-1"></div>
@@ -241,7 +297,7 @@
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="js/mamul.js"></script>
-
+<script src="js/irfan.js?<%=System.currentTimeMillis()%>"></script>
+<script src="js/mamul.js?<%=System.currentTimeMillis()%>"></script>
 </body>
 </html>

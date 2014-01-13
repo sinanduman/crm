@@ -47,7 +47,7 @@ html {
 }
 
 body {
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 a:focus {
@@ -69,7 +69,8 @@ abbr[title] {
 }
 
 b,
-strong {
+strong,
+.strong {
     font-weight: bold;
 }
 
@@ -446,6 +447,10 @@ cite {
 
 .text-danger {
     color: #b94a48;
+}
+
+.text-sevk {
+    color: #630059;
 }
 
 .text-success {
@@ -1580,8 +1585,8 @@ th {
 .table thead > tr > td,
 .table tbody > tr > td,
 .table tfoot > tr > td {
-    padding: 8px;
-    line-height: 1.428571429;
+    padding: 4px;
+    /*line-height: 1.428571429;*/
     vertical-align: top;
     border-top: 1px solid #dddddd;
 }
@@ -1614,7 +1619,7 @@ th {
 .table-condensed thead > tr > td,
 .table-condensed tbody > tr > td,
 .table-condensed tfoot > tr > td {
-    padding: 5px;
+    padding: 3px;
 }
 
 .table-bordered {
@@ -2352,6 +2357,15 @@ fieldset[disabled] .btn-warning.active {
     border-color: #d43f3a;
 }
 
+.btn-sevk {
+    color: #ffffff;
+    background-color: #630059;
+    border-color: #470040;
+    /* 1- 630059 - acik */
+    /* 2- 54004B - hover  */
+    /* 3- 470040 - border */
+}
+
 .btn-danger:hover,
 .btn-danger:focus,
 .btn-danger:active,
@@ -2362,9 +2376,25 @@ fieldset[disabled] .btn-warning.active {
     border-color: #ac2925;
 }
 
+.btn-sevk:hover,
+.btn-sevk:focus,
+.btn-sevk:active,
+.btn-sevk.active,
+.open .dropdown-toggle.btn-sevk {
+    color: #ffffff;
+    background-color: #54004B;
+    border-color: #470040;
+}
+
 .btn-danger:active,
 .btn-danger.active,
 .open .dropdown-toggle.btn-danger {
+    background-image: none;
+}
+
+.btn-sevk:active,
+.btn-sevk.active,
+.open .dropdown-toggle.btn-sevk {
     background-image: none;
 }
 
@@ -2385,6 +2415,25 @@ fieldset[disabled] .btn-danger:active,
 fieldset[disabled] .btn-danger.active {
     background-color: #d9534f;
     border-color: #d43f3a;
+}
+
+.btn-sevk.disabled,
+.btn-sevk[disabled],
+fieldset[disabled] .btn-sevk,
+.btn-sevk.disabled:hover,
+.btn-sevk[disabled]:hover,
+fieldset[disabled] .btn-sevk:hover,
+.btn-sevk.disabled:focus,
+.btn-sevk[disabled]:focus,
+fieldset[disabled] .btn-sevk:focus,
+.btn-sevk.disabled:active,
+.btn-sevk[disabled]:active,
+fieldset[disabled] .btn-sevk:active,
+.btn-sevk.disabled.active,
+.btn-sevk[disabled].active,
+fieldset[disabled] .btn-sevk.active {
+    background-color: #54004B;
+    border-color: #470040;
 }
 
 .btn-success {
@@ -3540,6 +3589,7 @@ input[type="button"].btn-block {
 .btn-success .caret,
 .btn-warning .caret,
 .btn-danger .caret,
+.btn-sevk .caret,
 .btn-info .caret {
     border-top-color: #fff;
 }
@@ -3552,6 +3602,7 @@ input[type="button"].btn-block {
 .dropup .btn-success .caret,
 .dropup .btn-warning .caret,
 .dropup .btn-danger .caret,
+.dropup .btn-sevk .caret,
 .dropup .btn-info .caret {
     border-bottom-color: #fff;
 }
@@ -5077,9 +5128,18 @@ textarea.input-group-sm > .input-group-btn > .btn {
     background-color: #d9534f;
 }
 
+.label-sevk {
+    background-color: #630059;
+}
+
 .label-danger[href]:hover,
 .label-danger[href]:focus {
     background-color: #c9302c;
+}
+
+.label-sevk[href]:hover,
+.label-sevk[href]:focus {
+    background-color: #470040;
 }
 
 .badge {
@@ -7083,4 +7143,9 @@ td.visible-print {
     td.hidden-print {
         display: none !important;
     }
+}
+/* addition */
+select.time{
+    width: 60px; 
+    display: inline-block !important;
 }

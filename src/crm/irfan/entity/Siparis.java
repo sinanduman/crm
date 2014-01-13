@@ -8,17 +8,21 @@ public class Siparis {
     private Integer   bilesenid;
     private String    bilesenad;
     private Integer   miktar;
+    private Integer   planmiktar;
+    private Integer   tamammiktar;
     private Timestamp tarih;
     private Timestamp bitistarih;
     private String    not;
     
-    public Siparis(Integer id, Integer bilesenid, String bilesenad, Integer miktar,
-            Timestamp tarih, Timestamp bitistarih, String not) {
+    public Siparis(Integer id, Integer bilesenid, String bilesenad, Integer miktar, Integer planmiktar,
+                    Integer tamammiktar, Timestamp tarih, Timestamp bitistarih, String not) {
         super();
         this.id = id;
         this.bilesenid = bilesenid;
         this.bilesenad = bilesenad;
         this.miktar = miktar;
+        this.planmiktar = planmiktar;
+        this.tamammiktar = tamammiktar;
         this.tarih = tarih;
         this.bitistarih = bitistarih;
         this.not = not;
@@ -56,8 +60,24 @@ public class Siparis {
         this.miktar = miktar;
     }
     
+    public Integer getPlanmiktar() {
+        return planmiktar;
+    }
+    
+    public void setPlanmiktar(Integer planmiktar) {
+        this.planmiktar = planmiktar;
+    }
+    
+    public Integer getTamammiktar() {
+        return tamammiktar;
+    }
+    
+    public void setTamammiktar(Integer tamammiktar) {
+        this.tamammiktar = tamammiktar;
+    }
+    
     public String getTarih() {
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(tarih);
+        String date = (this.tarih != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm").format(tarih)) : "";
         return date;
     }
     
@@ -66,7 +86,7 @@ public class Siparis {
     }
     
     public String getBitistarih() {
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(bitistarih);
+        String date = (this.bitistarih != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm").format(bitistarih)) : "";
         return date;
     }
     
@@ -75,7 +95,7 @@ public class Siparis {
     }
     
     public String getNot() {
-        return not;
+        return (this.not != null) ? (this.not) : "";
     }
     
     public void setNot(String not) {

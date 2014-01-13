@@ -1,27 +1,45 @@
 package crm.irfan.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Stok {
-    private Integer id;
-    private Integer bilesenid;
-    private String  bilesenad;
-    private Integer stoktipid;
-    private String  stoktipad;
-    private Integer miktar;
-    private Date    giristarihi;
-    private Date    cikistarihi;
-    private String  not;
+    private Integer   id;
+    private Integer   bilesenid;
+    private String    bilesenad;
+    private String    bilesenkod;
+    private Integer   bilesentipid;
+    private String    bilesentipad;
+    private Integer   birimid;
+    private String    birimad;
+    private Integer   firmaid;
+    private String    firmaad;
+    private Integer   miktar;
+    private String    gkrno;
+    private String    irsaliyeno;
+    private String    lot;
+    private Timestamp giristarihi;
+    private Timestamp cikistarihi;
+    private String    not;
     
-    public Stok(Integer id, Integer bilesenid, String bilesenad, Integer stoktipid,
-            String stoktipad, Integer miktar, Date giristarihi, Date cikistarihi, String not) {
+    public Stok(Integer id, Integer bilesenid, String bilesenad, String bilesenkod, Integer bilesentipid,
+                    String bilesentipad, Integer birimid, String birimad, Integer firmaid, String firmaad,
+                    Integer miktar, String gkrno, String irsaliyeno, String lot, Timestamp giristarihi,
+                    Timestamp cikistarihi, String not) {
         super();
         this.id = id;
         this.bilesenid = bilesenid;
         this.bilesenad = bilesenad;
-        this.stoktipid = stoktipid;
-        this.stoktipad = stoktipad;
+        this.bilesenkod = bilesenkod;
+        this.bilesentipid = bilesentipid;
+        this.bilesentipad = bilesentipad;
+        this.birimid = birimid;
+        this.birimad = birimad;
+        this.firmaid = firmaid;
+        this.firmaad = firmaad;
         this.miktar = miktar;
+        this.gkrno = gkrno;
+        this.irsaliyeno = irsaliyeno;
+        this.lot = lot;
         this.giristarihi = giristarihi;
         this.cikistarihi = cikistarihi;
         this.not = not;
@@ -51,20 +69,60 @@ public class Stok {
         this.bilesenad = bilesenad;
     }
     
-    public Integer getStoktipid() {
-        return stoktipid;
+    public String getBilesenkod() {
+        return bilesenkod;
     }
     
-    public void setStoktipid(Integer stoktipid) {
-        this.stoktipid = stoktipid;
+    public void setBilesenkod(String bilesenkod) {
+        this.bilesenkod = bilesenkod;
     }
     
-    public String getStoktipad() {
-        return stoktipad;
+    public Integer getBilesentipid() {
+        return bilesentipid;
     }
     
-    public void setStoktipad(String stoktipad) {
-        this.stoktipad = stoktipad;
+    public void setBilesentipid(Integer bilesentipid) {
+        this.bilesentipid = bilesentipid;
+    }
+    
+    public String getBilesentipad() {
+        return bilesentipad;
+    }
+    
+    public void setBilesentipad(String bilesentipad) {
+        this.bilesentipad = bilesentipad;
+    }
+    
+    public Integer getBirimid() {
+        return birimid;
+    }
+    
+    public void setBirimid(Integer birimid) {
+        this.birimid = birimid;
+    }
+    
+    public String getBirimad() {
+        return birimad;
+    }
+    
+    public void setBirimad(String birimad) {
+        this.birimad = birimad;
+    }
+    
+    public Integer getFirmaid() {
+        return firmaid;
+    }
+    
+    public void setFirmaid(Integer firmaid) {
+        this.firmaid = firmaid;
+    }
+    
+    public String getFirmaad() {
+        return firmaad;
+    }
+    
+    public void setFirmaad(String firmaad) {
+        this.firmaad = firmaad;
     }
     
     public Integer getMiktar() {
@@ -75,19 +133,43 @@ public class Stok {
         this.miktar = miktar;
     }
     
-    public Date getGiristarihi() {
+    public String getGkrno() {
+        return gkrno;
+    }
+    
+    public void setGkrno(String gkrno) {
+        this.gkrno = gkrno;
+    }
+    
+    public String getIrsaliyeno() {
+        return irsaliyeno;
+    }
+    
+    public void setIrsaliyeno(String irsaliyeno) {
+        this.irsaliyeno = irsaliyeno;
+    }
+    
+    public String getLot() {
+        return lot;
+    }
+    
+    public void setLot(String lot) {
+        this.lot = lot;
+    }
+    
+    public Timestamp getGiristarihi() {
         return giristarihi;
     }
     
-    public void setGiristarihi(Date giristarihi) {
+    public void setGiristarihi(Timestamp giristarihi) {
         this.giristarihi = giristarihi;
     }
     
-    public Date getCikistarihi() {
+    public Timestamp getCikistarihi() {
         return cikistarihi;
     }
     
-    public void setCikistarihi(Date cikistarihi) {
+    public void setCikistarihi(Timestamp cikistarihi) {
         this.cikistarihi = cikistarihi;
     }
     

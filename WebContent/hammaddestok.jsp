@@ -78,9 +78,9 @@
 		<form class="form-horizontal" role="form" method="post" action="/HelloWorld/hammaddestok">
 			
 			<div class="form-group">
-				<label for="bilesen" class="col-xs-3 control-label">Hammadde: </label>
+				<label for="bilesenid" class="col-xs-3 control-label">Hammadde: </label>
 				<div class="col-xs-8">
-					<select class="form-control" id="bilesen" name="bilesen">
+					<select class="form-control" id="bilesenid" name="bilesenid">
 						<%
 							List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
 							for (Bilesen h : hammadde) {
@@ -94,40 +94,27 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="hambirim" class="col-xs-3 control-label">Birimi: </label>
-
+				<label for="miktar" class="col-xs-3 control-label">Miktarı: </label>
 				<div class="col-xs-8">
-					<select class="form-control" name="hambirim">
-						<%
-							List<Birim> birim = (List<Birim>) request.getAttribute("birim");
-							for (Birim b : birim) {
-								if (BirimTip.KILOGRAM.value() == b.getId()){
-									%>
-									<option value='<%=b.getId()%>' selected><%=b.getAd() %></option>
-									<%
-								}
-								else{
-									%>
-									<option value='<%=b.getId()%>'><%=b.getAd() %></option>
-									<%
-								}
-							}
-						%>
-					</select>
+					<input type="text" class="form-control" name="miktar" ng-model="miktar" placeholder="Miktar (<%= BirimTip.KILOGRAM.ad() %>)">
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="miktar" class="col-xs-3 control-label">Miktarı: </label>
-
+				<label for="irsaliyeno" class="col-xs-3 control-label">İrsaliye No: </label>
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="miktar" ng-model="miktar" placeholder="Miktar">
+					<input type="text" class="form-control" name="irsaliyeno" ng-model="irsaliyeno" placeholder="İrsaliye">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="lot" class="col-xs-3 control-label">LOT/Batch No: </label>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" name="lot" ng-model="lot" placeholder="LOT/Batch No:">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="not" class="col-xs-3 control-label">Not: </label>
-
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="not" ng-model="not" placeholder="Not">
+					<textarea name="not" id="not" ng-model="not" cols="30" rows="5"  class="form-control" placeholder="Not"></textarea>
 				</div>
 			</div>
 			<div class="form-group">
@@ -139,7 +126,7 @@
 			</div>
 		</form>
 	</div>
-   
+
 </div>
 
 

@@ -15,6 +15,7 @@ import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
 import crm.irfan.entity.ResultTip;
 import crm.irfan.entity.Siparis;
+import crm.irfan.entity.SiparisTip;
 
 public class SiparisServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +31,7 @@ public class SiparisServlet extends HttpServlet {
 		bilesen = DAOFunctions.bilesenListeGetirTum( BilesenTip.MAMUL );
 						
 		List<Siparis> siparis = new ArrayList<Siparis>();
-		siparis = DAOFunctions.siparisListeGetirTum();
+		siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.BEKLEYEN);
 		
 		request.setAttribute("bilesen", bilesen);
 		request.setAttribute("siparis", siparis);
@@ -50,8 +51,9 @@ public class SiparisServlet extends HttpServlet {
 
 		List<Siparis> siparis = new ArrayList<Siparis>();
 		siparis = DAOFunctions.siparisEkle (
-				Integer.valueOf(new String(request.getParameter("bilesen").getBytes("UTF-8"))),
-				Integer.valueOf(new String(request.getParameter("miktar").getBytes("UTF-8")))
+				new String(request.getParameter("bilesen").getBytes("UTF-8")),
+				new String(request.getParameter("miktar").getBytes("UTF-8")),
+				new String(request.getParameter("not").getBytes("UTF-8"))
 		);
 
 		List<Birim> birim = new ArrayList<Birim>();

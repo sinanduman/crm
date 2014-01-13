@@ -13,7 +13,6 @@ import crm.irfan.entity.Bilesen;
 import crm.irfan.entity.BilesenTip;
 import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
-import crm.irfan.entity.Hammadde;
 import crm.irfan.entity.Stok;
 
 public class HammaddeStokServlet extends HttpServlet {
@@ -45,19 +44,23 @@ public class HammaddeStokServlet extends HttpServlet {
         request.getRequestDispatcher("hammaddestok.jsp").forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        List<Hammadde> hammadde = new ArrayList<Hammadde>();
-        hammadde = DAOFunctions.hammaddeEkle(
-                new String(request.getParameter("hamkod").getBytes("UTF-8")),
-                new String(request.getParameter("hamad").getBytes("UTF-8")),
-                new String(request.getParameter("hambirim").getBytes("UTF-8")),
-                new String(request.getParameter("hamfirma").getBytes("UTF-8"))
+        List<Bilesen> hammadde = new ArrayList<Bilesen>();
+        hammadde = DAOFunctions.bilesenListeGetirTum( BilesenTip.HAMMADDE );
+        
+        List<Stok> stok = new ArrayList<Stok>();
+        stok = DAOFunctions.stokEkle(
+                        BilesenTip.HAMMADDE,
+                        request.getParameter("bilesenid"),
+                        request.getParameter("miktar"),
+                        request.getParameter("irsaliyeno"),
+                        request.getParameter("lot"),
+                        request.getParameter("not")
         );
 
         List<Birim> birim = new ArrayList<Birim>();
@@ -69,6 +72,7 @@ public class HammaddeStokServlet extends HttpServlet {
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);
+        request.setAttribute("stok", stok);
         request.getRequestDispatcher("hammaddestok.jsp").forward(request, response);
     }
 

@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!doctype html>
 <html lang="en">
-
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,17 +21,17 @@
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
+	<script src="assets/js/html5shiv.js"></script>
+	<script src="assets/js/respond.min.js"></script>
+	<![endif]-->
 </head>
 <body>
 	<%@ page import="crm.irfan.User"%>
 
 	<%
-	    Boolean loggedin = (Boolean) session.getAttribute("loggedin");
+		Boolean loggedin = (Boolean) session.getAttribute("loggedin");
 		User user = (User) session.getAttribute("user");
-		if (loggedin == null || user == null) {
+		if (loggedin == null || !loggedin) {
 			request.getRequestDispatcher("login.jsp").forward(request, response);
 		}
 		else{
@@ -41,11 +40,20 @@
 		<jsp:param value="user" name="user" />
 	</jsp:include>
 	<%
-	    }
+		}
 	%>
 
 
 	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<span style="text-align: center; color: indianred; font-size: 24px;">
+					SESSION MESAJ SISTEMI GELISTIR <br>
+					<span style="color:indigo">HATA ve DURUS SEBEPLERI ARAYUZU, MODAL, HIDE GELISTIR </span><br>
+					<span style="color:chocolate">PAGING SISTEMI GELISTIR </span><br>
+				</span>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-sm-12">
 				<span style="text-align: center; color: darkkhaki; font-size: 24px;">
@@ -77,5 +85,4 @@
 	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript"></script>
 </body>
-
 </html>

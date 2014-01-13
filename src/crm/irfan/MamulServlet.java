@@ -1,6 +1,7 @@
 package crm.irfan;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import crm.irfan.entity.Bilesen;
 import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
-import crm.irfan.entity.Hammadde;
-import crm.irfan.entity.YariMamul;
+import crm.irfan.entity.MamulBilesen;
 
 public class MamulServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -26,9 +25,6 @@ public class MamulServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        List<Birim> birim = new ArrayList<Birim>();
-        birim = DAOFunctions.birimListeGetirTum();
-        
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum();
         
@@ -41,11 +37,14 @@ public class MamulServlet extends HttpServlet {
         List<Bilesen> mamul = new ArrayList<Bilesen>();
         mamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
         
-        request.setAttribute("birim", birim);
+        List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
+        mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
+        
         request.setAttribute("firma", firma);
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("yarimamul", yarimamul);
         request.setAttribute("mamul", mamul);
+        request.setAttribute("mamulbilesen", mamulbilesen);
         
         request.getRequestDispatcher("mamul.jsp").forward(request, response);
     }
@@ -57,60 +56,83 @@ public class MamulServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         
-        int newMamulID = DAOFunctions.mamulEkle(
-                new String(request.getParameter("mamulad").getBytes("UTF-8")),
-                new String(request.getParameter("mamulkod").getBytes("UTF-8")),
-                new String(request.getParameter("mamulcevrim").getBytes("UTF-8")),
-                new String(request.getParameter("mamulfirma").getBytes("UTF-8"))
-                );
-
-        /* if Error occured */
-        if(newMamulID == -1) {
-            System.out.println("Hata Olustu!..");
+        String islemid = request.getParameter("islemid");
+        if(islemid != null && islemid != "" ) {
+            Integer result = 0;
+            switch (Integer.valueOf(islemid)) {
+                case 1:
+                    result = DAOFunctions.bilesenGuncelle(
+                                    new String(request.getParameter("bilesenid").getBytes("UTF-8")),
+                                    null, /* -- null birimid icin */
+                                    new String(request.getParameter("firmaid").getBytes("UTF-8")),
+                                    new String(request.getParameter("bilesenkod").getBytes("UTF-8")),
+                                    new String(request.getParameter("bilesenad").getBytes("UTF-8")),
+                                    new String(request.getParameter("cevrimsuresi").getBytes("UTF-8"))                              
+                                    );
+                    break;
+                case 3:
+                    result = DAOFunctions.bilesenSil(new String(request.getParameter("bilesenid").getBytes("UTF-8")));
+                    break;
+            }
+            PrintWriter out = response.getWriter();
+            out.print(result);
         }
         else {
-            System.out.println(newMamulID);
-        }
-        int bilesenSayisi = Integer.valueOf(request.getParameter("bilesen_length"));
-        int bilesenResult = -1;
-        for(int i=0; i< bilesenSayisi; i++) {
-            String bilesen  = request.getParameter("bilesen_" + i);
-            String uretimtip= request.getParameter("uretimtip_" + i);            
-            String birim    = request.getParameter("birim_" + i);
-            String miktar   = request.getParameter("miktar_" + i);
-            
-            bilesenResult = DAOFunctions.mamulBilesenEkle(
-                    newMamulID,
-                    Integer.valueOf(bilesen),
-                    Integer.valueOf(uretimtip),                    
-                    Integer.valueOf(birim),
-                    Integer.valueOf(miktar)
+            int newMamulId = DAOFunctions.mamulEkle(
+                    new String(request.getParameter("mamulad").getBytes("UTF-8")),
+                    new String(request.getParameter("mamulkod").getBytes("UTF-8")),
+                    new String(request.getParameter("mamulcevrim").getBytes("UTF-8")),
+                    new String(request.getParameter("mamulfirma").getBytes("UTF-8"))
+                    );
+    
+            /* if Error occured */
+            if(newMamulId == -1) {
+                System.out.println("Hata Olustu!..");
+            }
+            else {
+                System.out.println(newMamulId);
+            }
+            DAOFunctions.mamulUretimTipEkle(
+                    newMamulId,
+                    request.getParameter("mamuluretimsekli")
             );
+            int bilesenSayisi = Integer.valueOf(request.getParameter("bilesen_length"));
+            for(int i=0; i< bilesenSayisi; i++) {
+                String bilesenid= request.getParameter("bilesenid_" + i);
+                String birimid  = request.getParameter("birimid_" + i);
+                String miktar   = request.getParameter("miktar_" + i);
+                
+                DAOFunctions.mamulBilesenEkle(
+                        newMamulId,
+                        Integer.valueOf(bilesenid),
+                        Integer.valueOf(birimid),
+                        Integer.valueOf(miktar)
+                );
+            }
+                    
+            List<Firma> firma = new ArrayList<Firma>();
+            firma = DAOFunctions.firmaListeGetirTum();
+            
+            List<Bilesen> hammadde = new ArrayList<Bilesen>();
+            hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
+            
+            List<Bilesen> yarimamul = new ArrayList<Bilesen>();
+            yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL);
+            
+            List<Bilesen> mamul = new ArrayList<Bilesen>();
+            mamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
+            
+            List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
+            mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
+            
+            request.setAttribute("firma", firma);
+            request.setAttribute("hammadde", hammadde);
+            request.setAttribute("yarimamul", yarimamul);
+            request.setAttribute("mamul", mamul);
+            request.setAttribute("mamulbilesen", mamulbilesen);
+            
+            request.getRequestDispatcher("mamul.jsp").forward(request, response);
         }
-        
-        List<Birim> birim = new ArrayList<Birim>();
-        birim = DAOFunctions.birimListeGetirTum();
-        
-        List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
-        
-        List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
-        
-        List<Bilesen> yarimamul = new ArrayList<Bilesen>();
-        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL);
-        
-        List<Bilesen> mamul = new ArrayList<Bilesen>();
-        mamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
-        
-        request.setAttribute("birim", birim);
-        request.setAttribute("firma", firma);
-        request.setAttribute("hammadde", hammadde);
-        request.setAttribute("yarimamul", yarimamul);
-        request.setAttribute("mamul", mamul);
-        
-        request.getRequestDispatcher("mamul.jsp").forward(request, response);
-        
     }
     
 }

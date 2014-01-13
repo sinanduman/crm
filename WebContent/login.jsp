@@ -40,15 +40,13 @@
 
 	<div class="container">
 
-		<form class="form-signin text-center" action="login" method="post"
-			style='border: 1px solid darkkhaki;'>
+		<form class="form-signin text-center" action="login" method="post">
 
 			<img alt="İrfan Plastik" src="img/ip_logo_mini.png"
 				class="img-rounded">
 
 			<h2 class="form-signin-heading">
-				<span class="color-darkkhaki" style="font-family: 'Dosis';">Sisteme
-					Giriş!</span>
+				<span class="color-chocolate" style="font-family: 'Dosis';">Sisteme Giriş!</span>
 			</h2>
 
 

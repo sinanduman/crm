@@ -1,6 +1,7 @@
 package crm.irfan;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import crm.irfan.entity.Bilesen;
 import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
-import crm.irfan.entity.Hammadde;
 
 public class HammaddeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -27,15 +26,11 @@ public class HammaddeServlet extends HttpServlet {
 
         List<Bilesen> hammadde = new ArrayList<Bilesen>();
         hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
-
-        List<Birim> birim = new ArrayList<Birim>();
-        birim = DAOFunctions.birimListeGetirTum();
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum();
         
         request.setAttribute("hammadde", hammadde);
-        request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);
         request.getRequestDispatcher("hammadde.jsp").forward(request, response);
     }
@@ -46,25 +41,45 @@ public class HammaddeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-
-        List<Hammadde> hammadde = new ArrayList<Hammadde>();
-        hammadde = DAOFunctions.hammaddeEkle(
-                new String(request.getParameter("hamkod").getBytes("UTF-8")),
-                new String(request.getParameter("hamad").getBytes("UTF-8")),
-                new String(request.getParameter("hambirim").getBytes("UTF-8")),
-                new String(request.getParameter("hamfirma").getBytes("UTF-8"))
-        );
-
-        List<Birim> birim = new ArrayList<Birim>();
-        birim = DAOFunctions.birimListeGetirTum();
         
-        List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
-
-        request.setAttribute("hammadde", hammadde);
-        request.setAttribute("birim", birim);
-        request.setAttribute("firma", firma);
-        request.getRequestDispatcher("hammadde.jsp").forward(request, response);
+        String islemid = request.getParameter("islemid");
+        if(islemid != null && islemid != "" ) {
+            
+            Integer result = 0;
+            switch (Integer.valueOf(islemid)) {
+                case 1:
+                    result = DAOFunctions.bilesenGuncelle(
+                                    new String(request.getParameter("bilesenid").getBytes("UTF-8")),
+                                    new String(request.getParameter("birimid").getBytes("UTF-8")),
+                                    new String(request.getParameter("firmaid").getBytes("UTF-8")),
+                                    new String(request.getParameter("bilesenkod").getBytes("UTF-8")),
+                                    new String(request.getParameter("bilesenad").getBytes("UTF-8")),
+                                    null /* -- null cevrimsuresi icin */
+                                    );
+                    break;
+                case 3:
+                    result = DAOFunctions.bilesenSil(new String(request.getParameter("bilesenid").getBytes("UTF-8")));
+                    break;
+            }
+            PrintWriter out = response.getWriter();
+            out.print(result);
+        }
+        else {
+            List<Bilesen> hammadde = new ArrayList<Bilesen>();
+            hammadde = DAOFunctions.hammaddeEkle(
+                    new String(request.getParameter("hamkod").getBytes("UTF-8")),
+                    new String(request.getParameter("hamad").getBytes("UTF-8")),
+                    new String(request.getParameter("hambirim").getBytes("UTF-8")),
+                    new String(request.getParameter("hamfirma").getBytes("UTF-8"))
+            );
+    
+            List<Firma> firma = new ArrayList<Firma>();
+            firma = DAOFunctions.firmaListeGetirTum();
+    
+            request.setAttribute("hammadde", hammadde);
+            request.setAttribute("firma", firma);
+            request.getRequestDispatcher("hammadde.jsp").forward(request, response);
+        }
     }
 
 }

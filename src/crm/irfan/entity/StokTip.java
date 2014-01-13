@@ -7,8 +7,7 @@ public enum StokTip {
     
     StokTip(Integer stokTipId, String stokTipAd) {
         this.stokTipId = stokTipId;
-        this.stokTipAd = stokTipAd;
-        
+        this.stokTipAd = stokTipAd;  
     }
     
     public Integer getStokTipId() {

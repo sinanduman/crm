@@ -13,7 +13,6 @@ import crm.irfan.entity.Bilesen;
 import crm.irfan.entity.BilesenTip;
 import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
-import crm.irfan.entity.Hammadde;
 import crm.irfan.entity.Stok;
 
 public class YariMamulStokServlet extends HttpServlet {
@@ -52,12 +51,17 @@ public class YariMamulStokServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        List<Hammadde> hammadde = new ArrayList<Hammadde>();
-        hammadde = DAOFunctions.hammaddeEkle(
-                new String(request.getParameter("hamkod").getBytes("UTF-8")),
-                new String(request.getParameter("hamad").getBytes("UTF-8")),
-                new String(request.getParameter("hambirim").getBytes("UTF-8")),
-                new String(request.getParameter("hamfirma").getBytes("UTF-8"))
+        List<Bilesen> yarimamul = new ArrayList<Bilesen>();
+        yarimamul = DAOFunctions.bilesenListeGetirTum( BilesenTip.YARIMAMUL );
+        
+        List<Stok> stok = new ArrayList<Stok>();
+        stok = DAOFunctions.stokEkle(
+                        BilesenTip.YARIMAMUL,
+                        request.getParameter("bilesenid"),
+                        request.getParameter("miktar"),
+                        request.getParameter("irsaliyeno"),
+                        request.getParameter("lot"),
+                        request.getParameter("not")
         );
 
         List<Birim> birim = new ArrayList<Birim>();
@@ -65,11 +69,12 @@ public class YariMamulStokServlet extends HttpServlet {
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum();
-
-        request.setAttribute("hammadde", hammadde);
+        
+        request.setAttribute("yarimamul", yarimamul);
         request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);
-        request.getRequestDispatcher("hammadde.jsp").forward(request, response);
+        request.setAttribute("stok", stok);
+        request.getRequestDispatcher("yarimamulstok.jsp").forward(request, response);
     }
 
 }

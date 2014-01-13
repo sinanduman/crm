@@ -23,12 +23,12 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="#">
-							<span class="fa fa-dot-circle-o text-primary"></span> Üretim Takibi</a>
-					</li>
-					<li>
 						<a href="/HelloWorld/uretimplan">
 							<span class="fa fa-dot-circle-o text-primary"></span> Üretim Planlama</a>
+					</li>
+					<li>
+						<a href="/HelloWorld/uretimtakip">
+							<span class="fa fa-dot-circle-o text-primary"></span> Üretim Takibi</a>
 					</li>
 					<!--<li class="divider"></li>
 					<li>
@@ -104,14 +104,8 @@ User user = (User) request.getSession().getAttribute("user");
 					</li>
 					<li>
 						<a href="/HelloWorld/makina">
-							<span class="fa fa-dot-circle-o text-warning"></span> Makina</a>
+							<span class="fa fa-dot-circle-o text-warning"></span> Makina/Bant</a>
 					</li>
-					<!--
-					<li>
-						<a href="/HelloWorld/bant">
-							<span class="fa fa-dot-circle-o text-warning"></span> Üretim Bandı</a>
-					</li>
-					-->
 					<li>
 						<a href="/HelloWorld/depo">
 							<span class="fa fa-dot-circle-o text-warning"></span> Depo</a>
@@ -138,13 +132,23 @@ User user = (User) request.getSession().getAttribute("user");
 						<a href="#">
 							<span class="fa fa-dot-circle-o text-danger"></span> Stok</a>
 					</li>
+				</ul>
+			</div>
+			<!-- /btn-group -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-sevk">Sevk</button>
+				<button type="button" class="btn btn-sevk dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+					<span class="sr-only">Toggle Dropdown</span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="#">
-							<span class="fa fa-dot-circle-o text-danger"></span> Makina</a>
+						<a href="/HelloWorld/irsaliye">
+							<span class="fa fa-dot-circle-o text-sevk"></span> İrsaliye Hazırla</a>
 					</li>
 					<li>
-						<a href="#">
-							<span class="fa fa-dot-circle-o text-danger"></span> Çalışan</a>
+						<a href="/HelloWorld/paket">
+							<span class="fa fa-dot-circle-o text-sevk"></span> Paketleri Onayla</a>
 					</li>
 				</ul>
 			</div>

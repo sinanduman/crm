@@ -38,7 +38,7 @@ public class MakinaServlet extends HttpServlet {
         List<Makina> makina = new ArrayList<Makina>();
         makina = DAOFunctions.makinaEkle(
                 new String(request.getParameter("makina_ad").getBytes("UTF-8")),
-                new String(request.getParameter("makina_kod").getBytes("UTF-8"))
+                new String(request.getParameter("makina_tip").getBytes("UTF-8"))
                 );
         request.setAttribute("makina", makina);
         request.getRequestDispatcher("makina.jsp").forward(request, response);
