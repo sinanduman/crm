@@ -26,7 +26,7 @@ mamulApp.controller('IrsaliyeCtrl',['$scope', function($scope){
 	}
 
 	$scope.saveIrsaliye = function() {
-		if(is_empty(document.irsaliyeform.miktar.value) || !is_number(document.irsaliyeform.miktar.value)){
+		if(!is_positive($.trim(document.irsaliyeform.miktar.value))){
 			alert("Miktar NÜMERİK bir değer olmalı!");
 			return;
 		}

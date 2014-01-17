@@ -2,11 +2,49 @@ function SiparisCntrl($scope) {
 	$scope.siparisJSON = siparis;
 	$scope.select = function() {
 		if($scope.siparisJSON.length>0){
-			return $scope.siparisJSON[$scope.siparisJSON.length-1].id;	
+			return $scope.siparisJSON[$scope.siparisJSON.length-1].id;
 		}
 		return 0;
 	};
+	$scope.savePlan = function(){
+		var baszaman  = document.uretimplanform.bassaat.value + document.uretimplanform.basdakika.value;
+		var bitzaman  = document.uretimplanform.bitsaat.value + document.uretimplanform.bitdakika.value;
+		if(!is_positive(document.uretimplanform.miktar.value)){
+			alert("Planlanan Miktar NÜMERİK bir değer olmalıdır!");
+			return false;
+		}
+		else if (baszaman == bitzaman ){
+			alert("Başlangıç ve Bitiş zamanları AYNI olamaz!");
+			return false;
+		}
+		else{
+			if(parseInt(baszaman,10) > parseInt(bitzaman,10)){
+				if(confirm("GECE çalışması olacak. Onaylıyor musun?")){
+					document.uretimplanform.submit();
+				}
+				else{
+					return false;
+				}
+			}
+			else{
+				document.uretimplanform.submit();
+			}
+		}
+	};
 }
+
+function SiparisEkleCtrl($scope) {
+	$scope.saveSiparis = function(){
+		if(!is_positive(document.siparisform.miktar.value)){
+			alert("Sipariş Miktarı NÜMERİK bir değer olmalıdır!");
+			return false;
+		}
+		else{
+			document.siparisform.submit();
+		}
+	};
+}
+
 function updateGo(url,id,action_form,islem){
 	var f_siparisplanid	= id;
 	var f_bilesen		= action_form.bilesen.value;
@@ -24,11 +62,20 @@ function updateGo(url,id,action_form,islem){
 	var f_not			= action_form.not.value;
 	var f_islemid		= islem;
 	var alert_mesaj		= f_siparisplanid + " Numaralı " + f_bilesen;
-	if(!is_empty(f_hatamiktar) && !is_number(f_hatamiktar)){
+	
+	if(!is_empty(f_hatamiktar) && !is_positive(f_hatamiktar)){
 		alert("Hata miktarı, eğer varsa, NÜMERİK olmalıdır!");
 		return false;
 	}
-	if (is_number(f_miktar)){
+	if(is_empty(f_hataid) && is_positive(f_hatamiktar)){
+		alert("Hata SEBEBİ seçmelisin!");
+		return false;
+	}
+	if(!is_empty(f_hataid) && !is_positive(f_hatamiktar)){
+		alert("Hata MİKTARI seçmelisin!");
+		return false;
+	}
+	if (is_positive(f_miktar)){
 		if(confirm(alert_mesaj +"\n\n" + "Üretim Plan bilgisini GÜNCELLEMEK istediğinden"+"\n\n"+"Emin misin?")){
 			$.ajax({
 				url: url,
@@ -85,7 +132,7 @@ function okGo(url,id,action_form,islem){
 	var f_bitdakika		= action_form.bitdakika.value;
 	var f_islemid		= islem;
 	var alert_mesaj		= f_siparisplanid + " Numaralı " + f_bilesen; 
-	if (is_number(f_miktar)){
+	if (is_positive(f_miktar)){
 		if(confirm(alert_mesaj +"\n\n" + "Plan bilgisinin TAMAMLANDIĞINDAN" +"\n\n" + "Emin misin?")){
 			$.ajax({
 				url: url,
@@ -136,7 +183,7 @@ function deleteGo(url,id,action_form,islem){
 	var f_bitdakika		= action_form.bitdakika.value;
 	var f_islemid		= islem;
 	var alert_mesaj		= f_siparisplanid + " Numaralı " + f_bilesen; 
-	if (is_number(f_miktar)){
+	if (is_positive(f_miktar)){
 		if(confirm(alert_mesaj +"\n\n" + "Plan bilgisini SİLMEK istediğinden" +"\n\n" + "Emin misin?")){
 			$.ajax({
 				url: url,

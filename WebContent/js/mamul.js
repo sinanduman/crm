@@ -29,7 +29,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		return show;
 	}
 	$scope.saveBilesen = function() {
-		if(!is_number(document.mamulform.miktar.value)){
+		if(!is_positive(document.mamulform.miktar.value)){
 			alert("Bileşen Miktarı NÜMERİK bir değer olmalı!");
 			return false;	
 		}
@@ -96,7 +96,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 				return false;
 			}
 			else{
-				if(!is_number(mamulcevrim)){
+				if(!is_positive(mamulcevrim)){
 					alert("Çevrimsüresi NÜMERİK bir değer olmalı!");
 					return false;
 				}
@@ -177,7 +177,7 @@ function updateMamulGo(url,id,action_form,islem){
 		alert("Mamül ADI, KODU veya ÇEVRİMSÜRESİ boş olamaz!");
 		return false;
 	}
-	if(!is_number(f_cevrimsure)){
+	if(!is_positive(f_cevrimsure)){
 		alert("Çevrimsüresi NÜMERİK bir değer olmalı!");
 		return false;
 	}

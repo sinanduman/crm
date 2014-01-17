@@ -14,7 +14,6 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -50,7 +49,7 @@
 				//alert($scope.adsoy + " : " + $scope.gorev);
 				console.log($scope.adsoy + ' : ' + $scope.gorev);
 				$.ajax({
-					url: '/HelloWorld/ajaxutils',
+					url: '/irfanpls/ajaxutils',
 					method: 'post',
 					crossDomain: true,
 					data: {username: $scope.adsoy, password: $scope.gorev},
@@ -138,8 +137,8 @@
                         <td><%= s.getBitistarih() %>
                         </td>
                         <td>
-                            <a href="/HelloWorld/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button></a>
-                            <a href="/HelloWorld/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button></a>
+                            <a href="/irfanpls/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button></a>
+                            <a href="/irfanpls/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button></a>
                         </td>
                     </tr>
                     <% } %>

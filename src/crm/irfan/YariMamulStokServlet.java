@@ -35,7 +35,7 @@ public class YariMamulStokServlet extends HttpServlet {
         firma = DAOFunctions.firmaListeGetirTum();
         
         List<Stok> stok = new ArrayList<Stok>();
-        stok = DAOFunctions.stokListeGetirTum();
+        stok = DAOFunctions.stokListeGetirTum(BilesenTip.YARIMAMUL);
         
         request.setAttribute("yarimamul", yarimamul);
         request.setAttribute("birim", birim);

@@ -17,9 +17,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
-	
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -48,7 +46,7 @@
         <label class="text-warning">Hammadde Ekleme</label>
     </div>
     <div class="row">
-        <form class="form-horizontal" role="form" method="post" action="/HelloWorld/mamul">
+        <form class="form-horizontal" role="form" method="post" action="/irfanpls/mamul">
             <div class="form-group">
                 <label for="mamulad" class="col-xs-3 control-label">Adı: </label>
 

@@ -14,8 +14,8 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
 	<link rel="stylesheet" href="css/siparis.css">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -45,38 +45,24 @@
 		<label class="text-danger">Yarımamül Stok Ekleme</label>
 	</div>
 	<script type="text/javascript">
-		function HammaddeEkleCtrl($scope, $http) {
-			$scope.hammaddeEkle = function () {
-				return false;
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/HelloWorld/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8", "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
+		function YarimamulEkleCtrl($scope) {
+			$scope.saveYarimamulStok = function(){
+				if(!is_positive(document.yarimamulstokform.miktar.value)){
+					alert("Miktar NÜMERİK bir değer olmalıdır!");
+					return false;
+				}
+				else if( is_empty(document.yarimamulstokform.irsaliyeno.value) ){
+					alert("İRSALİYE No boş olamaz!");
+					return false;
+				}
+				else{
+					document.yarimamulstokform.submit();
+				}
 			}
 		}
 	</script>
-	<div class="row" ng-controller="HammaddeEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" action="/HelloWorld/yarimamulstok">
+	<div class="row" ng-controller="YarimamulEkleCtrl">
+		<form class="form-horizontal" role="form" method="post" name="yarimamulstokform" action="/irfanpls/yarimamulstok">
 			
 			<div class="form-group">
 				<label for="bilesenid" class="col-xs-3 control-label">Yarımamül: </label>
@@ -97,19 +83,19 @@
 			<div class="form-group">
 				<label for="miktar" class="col-xs-3 control-label">Miktarı: </label>
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="miktar" ng-model="miktar" placeholder="Miktar (<%= BirimTip.ADET.ad() %>)">
+					<input type="text" class="form-control" name="miktar" id="miktar" ng-model="miktar" placeholder="Miktar (<%= BirimTip.ADET.ad() %>)">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="irsaliyeno" class="col-xs-3 control-label">İrsaliye No: </label>
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="irsaliyeno" ng-model="irsaliyeno" placeholder="İrsaliye">
+					<input type="text" class="form-control" name="irsaliyeno" id="irsaliyeno" ng-model="irsaliyeno" placeholder="İrsaliye No">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="lot" class="col-xs-3 control-label">LOT/Batch No: </label>
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="lot" ng-model="lot" placeholder="LOT/Batch No:">
+					<input type="text" class="form-control" name="lot" id="lot" ng-model="lot" placeholder="LOT/Batch No">
 				</div>
 			</div>
 			<div class="form-group">
@@ -122,7 +108,7 @@
 				<label class="col-xs-3 control-label">&nbsp;</label>
 
 				<div class="col-xs-8">
-					<button type="submit" class="btn btn-warning">Ekle</button>
+					<button type="button" class="btn btn-warning" ng-click="saveYarimamulStok()">Ekle</button>
 				</div>
 			</div>
 		</form>
@@ -135,7 +121,7 @@
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="js/siparis.js" type="text/javascript"></script>
+<script src="js/irfan.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
 </body>
 
 </html>

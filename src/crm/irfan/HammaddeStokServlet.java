@@ -35,7 +35,7 @@ public class HammaddeStokServlet extends HttpServlet {
         firma = DAOFunctions.firmaListeGetirTum();
         
         List<Stok> stok = new ArrayList<Stok>();
-        stok = DAOFunctions.stokListeGetirTum();
+        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDE);
         
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("birim", birim);

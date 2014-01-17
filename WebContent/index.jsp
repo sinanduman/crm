@@ -47,10 +47,10 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12">
-				<span style="text-align: center; color: indianred; font-size: 24px;">
+				<span style="text-align: center; color: chocolate; font-size: 24px;">
 					SESSION MESAJ SISTEMI GELISTIR <br>
-					<span style="color:indigo">HATA ve DURUS SEBEPLERI ARAYUZU, MODAL, HIDE GELISTIR </span><br>
-					<span style="color:chocolate">PAGING SISTEMI GELISTIR </span><br>
+					<!--span style="color:indigo">HATA ve DURUS SEBEPLERI ARAYUZU, MODAL, HIDE GELISTIR </span><br>
+					<span style="color:chocolate">PAGING SISTEMI GELISTIR </span><br-->
 				</span>
 			</div>
 		</div>

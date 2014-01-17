@@ -211,9 +211,9 @@
 						</td>						
 						<td>
 							<input class="icerikHref" type="button" value="Detay &darr;" onclick="javascript:hideshow('#tr_urtpl_detay<%=s.getId() %>');">
-							<input class="updateHref" type="button" id="updateButton<%=s.getId()%>" value="Gün. &rarr;" onclick="javascript:updateGo('/HelloWorld/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,1);">
-							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value="Tam. &rarr;" onclick="javascript:okGo('/HelloWorld/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
-							<input class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value="Sil &rarr;" onclick="javascript:deleteGo('/HelloWorld/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
+							<input class="updateHref" type="button" id="updateButton<%=s.getId()%>" value="Gün. &rarr;" onclick="javascript:updateGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,1);">
+							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value="Tam. &rarr;" onclick="javascript:okGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
+							<input class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value="Sil &rarr;" onclick="javascript:deleteGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
 						</td>
 									
 					</tr>
@@ -225,7 +225,7 @@
 										<label class="text-info">Hata Sebebi</label>
 										<select name="hataid" id="hataid" style="width:100px;" class="form-control" >
 										<% 
-												out.println("<option value='' selected>..Seçiniz..</option>");
+												out.println("<option value='' selected>...Seçiniz...</option>");
 										for (HataSebep hs : hatasebep) {
 											if ( hs.getId() == s.getHataid() ){
 												out.println("<option value='" + hs.getId() + "' selected>"+ hs.getAd() + " ("+ hs.getKod() +")</option>");
@@ -239,13 +239,13 @@
 									</td>
 									<td style="width:20%">
 										<label class="text-info">Hatalı Miktar</label>
-										<input type="text" name="hatamiktar" value="<%= s.getHatamiktar() %>" style="width:100px;" class="form-control" >
+										<input type="text" name="hatamiktar" id="hatamiktar"  value="<%= s.getHatamiktar() %>" style="width:100px;" class="form-control" >
 									</td>
 									<td style="width:20%">
 										<label class="text-info">Duruş Sebebi</label>
 										<select name="durusid" id="durusid" style="width:100px;" class="form-control" >
 										<% 
-												out.println("<option value='' selected>..Seçiniz..</option>");
+												out.println("<option value='' selected>...Seçiniz...</option>");
 										for (DurusSebep ds : durussebep) {
 											if ( ds.getId() == s.getDurusid() ){
 												out.println("<option value='" + ds.getId() + "' selected>"+ ds.getAd() + " ("+ ds.getKod() +")</option>");
@@ -268,6 +268,34 @@
 					</form>
 					<% } %>
 				</table>
+				
+				<%--For displaying Previous link except for the 1st page --%>
+				<%--For displaying Page numbers.
+			    The when condition does not display a link for the current page--%>
+			    <c:if test="${noofpages > 1}">
+				<table id="pagination">
+					<tr>
+						<c:if test="${currentpage != 1}">
+							<td class="link_diger"><a href="uretimtakip?page=${currentpage - 1}">Önceki</a></td>
+						</c:if>
+						<c:forEach begin="1" end="${noofpages}" var="i">
+							<c:choose>
+								<c:when test="${currentpage eq i}">
+									<td class="link_aktif">${i}</td>
+								</c:when>
+								<c:otherwise>
+									<td class="link_diger"><a href="uretimtakip?page=${i}">${i}</a></td>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<%--For displaying Next link --%>
+						<c:if test="${currentpage lt noofpages}">
+							<td class="link_diger"><a href="uretimtakip?page=${currentpage + 1}">Sonraki</a></td>
+						</c:if>
+					</tr>
+				</table>
+				</c:if>
+				
 			</div>
 		</div>
 	</div>

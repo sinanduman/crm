@@ -18,7 +18,6 @@
 
 <!-- Custom styles for this template -->
 <link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-<link rel="stylesheet" href="css/docs.css">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/font-awesome.css">
 <link rel="stylesheet" href="css/datepicker.css">
@@ -50,7 +49,7 @@
 	+ ",planmiktar:" + s.getPlanmiktar()
 	+ ",tarih:'" + s.getTarih()
 	+ "',bitistarih:'" + s.getBitistarih()
-	+ "',not:'" + s.getNot() + "'}");
+	+ "',not:'" + s.getNot().replaceAll("'", "") + "'}");
 		delimeter = ",";
 	}%>];
 </script>
@@ -79,7 +78,7 @@
 			<label class="text-danger">Günlük Üretim Planı</label>
 		</div>
 		<div class="row">
-			<form class="form-horizontal" role="form" method="post" action="/HelloWorld/uretimplan">
+			<form class="form-horizontal" role="form" name="uretimplanform" id="uretimplanform" method="post" action="/irfanpls/uretimplan">
 				<div class="form-group">
 					<label for="siparis" class="col-xs-3 control-label">Sipariş:</label>
 					<div class="col-xs-8">
@@ -206,13 +205,13 @@
 					<label class="col-xs-3 control-label">&nbsp;</label>
 
 					<div class="col-xs-8">
-						<button type="submit" class="btn btn-warning">Ekle</button>
+						<button type="button" class="btn btn-warning" ng-click="savePlan()">Ekle</button>
 					</div>
 				</div>
 			</form>
 		</div>
 		
-		<%
+	<%
 		List<SiparisPlan> siparisplan = (List<SiparisPlan>) request.getAttribute("siparisplan");
 		int sayac = 0;
 	%>
@@ -245,6 +244,34 @@
 					</tr>
 					<% } %>
 				</table>
+				
+				<%--For displaying Previous link except for the 1st page --%>
+				<%--For displaying Page numbers.
+			    The when condition does not display a link for the current page--%>
+			    <c:if test="${noofpages > 1}">
+				<table id="pagination">
+					<tr>
+						<c:if test="${currentpage != 1}">
+							<td class="link_diger"><a href="uretimplan?page=${currentpage - 1}">Önceki</a></td>
+						</c:if>
+						<c:forEach begin="1" end="${noofpages}" var="i">
+							<c:choose>
+								<c:when test="${currentpage eq i}">
+									<td class="link_aktif">${i}</td>
+								</c:when>
+								<c:otherwise>
+									<td class="link_diger"><a href="uretimplan?page=${i}">${i}</a></td>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<%--For displaying Next link --%>
+						<c:if test="${currentpage lt noofpages}">
+							<td class="link_diger"><a href="uretimplan?page=${currentpage + 1}">Sonraki</a></td>
+						</c:if>
+					</tr>
+				</table>
+				</c:if>
+				
 			</div>
 		</div>
 	</div>

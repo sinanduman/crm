@@ -15,7 +15,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/siparis.css">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -50,7 +49,7 @@
 				//alert($scope.adsoy + " : " + $scope.gorev);
 				console.log($scope.adsoy + ' : ' + $scope.gorev);
 				$.ajax({
-					url: '/HelloWorld/ajaxutils',
+					url: '/irfanpls/ajaxutils',
 					method: 'post',
 					crossDomain: true,
 					data: {username: $scope.adsoy, password: $scope.gorev},
@@ -76,7 +75,7 @@
 		}
 	</script>
 	<div class="row" ng-controller="CalisanEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" action="/HelloWorld/firma">
+		<form class="form-horizontal" role="form" method="post" action="/irfanpls/firma">
 			<div class="form-group">
 				<label for="adsoy" class="col-xs-3 control-label">Firma Ekleme: </label>
 

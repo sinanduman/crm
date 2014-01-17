@@ -15,7 +15,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -52,9 +51,9 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 			$scope.yarimamulEkle = function () {
 				return false;
 				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
+				//console.log($scope.adsoy + ' : ' + $scope.gorev);
 				$.ajax({
-					url: '/HelloWorld/ajaxutils',
+					url: '/irfanpls/ajaxutils',
 					method: 'post',
 					crossDomain: true,
 					data: {username: $scope.adsoy, password: $scope.gorev},
@@ -80,7 +79,7 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 		}
 	</script>
 	<div class="row" ng-controller="YariMamulEkleCtrl">
-		<form class="form-horizontal" role="form" name="yarimamul_form"  method="post" action="/HelloWorld/yarimamul">
+		<form class="form-horizontal" role="form" name="yarimamul_form"  method="post" action="/irfanpls/yarimamul">
 			<div class="form-group">
 				<label for="yarimamulkod" class="col-xs-3 control-label">Yarımamül Kodu: </label>
 
@@ -203,8 +202,8 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 							</select>
 						</td>
 						<td>
-							<input class="updateHref" type="button" id="updateButton<%=y.getId()%>" value="Gün. &rarr;" onclick="javascript:updateYarimamulGo('/HelloWorld/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,1);">
-							<input class="deleteHref" type="button" id="deleteButton<%=y.getId()%>" value="Sil &rarr;" onclick="javascript:deleteYarimamulGo('/HelloWorld/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,3);">
+							<input class="updateHref" type="button" id="updateButton<%=y.getId()%>" value="Gün. &rarr;" onclick="javascript:updateYarimamulGo('/irfanpls/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,1);">
+							<input class="deleteHref" type="button" id="deleteButton<%=y.getId()%>" value="Sil &rarr;" onclick="javascript:deleteYarimamulGo('/irfanpls/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,3);">
 						</td>
 					</tr>
 					</form>

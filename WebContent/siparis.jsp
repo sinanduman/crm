@@ -14,7 +14,8 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/docs.css">
+	<link rel="stylesheet" href="css/irfan.css">
+	<link rel="stylesheet" href="css/siparis.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -43,39 +44,8 @@
 	<div class="row text-warning" style="text-align:center;">
 		<label class="text-danger">Sipariş Alma</label>
 	</div>
-	<script type="text/javascript">
-		function HammaddeEkleCtrl($scope, $http) {
-			$scope.hammaddeEkle = function () {
-				return false;
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/HelloWorld/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8", "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
-			}
-		}
-	</script>
-	<div class="row" ng-controller="HammaddeEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" action="/HelloWorld/siparis">
+	<div class="row" ng-controller="SiparisEkleCtrl">
+		<form class="form-horizontal" role="form" name="siparisform"  id="siparisform" method="post" action="/irfanpls/siparis">
 			
 			<div class="form-group">
 				<label for="bilesen" class="col-xs-3 control-label">Mamül: </label>
@@ -97,7 +67,7 @@
 				<label for="miktar" class="col-xs-3 control-label">Miktarı: </label>
 
 				<div class="col-xs-8">
-					<input type="text" class="form-control" name="miktar" ng-model="miktar" placeholder="Miktar">
+					<input type="text" class="form-control" name="miktar" id="miktar" ng-model="miktar" placeholder="Miktar">
 				</div>
 			</div>
 			<div class="form-group">
@@ -110,7 +80,7 @@
 				<label class="col-xs-3 control-label">&nbsp;</label>
 
 				<div class="col-xs-8">
-					<button type="submit" class="btn btn-warning">Ekle</button>
+					<button type="button" class="btn btn-warning" ng-click="saveSiparis()">Ekle</button>
 				</div>
 			</div>
 		</form>
@@ -122,70 +92,68 @@
 	if ( result.value() == ResultTip.NORESULT.value() ){
 	%>
 	<div class="row">
-        <div class="container">
-        </div>
-     </div>
-	<%    
+		<div class="container">
+		</div>
+	 </div>
+	<%
 	}
 	else if ( result.value() == ResultTip.OK.value() ){
 	%>
 	<div class="row">
 		<div class="col-sm-3"></div>
 		<div class="alert alert-success">
-        Sipariş başarıyla alındı.
-        </div>
-        <div class="col-sm-1"></div>
-     </div>
-	<%    
+		Sipariş başarıyla alındı.
+		</div>
+		<div class="col-sm-1"></div>
+	 </div>
+	<%	
 	}
 	else{
 	%>
 	<div class="row">
 		<div class="col-sm-3"></div>
-        <div class="alert alert-danger">
-        Sipariş alınırken hata oldu!...
-        </div>
-        <div class="col-sm-1"></div>
-     </div>
+		<div class="alert alert-danger">
+		Sipariş alınırken hata oldu!...
+		</div>
+		<div class="col-sm-1"></div>
+	 </div>
 	<%
 	}
 	%>
 
-	<div class="row">
-        <div class="container">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-8">
-                <table class="table table-striped table-bordered">
-                    <% int sayac = 0; %>
-                    <% if (result.value() != ResultTip.NORESULT.value()) { %>                    
-                    <% for (Siparis s : siparis) { %>
-                    <% if (sayac++ == 0) { %>
-                    <tr>
-                        <th><label>Mamul Adi</label></th>
-                        <th><label>Sipariş Adedi</label></th>
-                        <th><label>Sipariş Tarihi</label></th>
-                        <th><label>Aksiyon</label></th>
-                    </tr>
-                    <% } %>
-                    <tr>
-                        <td><%= s.getBilesenad() %>
-                        </td>
-                        <td><%= s.getMiktar() %>
-                        </td>
-                        <td><%= s.getTarih() %>
-                        </td>
-                        <td>
-                            <a href="/HelloWorld/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-ok btn btn-info"></button></a>
-                            <a href="/HelloWorld/siparis/<%= s.getId().toString() %>"><button type="submit" class="glyphicon glyphicon-remove btn btn-danger"></button></a>
-                        </td>
-                    </tr>
-                    <% } %>
-                    <% } %>
-                </table>
-            </div>
-            <div class="col-sm-1"></div>
-        </div>
-    </div>
+	<div class="row" style="font-size:12px;">
+		<div class="container">
+			<div class="col-sm-3"></div>
+			<div class="col-sm-8">
+				<table class="tableplan">
+					<% int sayac = 0; %>
+					<% if (result.value() != ResultTip.NORESULT.value()) { %>					
+					<% for (Siparis s : siparis) { %>
+					<% if (sayac++ == 0) { %>
+					<tr>
+						<td><label class="text-info">Mamül Adı</label></td>
+						<td><label class="text-info">Sipariş Adedi</label></td>
+						<td><label class="text-info">Sipariş Tarihi</label></td>
+						<td><label class="text-info">Not</label></td>
+					</tr>
+					<% } %>
+					<tr>
+						<td><%= s.getBilesenad() %>
+						</td>
+						<td><%= s.getMiktar() %>
+						</td>
+						<td><%= s.getTarih() %>
+						</td>
+						<td><%= s.getNot() %>
+						</td>
+					</tr>
+					<% } %>
+					<% } %>
+				</table>
+			</div>
+			<div class="col-sm-1"></div>
+		</div>
+	</div>
    
 </div>
 
@@ -195,6 +163,7 @@
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/irfan.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
+<script src="js/siparis.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
 </body>
 
 </html>

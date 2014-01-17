@@ -15,7 +15,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -51,7 +50,7 @@
 				//alert($scope.adsoy + " : " + $scope.gorev);
 				console.log($scope.adsoy + ' : ' + $scope.gorev);
 				$.ajax({
-					url: '/HelloWorld/ajaxutils',
+					url: '/irfanpls/ajaxutils',
 					method: 'post',
 					crossDomain: true,
 					data: {username: $scope.adsoy, password: $scope.gorev},
@@ -146,8 +145,8 @@
 							}
 							%>
 							<% %>
-							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value=" Tam. &rarr; " onclick="javascript:okGo('/HelloWorld/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
-							<input <%= disabled %> class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value=" Sil &rarr; " onclick="javascript:deleteGo('/HelloWorld/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
+							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value=" Tam. &rarr; " onclick="javascript:okGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
+							<input <%= disabled %> class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value=" Sil &rarr; " onclick="javascript:deleteGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
 						</td>
 					</tr>
 					<% } %>
