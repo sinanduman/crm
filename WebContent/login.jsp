@@ -16,7 +16,6 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 
 <!-- Custom styles for this template -->
-<link rel="stylesheet" href="css/docs.css">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/signin.css">
 <link rel="stylesheet" href="css/font-awesome.css">

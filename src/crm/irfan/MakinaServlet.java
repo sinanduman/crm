@@ -22,9 +22,20 @@ public class MakinaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         List<Makina> makina = new ArrayList<Makina>();
-        makina = DAOFunctions.makinaListeGetirTum();
+        
+        
+        int totalrecord = DAOFunctions.recordCount("makina");
+        int page = 1;
+        if(request.getParameter("page") != null)
+            page = Integer.parseInt(request.getParameter("page"));
+        makina = DAOFunctions.makinaListeGetirTum(page);
+        
+        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
 
         request.setAttribute("makina", makina);
+        request.setAttribute("totalrecord", totalrecord);
+        request.setAttribute("currentpage", page);
+        request.setAttribute("noofpages", noofpages);
         request.getRequestDispatcher("makina.jsp").forward(request, response);
     }
 

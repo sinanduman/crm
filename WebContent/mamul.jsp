@@ -16,7 +16,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 	
@@ -53,7 +52,7 @@
 		<label class="text-danger">Mamül Ekleme</label>
 	</div>
 	<div class="row" >
-		<form class="form-horizontal" role="form" name="mamulform" method="post" action="/HelloWorld/mamul">
+		<form class="form-horizontal" role="form" name="mamulform" method="post" action="/irfanpls/mamul">
 			
 			<div class="form-group">
 				<label for="mamulkod" class="col-xs-3 control-label">Mamül Kodu: </label>
@@ -250,8 +249,8 @@
 						</td>
 						<td>
 							<input class="icerikHref" type="button" value="İçerik &darr;" onclick="javascript:hideshow('#tr_mam_detay<%= m.getId() %>');">
-							<input class="updateHref" type="button" id="updateButton<%=m.getId()%>" value="Gün. &rarr;" onclick="javascript:updateMamulGo('/HelloWorld/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);">
-							<input class="deleteHref" type="button" id="deleteButton<%=m.getId()%>" value="Sil &rarr;" onclick="javascript:deleteMamulGo('/HelloWorld/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);">
+							<input class="updateHref" type="button" id="updateButton<%=m.getId()%>" value="Gün. &rarr;" onclick="javascript:updateMamulGo('/irfanpls/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);">
+							<input class="deleteHref" type="button" id="deleteButton<%=m.getId()%>" value="Sil &rarr;" onclick="javascript:deleteMamulGo('/irfanpls/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);">
 						</td>
 					</tr>
 					<tr id="tr_mam_detay<%= m.getId() %>" style="display:none;">

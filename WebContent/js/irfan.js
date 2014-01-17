@@ -1,9 +1,16 @@
-var numpattern	= /^[1-9][0-9]*$/;
+var numpattern	= /^[0-9][0-9]*$/;
+var numpattern2	= /^[1-9][0-9]*$/; /* Sayilabilir miktar icin */
 function is_number(formval){
 	if($.trim(formval)==""){
 		return false;
 	}
-	return formval.match(numpattern);
+	return numpattern.test(formval);
+}
+function is_positive(formval){
+	if($.trim(formval)==""){
+		return false;
+	}
+	return numpattern2.test(formval);
 }
 function is_empty(formval) {
 	if ($.trim(formval) == ""){

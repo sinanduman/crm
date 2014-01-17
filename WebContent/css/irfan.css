@@ -26,3 +26,52 @@
 	vertical-align: top;
 	padding: 5px 2px 5px 2px;
 }
+
+/* Pagination */
+
+#pagination {
+	border: 1px solid darkkhaki;
+	margin-top: 5px;
+	margin-bottom:5px;
+	text-align: center;
+}
+#pagination td.link_diger{
+	color: white;
+	font-weight: bold;
+	background-color: darkkhaki;
+	padding: 4px 8px;
+}
+#pagination td a{
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#pagination td.link_aktif {
+	color: darkkhaki;
+	font-weight: bold;
+	/*  background-color: #E1DDBC; */
+	background-color: #E1DDBC;
+	padding: 4px 8px;
+}
+
+#pagination input[type=button] {
+	padding: 4px 7px;
+	text-decoration: none;
+	font-size: 12px;
+	background:goldenrod;
+	color:#fff;
+	border:2px solid khaki;
+}
+#pagination input[type=button].nolink {
+	padding: 4px 7px;
+	text-decoration: none;
+	font-size: 12px;
+	background:darkkhaki;
+	color:#fff;
+	border:2px solid khaki;
+}
+#pagination input[type=button]:hover {
+	font-weight: normal;
+	background: darkkhaki;
+}

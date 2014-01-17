@@ -34,7 +34,7 @@ public class MamulStokServlet extends HttpServlet {
         firma = DAOFunctions.firmaListeGetirTum();
         
         List<Stok> stok = new ArrayList<Stok>();
-        stok = DAOFunctions.stokListeGetirTum();
+        stok = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL);
         
         request.setAttribute("mamul", mamul);
         request.setAttribute("birim", birim);
@@ -67,7 +67,7 @@ public class MamulStokServlet extends HttpServlet {
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum();
-        
+                
         request.setAttribute("mamul", mamul);
         request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);

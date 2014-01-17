@@ -15,7 +15,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -48,7 +47,7 @@
 		<label class="text-danger">Hammadde Ekleme</label>
 	</div>
 	<div class="row" ng-controller="HammaddeEkleCtrl">
-		<form class="form-horizontal" role="form" name="hammadde_form" method="post" action="/HelloWorld/hammadde">
+		<form class="form-horizontal" role="form" name="hammadde_form" method="post" action="/irfanpls/hammadde">
 			<div class="form-group">
 				<label for="hamkod" class="col-xs-3 control-label">Hammadde Kodu: </label>
 
@@ -169,8 +168,8 @@
 							</select>						
 						</td>
 						<td>
-							<input class="updateHref" type="button" id="updateButton<%=h.getId()%>" value="Gün. &rarr;" onclick="javascript:updateHammaddeGo('/HelloWorld/hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,1);">
-							<input class="deleteHref" type="button" id="deleteButton<%=h.getId()%>" value="Sil &rarr;" onclick="javascript:deleteHammaddeGo('/HelloWorld/hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,3);">
+							<input class="updateHref" type="button" id="updateButton<%=h.getId()%>" value="Gün. &rarr;" onclick="javascript:updateHammaddeGo('/irfanpls/hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,1);">
+							<input class="deleteHref" type="button" id="deleteButton<%=h.getId()%>" value="Sil &rarr;" onclick="javascript:deleteHammaddeGo('/irfanpls/hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,3);">
 						</td>
 					</tr>
 					</form>

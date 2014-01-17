@@ -30,7 +30,7 @@ public class UretimPlanServlet extends HttpServlet {
         birim = DAOFunctions.birimListeGetirTum();
         
         List<Makina> makina = new ArrayList<Makina>();
-        makina = DAOFunctions.makinaListeGetirTum();
+        makina = DAOFunctions.makinaListeGetirTum(0);
         
         List<Calisan> calisan = new ArrayList<Calisan>();
         calisan = DAOFunctions.calisanListeGetirTum();
@@ -41,8 +41,16 @@ public class UretimPlanServlet extends HttpServlet {
         List<Siparis> siparis = new ArrayList<Siparis>();
         siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.BEKLEYEN);
         
+        int totalrecord = DAOFunctions.recordCount("siparisplan");
+        int page = 1;
+        if(request.getParameter("page") != null)
+            page = Integer.parseInt(request.getParameter("page"));
+        
+        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+        
         List<SiparisPlan> siparisplan = new ArrayList<SiparisPlan>();
-        siparisplan  = DAOFunctions.siparisPlanListeGetirTum(SiparisTip.BEKLEYEN);
+        siparisplan  = DAOFunctions.siparisPlanListeGetirTum(SiparisTip.BEKLEYEN,page);
+        
         
         request.setAttribute("birim", birim);
         request.setAttribute("makina", makina);
@@ -50,6 +58,9 @@ public class UretimPlanServlet extends HttpServlet {
         request.setAttribute("firma", firma);
         request.setAttribute("siparis", siparis);
         request.setAttribute("siparisplan", siparisplan);
+        request.setAttribute("totalrecord", totalrecord);
+        request.setAttribute("currentpage", page);
+        request.setAttribute("noofpages", noofpages);
         request.getRequestDispatcher("uretimplan.jsp").forward(request, response);
     }
     
@@ -78,7 +89,7 @@ public class UretimPlanServlet extends HttpServlet {
         birim = DAOFunctions.birimListeGetirTum();
         
         List<Makina> makina = new ArrayList<Makina>();
-        makina = DAOFunctions.makinaListeGetirTum();
+        makina = DAOFunctions.makinaListeGetirTum(0);
         
         List<Calisan> calisan = new ArrayList<Calisan>();
         calisan = DAOFunctions.calisanListeGetirTum();
@@ -89,12 +100,26 @@ public class UretimPlanServlet extends HttpServlet {
         List<Siparis> siparis = new ArrayList<Siparis>();
         siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.BEKLEYEN);
         
+
+
+        int totalrecord = DAOFunctions.recordCount("siparisplan");
+        int page = 1;
+        if(request.getParameter("page") != null)
+            page = Integer.parseInt(request.getParameter("page"));
+        
+        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+        
+        siparisplan  = DAOFunctions.siparisPlanListeGetirTum(SiparisTip.BEKLEYEN,page);
+        
         request.setAttribute("birim", birim);
         request.setAttribute("makina", makina);
         request.setAttribute("calisan", calisan);
         request.setAttribute("firma", firma);
         request.setAttribute("siparis", siparis);
         request.setAttribute("siparisplan", siparisplan);
+        request.setAttribute("totalrecord", totalrecord);
+        request.setAttribute("currentpage", page);
+        request.setAttribute("noofpages", noofpages);
         request.getRequestDispatcher("uretimplan.jsp").forward(request, response);
     }
     

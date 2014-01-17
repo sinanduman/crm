@@ -16,7 +16,6 @@
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/docs.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 	
@@ -78,7 +77,7 @@
 		<label class="text-danger">Sevk Edilecek Mamül</label>
 	</div>
 	<div class="row" >
-		<form class="form-horizontal" role="form" name="irsaliyeform" method="post" action="/HelloWorld/irsaliye">
+		<form class="form-horizontal" role="form" name="irsaliyeform" method="post" action="/irfanpls/irsaliye">
 			
 			<div class="form-group">
 				<label for="mamulid" class="col-xs-3 control-label">Mamül adı: </label>
@@ -174,7 +173,7 @@
 						<td><%= i.getGonderimtarihi() %></td>
 						<td>
 							<input class="icerikHref" type="button" value="İçerik &darr;" onclick="javascript:hideshow('#tr_irs_detay<%= i.getId() %>');">
-							<input class="deleteHref" type="button" value="Sil &rarr;" onclick="javascript:deleteGoIrsaliyePaket('/HelloWorld/irsaliye',<%=i.getId()%>,<%=i.getIrsaliyeno()%>,3);">
+							<input class="deleteHref" type="button" value="Sil &rarr;" onclick="javascript:deleteGoIrsaliyePaket('/irfanpls/irsaliye',<%=i.getId()%>,<%=i.getIrsaliyeno()%>,3);">
 						</td>
 					</tr>
 					<tr id="tr_irs_detay<%= i.getId() %>" style="display:none;">

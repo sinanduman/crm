@@ -14,8 +14,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/siparis.css">
-	<link rel="stylesheet" href="css/docs.css">
+	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -44,39 +43,9 @@
 	<div class="row text-danger" style="text-align:center;">
 		<label class="text-danger">Makina/Bant Ekleme</label>
 	</div>
-	<script type="text/javascript">
-		function CalisanEkleCtrl($scope, $http) {
-			$scope.calisanEkle = function () {
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/HelloWorld/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8",
-						"Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
-			}
-		}
-	</script>
+
 	<div class="row" ng-controller="CalisanEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" action="/HelloWorld/makina">
+		<form class="form-horizontal" role="form" method="post" action="/irfanpls/makina">
 			<div class="form-group">
 				<label for="makina_ad" class="col-xs-3 control-label">Makina/Bant Adı: </label>
 				<div class="col-xs-8">
@@ -119,23 +88,51 @@
 					<% for (Makina m : makina) { %>
 					<% if (sayac++ == 0) { %>
 					<tr>
+						<td><label class="text-success">No</label></td>
 						<td><label class="text-success">Makina/Bant Adı</label></td>
 						<td><label class="text-success">Makina Tipi</label></td>
 						<td><label class="text-success">Aksiyon</label></td>
 					</tr>
 					<% } %>
 					<tr>
-						<td><%= m.getMakinaad() %>
-						</td>
-						<td><%= m.getMakinatipad() %>
-						</td>
+						<td><%= m.getId() %></td>
+						<td><%= m.getMakinaad() %></td>
+						<td><%= m.getMakinatipad() %></td>
 						<td>
-							<input class="updateHref" type="button" value="Guncelle &rarr;">
+							<input class="updateHref" type="button" value="Gün. &rarr;">
 							<input class="deleteHref" type="button" value="Sil &rarr;">
 						</td>
 					</tr>
 					<% } %>
 				</table>
+				
+				<%--For displaying Previous link except for the 1st page --%>
+				<%--For displaying Page numbers.
+			    The when condition does not display a link for the current page--%>
+			    <c:if test="${noofpages > 1}">
+				<table id="pagination">
+					<tr>
+						<c:if test="${currentpage != 1}">
+							<td class="link_diger"><a href="makina?page=${currentpage - 1}">Önceki</a></td>
+						</c:if>
+						<c:forEach begin="1" end="${noofpages}" var="i">
+							<c:choose>
+								<c:when test="${currentpage eq i}">
+									<td class="link_aktif">${i}</td>
+								</c:when>
+								<c:otherwise>
+									<td class="link_diger"><a href="makina?page=${i}">${i}</a></td>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<%--For displaying Next link --%>
+						<c:if test="${currentpage lt noofpages}">
+							<td class="link_diger"><a href="makina?page=${currentpage + 1}">Sonraki</a></td>
+						</c:if>
+					</tr>
+				</table>
+				</c:if>
+
 			</div>
 			<div class="col-sm-1"></div>
 		</div>
@@ -149,6 +146,8 @@
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/irfan.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
+
 </body>
 
 </html>

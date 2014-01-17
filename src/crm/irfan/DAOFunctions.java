@@ -380,12 +380,17 @@ public class DAOFunctions {
         return temp;
     }
     
-    protected static List<Makina> makinaListeGetirTum() {
+    protected static List<Makina> makinaListeGetirTum(Integer offset) {
         List<Makina> temp = new ArrayList<Makina>();
         Connection conn = ConnectionManager.getConnection();
+       
+        String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
         
-        String searchQuery = "select m.*, mt.ad makinatipad from makina m join makinatip mt on mt.id=m.makinatipid " 
-                        + "order by makinatipid, m.ad";
+        String searchQuery = "select m.*, mt.ad makinatipad "
+                        + "from makina m join makinatip mt on mt.id=m.makinatipid " 
+                        //+ "order by makinatipid, m.ad "
+                        + "order by m.id "
+                        + pageFilter;
         
         // connect to DB
         PreparedStatement pstmt = null;
@@ -620,17 +625,10 @@ public class DAOFunctions {
         return temp;
     }
     
-    protected static List<Stok> stokListeGetirTum() {
+    protected static List<Stok> stokListeGetirTum(BilesenTip bilesentip) {
         List<Stok> temp = new ArrayList<Stok>();
         Connection conn = ConnectionManager.getConnection();
         
-        /*
-         * String searchQuery = "select h.*, b.ad birimad, f.ad firmaad " +
-         * "from hammadde h " + "join birim b on h.birimid=b.id " +
-         * "join firma f on h.firmaid=f.id " + "order by h.ad";
-         */
-
-
         String searchQuery = "select s.*, "
                         + "b.ad bilesenad, b.kod bilesenkod, "
                         + "bt.id bilesentipid, bt.ad bilesentipad, "
@@ -640,13 +638,15 @@ public class DAOFunctions {
                         + "join bilesen b on b.id=s.bilesenid "
                         + "join bilesentip bt on bt.id = b.bilesentipid "
                         + "join birim br on br.id = b.birimid "
-                        + "join firma f on f.id = b.firmaid";
+                        + "join firma f on f.id = b.firmaid "
+                        + "where bt.id = ? ";
         
         // connect to DB
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = conn.prepareStatement(searchQuery);
+            pstmt.setInt(1, bilesentip.value());
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 temp.add(new Stok(
@@ -767,11 +767,13 @@ public class DAOFunctions {
         List<Bilesen> temp = new ArrayList<Bilesen>();
         Connection conn = ConnectionManager.getConnection();
         
-        String searchQuery = "select b.*, bt.ad bilesentipad, f.ad firmaad, bm.ad birimad from bilesen b "
-                        + "join bilesentip bt on bt.id = b.bilesentipid " + "left join birim bm on bm.id = b.birimid "
-                        + "join firma f on f.id = b.firmaid " + "where bilesentipid = ? order by b.ad";
+        String searchQuery = "select b.*, bt.ad bilesentipad, f.ad firmaad, bm.ad birimad "
+                        + "from bilesen b "
+                        + "join bilesentip bt on bt.id = b.bilesentipid " 
+                        + "left join birim bm on bm.id = b.birimid "
+                        + "join firma f on f.id = b.firmaid " 
+                        + "where bilesentipid = ? order by b.ad";
         
-        //System.out.println("bilesenTip == " + bilesenTip.name());
         // connect to DB
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -781,7 +783,6 @@ public class DAOFunctions {
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-                
                 temp.add(new Bilesen(
                                 rs.getInt("id"), 
                                 rs.getString("ad"), 
@@ -1008,9 +1009,11 @@ public class DAOFunctions {
     }
     
     
-    protected static List<SiparisPlan> siparisPlanListeGetirTum(SiparisTip siparistip) {
+    protected static List<SiparisPlan> siparisPlanListeGetirTum(SiparisTip siparistip, int offset) {
         List<SiparisPlan> temp = new ArrayList<SiparisPlan>();
         Connection conn = ConnectionManager.getConnection();
+        
+        String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
         
         String searchQuery = "select sp.*,b.ad bilesenad, m.ad makinaad, c.adsoy calisanad from siparisplan sp "
                         + "join siparis s on s.id=sp.siparisid " 
@@ -1018,7 +1021,8 @@ public class DAOFunctions {
                         + "join makina m on m.id=sp.makinaid " 
                         + "join calisan c on c.id=sp.calisanid "
                         + "where sp.tamamlandi=? "
-                        + "order by s.id,sp.id";
+                        + "order by s.id, sp.id "
+                        + pageFilter;
         // connect to DB
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -1101,7 +1105,7 @@ public class DAOFunctions {
                 pstmt.setInt(7, Integer.valueOf(hataid));
             else 
                 pstmt.setNull(7, Types.INTEGER);
-            if (hatamiktar!=null && hatamiktar.trim()!="") 
+            if (hatamiktar!=null && (hatamiktar.trim()!="" && Integer.valueOf(hatamiktar.trim())!=0) ) 
                 pstmt.setInt(8, Integer.valueOf(hatamiktar));
             else 
                 pstmt.setNull(8, Types.INTEGER);
@@ -1506,6 +1510,38 @@ public class DAOFunctions {
             pstmt.setInt(6, Integer.valueOf(bilesenid));
             
             result = pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null && !pstmt.isClosed()) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
+    public static int recordCount(String tablename) {
+        int result = 0;
+        Connection conn = ConnectionManager.getConnection();
+        String selectQuery = "select count(*) from " + tablename;
+        
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(selectQuery);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();

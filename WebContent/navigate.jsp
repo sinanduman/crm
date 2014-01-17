@@ -6,8 +6,8 @@ User user = (User) request.getSession().getAttribute("user");
 %>
 <div class="container">
 
-	<div class="container text-center" style="margin:30px;">
-		<a href="/HelloWorld"><img alt="İrfan Plastik" src="img/ip_logo_mini.png"></a>
+	<div class="container text-center" style="margin:10px 30px 20px 30px;">
+		<a href="/irfanpls/"><img alt="İrfan Plastik" src="img/ip_logo_mini.png"></a>
 	</div>
 
 
@@ -23,11 +23,11 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/uretimplan">
+						<a href="/irfanpls/uretimplan">
 							<span class="fa fa-dot-circle-o text-primary"></span> Üretim Planlama</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/uretimtakip">
+						<a href="/irfanpls/uretimtakip">
 							<span class="fa fa-dot-circle-o text-primary"></span> Üretim Takibi</a>
 					</li>
 					<!--<li class="divider"></li>
@@ -46,14 +46,14 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/siparis"><span class="fa fa-dot-circle-o text-info"></span> Yeni Sipariş</a>
+						<a href="/irfanpls/siparis"><span class="fa fa-dot-circle-o text-info"></span> Yeni Sipariş</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/bekleyensiparis">
+						<a href="/irfanpls/bekleyensiparis">
 							<span class="fa fa-dot-circle-o text-info"></span> Üretimde/Bekleyen Siparişler</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/tamamlanansiparis">
+						<a href="/irfanpls/tamamlanansiparis">
 							<span class="fa fa-dot-circle-o text-info"></span> Tamamlanan Siparişler</a>
 					</li>
 				</ul>
@@ -67,13 +67,13 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/hammaddestok"><span class="fa fa-dot-circle-o text-success"></span> Hammadde</a>
+						<a href="/irfanpls/hammaddestok"><span class="fa fa-dot-circle-o text-success"></span> Hammadde</a>
 					</li>					
 					<li>
-						<a href="/HelloWorld/yarimamulstok"><span class="fa fa-dot-circle-o text-success"></span> Yarı Mamül</a>
+						<a href="/irfanpls/yarimamulstok"><span class="fa fa-dot-circle-o text-success"></span> Yarı Mamül</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/mamulstok"><span class="fa fa-dot-circle-o text-success"></span> Mamül</a>
+						<a href="/irfanpls/mamulstok"><span class="fa fa-dot-circle-o text-success"></span> Mamül</a>
 					</li>
 				</ul>
 			</div>			
@@ -86,32 +86,32 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/hammadde">
+						<a href="/irfanpls/hammadde">
 							<span class="fa fa-dot-circle-o text-warning"></span> Hammadde</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/yarimamul">
+						<a href="/irfanpls/yarimamul">
 							<span class="fa fa-dot-circle-o text-warning"></span> Yarı Mamül</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/mamul">
+						<a href="/irfanpls/mamul">
 							<span class="fa fa-dot-circle-o text-warning"></span> Mamül</a>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="/HelloWorld/calisan">
+						<a href="/irfanpls/calisan">
 							<span class="fa fa-dot-circle-o text-warning"></span> Çalışan</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/makina">
+						<a href="/irfanpls/makina">
 							<span class="fa fa-dot-circle-o text-warning"></span> Makina/Bant</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/depo">
+						<a href="/irfanpls/depo">
 							<span class="fa fa-dot-circle-o text-warning"></span> Depo</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/firma">
+						<a href="/irfanpls/firma">
 							<span class="fa fa-dot-circle-o text-warning"></span> Firma</a>
 					</li>
 				</ul>
@@ -143,11 +143,11 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/irsaliye">
+						<a href="/irfanpls/irsaliye">
 							<span class="fa fa-dot-circle-o text-sevk"></span> İrsaliye Hazırla</a>
 					</li>
 					<li>
-						<a href="/HelloWorld/paket">
+						<a href="/irfanpls/paket">
 							<span class="fa fa-dot-circle-o text-sevk"></span> Paketleri Onayla</a>
 					</li>
 				</ul>
@@ -162,7 +162,7 @@ User user = (User) request.getSession().getAttribute("user");
 				</button>
 				<ul class="dropdown-menu" role="menu">
 					<li>
-						<a href="/HelloWorld/logout">
+						<a href="/irfanpls/logout">
 							<span class="fa fa-sign-out" style="color:darkkhaki;"></span> Çıkış</a>
 					</li>
 				</ul>
