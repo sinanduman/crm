@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context docBase="irfanpls" path="/irfanpls" reloadable="true">
+      <Resource name="jdbc/postgres" auth="Container" type="javax.sql.DataSource"
+          username="postgres"
+          password="postgres"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/crm"
+          maxActive="20"
+          maxIdle="10"
+          validationQuery="select 1" />
+</Context>
+
+<!-- Context docBase="irfanpls" path="/irfanpls" reloadable="true" >
+      <Resource name="jdbc/postgres" auth="Container" type="javax.sql.DataSource"
+          username="ufd33167b603e4d1aa744de0bba314096"
+          password="p6512732dc57f4e1d9c00d69e6a3d2f1d"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://10.0.60.253:5432/d7fd7f2d9538345908607109fc46788a7"
+          maxActive="20"
+          maxIdle="10"
+          validationQuery="select 1" />
+</Context-->
+
+
+<!-- Context docBase="irfanpls" path="/irfanpls" reloadable="true" >
+      <Resource name="jdbc/postgres" auth="Container" type="javax.sql.DataSource"
+          username="udb33ed01e2f2466da5f148fe09b6ef58"
+          password="pe83fe22dd7904f6c84a285807fbcd2d4"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://127.0.0.1:10000/d7fd7f2d9538345908607109fc46788a7"
+          maxActive="20"
+          maxIdle="10"
+          validationQuery="select 1" />
+</Context-->
