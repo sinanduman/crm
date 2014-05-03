@@ -8,14 +8,13 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/irfan.css">
-	<link rel="stylesheet" href="css/siparis.css">
+	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -28,25 +27,15 @@
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
-<%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
-%>
-
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
+<%@ include file="logincheck.jsp" %>
 
 <div class="container">
 	<div class="row text-warning" style="text-align:center;">
 		<label class="text-danger">Sipariş Alma</label>
 	</div>
 	<div class="row" ng-controller="SiparisEkleCtrl">
-		<form class="form-horizontal" role="form" name="siparisform"  id="siparisform" method="post" action="/irfanpls/siparis">
-			
+		<form class="form-horizontal" role="form" name="siparisform"  id="siparisform" method="post" action="siparis">
+
 			<div class="form-group">
 				<label for="bilesen" class="col-xs-3 control-label">Mamül: </label>
 				<div class="col-xs-8">
@@ -85,7 +74,7 @@
 			</div>
 		</form>
 	</div>
-	
+
 	<% List<Siparis> siparis = (List<Siparis>) request.getAttribute("siparis");  %>
 	<% ResultTip result = (ResultTip) request.getAttribute("result");  %>
 	<%
@@ -106,7 +95,7 @@
 		</div>
 		<div class="col-sm-1"></div>
 	 </div>
-	<%	
+	<%
 	}
 	else{
 	%>
@@ -127,7 +116,7 @@
 			<div class="col-sm-8">
 				<table class="tableplan">
 					<% int sayac = 0; %>
-					<% if (result.value() != ResultTip.NORESULT.value()) { %>					
+					<% if (result.value() != ResultTip.NORESULT.value()) { %>
 					<% for (Siparis s : siparis) { %>
 					<% if (sayac++ == 0) { %>
 					<tr>
@@ -154,7 +143,7 @@
 			<div class="col-sm-1"></div>
 		</div>
 	</div>
-   
+
 </div>
 
 

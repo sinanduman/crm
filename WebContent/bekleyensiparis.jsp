@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -27,53 +27,12 @@
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
-<%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
-%>
-
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
+<%@ include file="logincheck.jsp" %>
 
 <div class="container">
 	<div class="row text-warning" style="text-align:center;">
 		<label class="text-danger">Üretimde/Bekleyen Siparişler</label>
 	</div>
-	<script type="text/javascript">
-		function HammaddeEkleCtrl($scope, $http) {
-			$scope.hammaddeEkle = function () {
-				return false;
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/irfanpls/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8", "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
-			}
-		}
-	</script>
 	<div class="row" ng-controller="HammaddeEkleCtrl">
 	</div>
 
@@ -141,12 +100,12 @@
 							<%
 							String disabled = "";
 							if(s.getPlanmiktar()!=0 || s.getTamammiktar()!=0 ){
-							    disabled = "disabled";    
+								disabled = "disabled";	
 							}
 							%>
 							<% %>
-							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value=" Tam. &rarr; " onclick="javascript:okGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
-							<input <%= disabled %> class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value=" Sil &rarr; " onclick="javascript:deleteGo('/irfanpls/uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
+							<input class="okHref" type="button" id="okButton<%=s.getId()%>" value=" Tam. &rarr; " onclick="javascript:okGo('uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,2);">
+							<input <%= disabled %> class="deleteHref" type="button" id="deleteButton<%=s.getId()%>" value=" Sil &rarr; " onclick="javascript:deleteGo('uretimtakip',<%=s.getId()%>,document.action_form<%=s.getId()%>,3);">
 						</td>
 					</tr>
 					<% } %>

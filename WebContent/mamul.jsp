@@ -9,15 +9,16 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
+	<link rel="stylesheet" href="css/irfan.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
+	<link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
 	
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -26,267 +27,282 @@
 	<![endif]-->
 </head>
 <body>
-<%
-	User user = (User) session.getAttribute("user");
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || user == null) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	
-%>
+<%@ include file="logincheck.jsp" %>
 
 <%
 	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
 	List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
 	List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
-	List<Bilesen> mamul = (List<Bilesen>) request.getAttribute("mamul");
+	List<Mamul> mamul = (List<Mamul>) request.getAttribute("mamul");
 	List<MamulBilesen> mamulbilesen = (List<MamulBilesen>) request.getAttribute("mamulbilesen");
+	String message = (String) request.getAttribute("message");
 %>
-
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
 
 <div class="container" ng-controller="MamulCtrl">
 	<div class="row text-danger" style="text-align:center;">
-		<label class="text-danger">Mamül Ekleme</label>
+		<label class="text-danger rounded col-xs-6">Mamül Tanımı</label>
 	</div>
-	<div class="row" >
-		<form class="form-horizontal" role="form" name="mamulform" method="post" action="/irfanpls/mamul">
-			
-			<div class="form-group">
-				<label for="mamulkod" class="col-xs-3 control-label">Mamül Kodu: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="mamulkod" ng-model="mamulkod" placeholder="Mamül Kodu">
+	<form class="form-horizontal" role="form" name="mamulform" id="mamulform" method="post" action="mamul">
+		<div class="row">
+			<div class="form-group col-xs-8">
+				<label for="mamulkod" class="col-xs-3 control-label text-baslik">Mamül Kodu: </label>
+				<div>
+					<input type="text" class="form-control big" name="mamulkod" id="mamulkod" ng-model="mamulkod" placeholder="Mamül Kodu" autocomplete="off">
 				</div>
 			</div>			
-			<div class="form-group">
-				<label for="mamulad" class="col-xs-3 control-label">Mamül Adı: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="mamulad" ng-model="mamulad" placeholder="Mamül Adı">
+			<div class="form-group col-xs-8">
+				<label for="mamulad" class="col-xs-3 control-label text-baslik">Mamül Adı: </label>
+				<div>
+					<input type="text" class="form-control big" name="mamulad" id="mamulad" ng-model="mamulad" placeholder="Mamül Adı" autocomplete="off">
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="mamulcevrim" class="col-xs-3 control-label">Çevrim Süresi(sn): </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="mamulcevrim" ng-model="mamulcevrim" placeholder="Çevrim Süresi">
+			<div class="form-group col-xs-8">
+				<label for="mamulcevrim" class="col-xs-3 control-label text-baslik">Çevrim Süresi(sn): </label>
+				<div>
+					<input type="text" class="form-control big" name="mamulcevrim" id="mamulcevrim" ng-model="mamulcevrim" placeholder="Çevrim Süresi" autocomplete="off">
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="mamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
-				<div class="col-xs-8">
-					<select class="form-control" name="mamulfirma">
+			<div class="form-group col-xs-8">
+				<label for="mamulfirma" class="col-xs-3 control-label text-baslik">Tedarikçi: </label>
+				<div>
+					<select class="form-control big" name="mamulfirma" id="mamulfirma">
 						<%
-							for (Firma f : firma) {
-						%>
-						<option value='<%=f.getId()%>'><%=f.getAd() %>
-						</option>
-						<%
+							for (Firma f : firma) {							    
+							    out.println("<option value='"+ f.getId() + "'>" + f.getAd() + "</option>");
 							}
 						%>
 					</select>
 				</div>
-
 			</div>
-			<div class="form-group">
-				<label for="mamuluretimsekli" class="col-xs-3 control-label">Üretim Şekli: </label>
-				<div class="col-xs-8">
-					<select class="form-control" name="mamuluretimsekli">
-						<option value='<%= UretimTip.Makina.value() %>'><%= UretimTip.Makina.name() %></option>
-						<option value='<%= UretimTip.Montaj.value() %>'><%= UretimTip.Montaj.name() %></option>
+			<div class="form-group col-xs-8">
+				<label for="mamulfigur" class="col-xs-3 control-label text-baslik">Figür Adedi: </label>
+				<div>
+					<select class="form-control big" name="mamulfigur" id="mamulfigur">
+						<option value='<%= FigurTip.Goz4.value() %>'><%= FigurTip.Goz4.ad() %></option>
+						<option value='<%= FigurTip.Goz8.value() %>'><%= FigurTip.Goz8.ad() %></option>
+						<option value='<%= FigurTip.Goz12.value() %>'><%= FigurTip.Goz12.ad() %></option>
+						<option value='<%= FigurTip.Goz16.value() %>'><%= FigurTip.Goz16.ad() %></option>
 					</select>
 				</div>
 			</div>
-			<hr/>
-			<div class="form-group">
-				<label class="col-xs-3 control-label"></label>
-				<div class="col-xs-8">
+			
+			<div class="form-group col-xs-6">
+				<div>
 					<div class="radio">
 						<label class="text-success strong">
-							<input type="radio" name="bilesenTipRadio" value="Hammadde" checked ng-click="on()">
+							<input type="radio" name="bilesenTipRadio" class="text-baslik" value="Hammadde" checked ng-click="on()">
 							Hammadde
 						</label>
 					</div>
 					<div class="radio">
 						<label class="text-danger strong">
-							<input type="radio" name="bilesenTipRadio" value="Yarımamül" ng-click="off()">
+							<input type="radio" name="bilesenTipRadio" class="text-baslik" value="Yarımamül" ng-click="off()">
 							Yarımamül
 						</label>
 					</div>
 				</div>
 			</div>
-			<div class="form-group" ng-model="mamulTypeUretim" ng-show="showState()">
-				<label for="hammadde" class="col-xs-3 control-label text-success">Hammadde: </label>
-				<div class="col-xs-8">
-					<select class="form-control" id="hammadde" name="hammadde">
+			<div class="form-group col-xs-8" ng-model="mamulTypeUretim" ng-show="showState()">
+				<label for="hammadde" class="col-xs-3 control-label text-baslik">Hammadde: </label>
+				<div>
+					<select class="form-control big" id="hammadde" name="hammadde">
 						<%
 							for (Bilesen h : hammadde) {
-						%>
-						<option value='<%=h.getId()%>'><%=h.getAd() %>
-						</option>
-						<%
+							    out.println("<option value='"+ h.getId() + "'>" + h.getAd() + "</option>");
 							}
 						%>
 					</select>
 				</div>
 			</div>
-			<div class="form-group" ng-model="mamulTypeMontaj" ng-hide="showState()">
-				<label for="yarimamul" class="col-xs-3 control-label text-danger">Yarımamül: </label>
-				<div class="col-xs-8">
-					<select class="form-control" id="yarimamul" name="yarimamul">
+			<div class="form-group col-xs-8" ng-model="mamulTypeMontaj" ng-hide="showState()">
+				<label for="yarimamul" class="col-xs-3 control-label text-baslik">Yarımamül: </label>
+				<div>
+					<select class="form-control big" id="yarimamul" name="yarimamul">
 						<%
 							for (Bilesen y : yarimamul) {
-						%>
-						<option value='<%= y.getId() %>'><%=y.getAd() %>
-						</option>
-						<%
+							    out.println("<option value='"+ y.getId() + "'>" + y.getAd() + "</option>");
 							}
 						%>
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="birimid" class="col-xs-3 control-label">Birim: </label>
-				<div class="col-xs-8">
-					<select class="form-control" id="birimid" name="birimid">
+			<div class="form-group col-xs-8">
+				<label for="birimid" class="col-xs-3 control-label text-baslik">Birim: </label>
+				<div>
+					<select class="form-control big" id="birimid_select" name="birimid_select" disabled="disabled">
 						<%
 							for (BirimTip bt : BirimTip.values()) {
-								%>
-								<option value='<%=bt.value()%>'><%=bt.ad() %></option>
-								<%
+							    if( bt.value() != BirimTip.KILOGRAM.value() ){
+							        out.println("<option value='"+ bt.value() + "'>" + bt.ad() + "</option>");    
+							    }							    
 							}
 						%>
 					</select>
+					<input type="hidden" name="birimid" id="birimid" value="1">
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="miktar" class="col-xs-3 control-label">Miktar: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="miktar" ng-model="yenibilesen.miktar" placeholder="Kullanılan Miktar">
+			<div class="form-group col-xs-8">
+				<label for="miktar" class="col-xs-3 control-label text-baslik">Miktar: </label>
+				<div>
+					<input type="text" class="form-control big" name="miktar" ng-model="yenibilesen.miktar" placeholder="Kullanılan Miktar" autocomplete="off">
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-xs-3 control-label">&nbsp;</label>
-				<div class="col-xs-8">
+			<div class="form-group col-xs-8">
+				<div>
 					<input type="hidden" ng-model="yenibilesen.yarimamulad" />
 					<input type="hidden" ng-model="yenibilesen.hammaddead" />
 					<input type="hidden" ng-model="yenibilesen.birimad" />
 					<input type="hidden" ng-model="yenibilesen.id" />
-					<button type="button" ng-click="saveBilesen()" name="bilesen_ekle" id="bilesen_ekle"  class="btn btn-warning">Bileşen Ekle</button>
+					<button type="button" ng-click="saveBilesen()" name="bilesen_ekle" id="bilesen_ekle"  class="btn btn-success">Bileşen Ekle</button>
 				</div>
 			</div>
+		</div>
+		<div class="row" style="font-size:12px;">
 			<table class="tableplan">
 			<tr>
-				<td class="text-success">Hammadde/Yarımamül</td>
-				<td class="text-success">Birim</td>
-				<td class="text-success">Miktar</td>
-				<td class="text-success">Tip</td>
-				<td class="text-success">Aksiyon</td>
+				<td><label class="text-success">Malzeme Adı</label></td>
+				<td><label class="text-success">Birim</label></td>
+				<td><label class="text-success">Miktar</label></td>
+				<td><label class="text-success">Tip</label></td>
+				<td class="text-center"><label class="text-success">Aksiyon</label></td>
 			</tr>
 			<tr ng-repeat="bilesen in bilesenler">
 				<td>{{ bilesen.bilesenad }}</td>
 				<td>{{ bilesen.birimad }}</td>
 				<td>{{ bilesen.miktar }}</td>
 				<td>{{ bilesen.uretimtip }}</td>
-				<td>
-					<a href="#" ng-click="edit(bilesen.id)">Güncelle</a> | <a href="#" ng-click="del(bilesen.id)">Sil</a>
-					<input type="hidden" name="uretimtip_{{bilesen.id}}" value="{{ bilesen.uretimtipid }}">
-					<input type="hidden" name="bilesenid_{{bilesen.id}}" value="{{ bilesen.bilesenid }}">
-					<input type="hidden" name="miktar_{{bilesen.id}}" value="{{ bilesen.miktar }}">
-					<input type="hidden" name="birimid_{{bilesen.id}}" value="{{ bilesen.birimid }}">
+				<td class="text-center">
+					<a href="#" ng-click="edit(bilesen.id)" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a>
+					<a href="#" ng-click="del(bilesen.id)" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+					
+					<input type="hidden" id="uretimtip_{{$index}}" name="uretimtip_{{$index}}" value="{{bilesen.uretimtipid}}">
+					<input type="hidden" id="bilesenid_{{$index}}" name="bilesenid_{{$index}}" value="{{bilesen.bilesenid}}">
+					<input type="hidden" id="miktar_{{$index}}" name="miktar_{{$index}}" value="{{bilesen.miktar}}">
+					<input type="hidden" id="birimid_{{$index}}" name="birimid_{{$index}}" value="{{bilesen.birimid}}">
 				</td>
 			</tr>
 			</table>
-			<div class="form-group">
-				<label class="col-xs-3 control-label">&nbsp;</label>
-				<div class="col-xs-8">
-					<button type="button" class="btn btn-warning" ng-click="saveMamul()">Mamül Ekle</button>
-					<input type="hidden" name="bilesen_length" ng-model="bilesen_length" value="{{ bilesenler.length }}">
-				</div>
+		</div>
+		<div class="row" sytle="margin-bottom:5px;">
+			<div class="col-xs-8">
+				<button type="button" class="btn btn-danger" ng-click="saveMamul()">Mamül Ekle</button>
+				<input type="hidden" id="bilesen_length" name="bilesen_length" ng-model="bilesen_length" value="{{bilesenler.length}}">
 			</div>
+		</div>
+	</form>
+	
+	<!-- ALERT BOX -->
+	<% 
+	if(message.equals("0")) {
+	    %>
+		<div class="row alert alert-success">
+			<strong>Başarılı</strong> olarak eklendi!
+		</div>
+		<%
+	}
+	else if(!message.equals("") && message.length() >1){
+	    %>
+		<div class="row alert alert-danger">
+			<strong>Hata!</strong><%= message %>
+		</div>
+		<%
+	}
+	%>
+	<!-- ALERT BOX -->
 
-		</form>
-	</div>
-
-	<div class="row" style="font-size:12px;">
-		<div class="container">
-			<div class="col-sm-1"></div>
-			<div class="col-sm-10">
-				<table class="tableplan">
-					<% int sayac = 0; %>
-					<% for (Bilesen m : mamul) { %>
-					<% if (sayac++ == 0) { %>
-					<tr>
-						<td><label class="text-success">Kod</label></td>
-						<td><label class="text-success">Adı</label></td>
-						<td><label class="text-success">Çevrim Süresi</label></td>
-						<td><label class="text-success">Firma</label></td>
-						<td><label class="text-success">Aksiyon</label></td>
-					</tr>
-					<% } %>
-					<form name="action_form<%=m.getId()%>" id="action_form<%=m.getId()%>">
-					<tr id="tr<%=m.getId()%>">
-						<td><input type="text" value="<%= m.getKod() %>" name="liste_kod" id="liste_kod"></td>
-						<td><input type="text" value="<%= m.getAd() %>" name="liste_ad" id="liste_ad"></td>
-						<td><input type="text" value="<%= m.getCevrimsuresi() %>" name="liste_cevrimsuresi" id="liste_cevrimsuresi" style="width:80px;"></td>
-						<td>
-							<select id="liste_firmaid" name="liste_firmaid">
+	<div class="row" style="font-size:12px; margin-top:5px;">
+		<div>
+			<table class="tableplan">
+				<% int sayac = 0; %>
+				<% for (Mamul m : mamul) { %>
+				<% if (sayac++ == 0) { %>
+				<tr>
+					<td><label class="text-success">Mamül Kodu</label></td>
+					<td><label class="text-success">Mamül Adı</label></td>
+					<td><label class="text-success">Çevrim Süresi</label></td>
+					<td><label class="text-success">Figür Adedi</label></td>
+					<td><label class="text-success">Firma</label></td>
+					<td class="text-center"><label class="text-success">Aksiyon</label></td>
+				</tr>
+				<% } %>
+				<form name="action_form<%=m.getId()%>" id="action_form<%=m.getId()%>">
+				<tr id="tr<%=m.getId()%>">
+					<td><input type="text" class="form-control" value="<%= m.getKod() %>" name="liste_kod" id="liste_kod"></td>
+					<td><input type="text" class="form-control" value="<%= m.getAd() %>" name="liste_ad" id="liste_ad"></td>
+					<td><input type="text" class="form-control" value="<%= m.getCevrimsuresi() %>" name="liste_cevrimsuresi" id="liste_cevrimsuresi" style="width:80px;"></td>
+					<td>
+						<div>
+							<select class="small" name="liste_figurid" id="liste_figurid">
 							<%
-								for (Firma f : firma) {
-									if (f.getId() == m.getFirmaid() ){
-										%>
-										<option value='<%=f.getId() %>' selected><%=f.getAd() %></option>
-										<%
+								for (FigurTip ft : FigurTip.values()) {
+									if (ft.value() == m.getFigur() ){
+									    out.println("<option value='"+ ft.value() + "' selected>" + ft.ad() + "</option>");
 									}
 									else{
-										%>
-										<option value='<%=f.getId()%>'><%=f.getAd() %></option>
-										<%
+										out.println("<option value='"+ ft.value() + "'>" + ft.ad() + "</option>");
 									}
 								}
 							%>
 							</select>
-						</td>
-						<td>
-							<input class="icerikHref" type="button" value="İçerik &darr;" onclick="javascript:hideshow('#tr_mam_detay<%= m.getId() %>');">
-							<input class="updateHref" type="button" id="updateButton<%=m.getId()%>" value="Gün. &rarr;" onclick="javascript:updateMamulGo('/irfanpls/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);">
-							<input class="deleteHref" type="button" id="deleteButton<%=m.getId()%>" value="Sil &rarr;" onclick="javascript:deleteMamulGo('/irfanpls/mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);">
-						</td>
-					</tr>
-					<tr id="tr_mam_detay<%= m.getId() %>" style="display:none;">
-						<td colspan="5">
-							<table style="width:100%;" class="tableplan">
-								<% int sayacbilesen = 0; %>
-								<% for (MamulBilesen j : mamulbilesen) {%>
-								<% if ( j.getMamulid() == m.getId() ){ %>
-								<% if ( (sayacbilesen++ == 0) ){ %>
-								<tr>
-									<td><label class="text-info">Sıra No</label></td>
-									<td><label class="text-info">Bileşen Adı</label></td>
-									<td><label class="text-info">Bileşen Kodu</label></td>
-									<td><label class="text-info">Tür</label></td>
-									<td><label class="text-info">Birim</label></td>
-									<td><label class="text-info">Miktarı</label></td>
-								</tr>
-								<% } %><%-- if tablo baslik --%>
-								<tr>
-									<td><%= sayacbilesen %></td>
-									<td><%= j.getBilesenad() %></td>
-									<td><%= j.getBilesenkod() %></td>
-									<td><%= j.getBilesentipad() %></td>
-									<td><%= j.getBirimad() %></td>
-									<td><%= j.getMiktar() %></td>
-								</tr>
-								<% } %><%-- if  j== m--%>
-								<% } %> <%-- mamulbilesen --%>
-							</table>
-						</td>
-					</tr>
-					</form>
-					<% } %> <%-- mamul --%>
-				</table>
-			</div>
-			<div class="col-sm-1"></div>
+						</div>
+					</td>
+					<td>
+						<select id="liste_firmaid" name="liste_firmaid">
+						<%
+							for (Firma f : firma) {
+								if (f.getId() == m.getFirmaid() ){
+								    out.println("<option value='"+ f.getId() + "' selected>" + f.getAd() + "</option>");
+								}
+								else{
+									out.println("<option value='"+ f.getId() + "'>" + f.getAd() + "</option>");
+								}
+							}
+						%>
+						</select>
+					</td>
+					<td class="text-center">
+						<a href="javascript:hideshow('#tr_mam_detay<%= m.getId() %>');" title="İçerik"><span class="fa fa-chevron-down fa-lg text-success"></span></a>
+						<a href="javascript:updateMamulGo('mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a>
+						<a href="javascript:deleteMamulGo('mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+					</td>
+				</tr>
+				<tr id="tr_mam_detay<%= m.getId() %>" style="display:none;">
+					<td colspan="5">
+						<table style="width:100%;" class="tableplan">
+							<% int sayacbilesen = 0; %>
+							<% for (MamulBilesen j : mamulbilesen) {%>
+							<% if ( j.getMamulid() == m.getId() ){ %>
+							<% if ( (sayacbilesen++ == 0) ){ %>
+							<tr>
+								<td><label class="text-danger">Sıra No</label></td>
+								<td><label class="text-danger">Bileşen Adı</label></td>
+								<td><label class="text-danger">Bileşen Kodu</label></td>
+								<td><label class="text-danger">Tür</label></td>
+								<td><label class="text-danger">Birim</label></td>
+								<td><label class="text-danger">Miktarı</label></td>
+							</tr>
+							<% } %><%-- if tablo baslik --%>
+							<tr>
+								<td><%= sayacbilesen %></td>
+								<td><%= j.getBilesenad() %></td>
+								<td><%= j.getBilesenkod() %></td>
+								<td><%= j.getBilesentipad() %></td>
+								<td><%= j.getBirimad() %></td>
+								<td><%= j.getMiktar() %></td>
+							</tr>
+							<% } %><%-- if  j== m--%>
+							<% } %> <%-- mamulbilesen --%>
+						</table>
+					</td>
+				</tr>
+				</form>
+				<% } %> <%-- mamul --%>
+			</table>			
+			<jsp:include page="paging.jsp" flush="true" >
+				<jsp:param value="noofpages" name="noofpages"/>
+				<jsp:param value="currentpage" name="currentpage"/>
+				<jsp:param value="mamul" name="pagename"/>
+			</jsp:include>
 		</div>
 	</div>
 
@@ -294,9 +310,9 @@
 
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
-<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
-<script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="js/irfan.js?<%=System.currentTimeMillis()%>"></script>
-<script src="js/mamul.js?<%=System.currentTimeMillis()%>"></script>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/irfan.js"></script>
+<script src="js/mamul.js"></script>
 </body>
 </html>

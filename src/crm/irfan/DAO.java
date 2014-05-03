@@ -12,18 +12,14 @@ public class DAO {
     private static ResultSet         rs         = null;
     private static PreparedStatement pstmt      = null;
     
-    public static User login(User user) {
-        
-        // preparing some objects for connection
-        String username = user.getUsername();
-        String password = user.getPassword();
-        
-        String searchQuery = "select * from login where username=? and password=?";
+    public static User login(String username, String password) {
+        User user = null;
+        String searchQuery = "select * from irfan.login where username=? and password=?";
         // "System.out.println" prints in the console; Normally used to trace
         // the process
-        System.out.println("Your user name is " + username);
-        System.out.println("Your password is " + password);
-        System.out.println("Query: " + searchQuery);
+        //System.out.println("Your user name is " + username);
+        //System.out.println("Your password is " + password);
+        //System.out.println("Query: " + searchQuery);
         
         try {
             // connect to DB
@@ -37,18 +33,17 @@ public class DAO {
             // if user does not exist set the isValid variable to false
             if (!more) {
                 System.out.println("Sorry, you are not a registered user! Please sign up first");
-                user.setValid(false);
             }
-            
             // if user exists set the isValid variable to true
-            else if (more) {
-                String firstName = rs.getString("name");
-                String lastName = rs.getString("surname");
-                
-                System.out.println("Welcome " + firstName);
-                user.setName(firstName);
-                user.setSurname(lastName);
-                user.setValid(true);
+            else {
+                //System.out.println("Welcome " + username  + "!");
+                user = new User(
+                                rs.getString("name"), 
+                                rs.getString("surname"),
+                                rs.getString("username"),
+                                rs.getString("password"),
+                                rs.getInt("admin")
+                                );
             }
         }
         catch (Exception ex) {
@@ -81,6 +76,13 @@ public class DAO {
         return user;
     }
     
+    public static boolean loginResult(User user) {
+        if (user!=null) {
+            return true;
+        }
+        return false;
+    }
+    
     public static String md5Dao(String temp) {
         String digest = temp;
         if (temp != null) {
@@ -99,5 +101,9 @@ public class DAO {
             }
         }
         return digest;
+    }
+    public static boolean logcheck() {
+        return false;
+        
     }
 }

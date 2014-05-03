@@ -13,6 +13,7 @@ public class SiparisPlan {
     private String  makinaad;
     private Integer calisanid;
     private String  calisanad;
+    private String  calisansoyad;
     private Date    tarih;
     private Time    baszaman;
     private Time    bitzaman;
@@ -22,7 +23,7 @@ public class SiparisPlan {
     private String  not;
     
     public SiparisPlan(Integer id, Integer siparisid, String bilesenad, Integer miktar, Integer makinaid,
-                    String makinaad, Integer calisanid, String calisanad, Date tarih, Time baszaman, Time bitzaman,
+                    String makinaad, Integer calisanid, String calisanad, String calisansoyad, Date tarih, Time baszaman, Time bitzaman,
                     Integer hataid, Integer hatamiktar, Integer durusid, String not) {
         super();
         this.id = id;
@@ -33,6 +34,7 @@ public class SiparisPlan {
         this.makinaad = makinaad;
         this.calisanid = calisanid;
         this.calisanad = calisanad;
+        this.calisansoyad = calisansoyad;
         this.tarih = tarih;
         this.baszaman = baszaman;
         this.bitzaman = bitzaman;
@@ -125,13 +127,37 @@ public class SiparisPlan {
     public String getCalisanad() {
         return calisanad;
     }
-    
+        
     public void setCalisanad(String calisanad) {
         this.calisanad = calisanad;
     }
     
+    public String getCalisansoyad() {
+        return calisansoyad;
+    }
+        
+    public void setCalisansoyad(String calisansoyad) {
+        this.calisansoyad = calisansoyad;
+    }
+    
+    public String getCalisanFullName() {
+        return calisanad + " " + calisansoyad;
+    }
+    
+    public String getCalisanShortName() {
+        return calisanad.substring(0, 1) + "." + calisansoyad;
+    }
+    
     public String getTarih() {
         String date = (this.tarih != null) ? (new SimpleDateFormat("yyyy-MM-dd").format(tarih)) : "";
+        return date;
+    }
+    public String getTarihTR() {
+        String date = (this.tarih != null) ? (new SimpleDateFormat("dd-MM-yyyy").format(tarih)) : "";
+        return date;
+    }
+    public String getTarihTRShort() {
+        String date = (this.tarih != null) ? (new SimpleDateFormat("dd.MM.yy").format(tarih)) : "";
         return date;
     }
     

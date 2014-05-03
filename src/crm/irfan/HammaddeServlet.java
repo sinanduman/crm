@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
 import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
 
 public class HammaddeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -24,14 +24,28 @@ public class HammaddeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
-        List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE);
         
+        String message = "";
         List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
+        firma = DAOFunctions.firmaListeGetirTum(0);
         
-        request.setAttribute("hammadde", hammadde);
+        
+        int totalrecord = DAOFunctions.recordCount("bilesen"," ");
+        int page = 1;
+        if(request.getParameter("page") != null)
+            page = Integer.parseInt(request.getParameter("page"));
+        
+        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+        
+        List<Bilesen> hammadde = new ArrayList<Bilesen>();
+        hammadde = DAOFunctions.bilesenListeGetirTum(null,page);
+        
         request.setAttribute("firma", firma);
+        request.setAttribute("hammadde", hammadde);
+        request.setAttribute("message", message);
+        request.setAttribute("totalrecord", totalrecord);
+        request.setAttribute("currentpage", page);
+        request.setAttribute("noofpages", noofpages);
         request.getRequestDispatcher("hammadde.jsp").forward(request, response);
     }
 
@@ -43,41 +57,56 @@ public class HammaddeServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         String islemid = request.getParameter("islemid");
+        String message = "0";
         if(islemid != null && islemid != "" ) {
             
             Integer result = 0;
             switch (Integer.valueOf(islemid)) {
                 case 1:
-                    result = DAOFunctions.bilesenGuncelle(
+                    message = DAOFunctions.bilesenGuncelle(
                                     new String(request.getParameter("bilesenid").getBytes("UTF-8")),
                                     new String(request.getParameter("birimid").getBytes("UTF-8")),
                                     new String(request.getParameter("firmaid").getBytes("UTF-8")),
                                     new String(request.getParameter("bilesenkod").getBytes("UTF-8")),
-                                    new String(request.getParameter("bilesenad").getBytes("UTF-8")),
-                                    null /* -- null cevrimsuresi icin */
+                                    new String(request.getParameter("bilesenad").getBytes("UTF-8"))
                                     );
                     break;
                 case 3:
-                    result = DAOFunctions.bilesenSil(new String(request.getParameter("bilesenid").getBytes("UTF-8")));
+                    message = DAOFunctions.bilesenSil(new String(request.getParameter("bilesenid").getBytes("UTF-8")));
                     break;
             }
             PrintWriter out = response.getWriter();
             out.print(result);
         }
         else {
-            List<Bilesen> hammadde = new ArrayList<Bilesen>();
-            hammadde = DAOFunctions.hammaddeEkle(
+            int totalrecord = DAOFunctions.recordCount("bilesen"," ");
+            int page = 1;
+            if(request.getParameter("page") != null)
+                page = Integer.parseInt(request.getParameter("page"));
+            
+            int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+
+            message = DAOFunctions.hammaddeEkle(
                     new String(request.getParameter("hamkod").getBytes("UTF-8")),
                     new String(request.getParameter("hamad").getBytes("UTF-8")),
                     new String(request.getParameter("hambirim").getBytes("UTF-8")),
-                    new String(request.getParameter("hamfirma").getBytes("UTF-8"))
+                    new String(request.getParameter("hamfirma").getBytes("UTF-8")),
+                    new String(request.getParameter("hamtip").getBytes("UTF-8"))
             );
+            
+            
+            List<Bilesen> hammadde = new ArrayList<Bilesen>();
+            hammadde = DAOFunctions.bilesenListeGetirTum(null,page);
     
             List<Firma> firma = new ArrayList<Firma>();
-            firma = DAOFunctions.firmaListeGetirTum();
+            firma = DAOFunctions.firmaListeGetirTum(0);
     
-            request.setAttribute("hammadde", hammadde);
             request.setAttribute("firma", firma);
+            request.setAttribute("hammadde", hammadde);
+            request.setAttribute("totalrecord", totalrecord);
+            request.setAttribute("currentpage", page);
+            request.setAttribute("noofpages", noofpages);
+            request.setAttribute("message", message);
             request.getRequestDispatcher("hammadde.jsp").forward(request, response);
         }
     }

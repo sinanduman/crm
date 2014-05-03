@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -24,40 +25,47 @@ public class LoginServlet extends HttpServlet implements Serializable {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = (request.getSession().getAttribute("user") != null) ? (User) request.getSession().getAttribute("user") : (new User());        
-        Boolean loggedin = (request.getSession().getAttribute("loggedin") != null) ? true : false;
         String username = (request.getParameter("username") != null) ? request.getParameter("username") : "";
-        String password = (request.getParameter("password") != null) ? request.getParameter("password") : "";
-        if (loggedin != null && loggedin) {
-            user.setValid(true);
+        String password = (request.getParameter("password") != null) ? request.getParameter("password") : "";        
+
+        User user = DAO.login(username, password);
+        logRedirect (user, request, response);
+    }
+    
+    public static void logRedirect(User user, HttpServletRequest request, HttpServletResponse response) {
+        
+        String errorPage    = "login.jsp";
+        String successPage  = "index.jsp";
+        
+        if (DAO.loginResult(user)) {
+            if((User)request.getSession().getAttribute("user")==null) {
+                request.getSession().setAttribute("loggedin", (user!=null));
+                request.getSession().setAttribute("user", user);
+                try {
+                    request.getRequestDispatcher(successPage).forward(request, response);
+                }
+                catch (ServletException e) {
+                    e.printStackTrace();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         else {
-            user.setUsername(username);
-            user.setPassword(password);
-            user = DAO.login(user);
+            try {
+                request.getRequestDispatcher(errorPage).forward(request, response);
+            }
+            catch (ServletException e) {
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }            
         }
-        request.getSession().setAttribute("user", user);
-        loginResult(user, user.isValid(), request, response);
+        
     }
 
-    protected void loginResult(User user, Boolean loggedin, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException {
-        String message = null;
-        String fwdPage = null;
-        String errorPage = "errorPage.jsp";
-        String successPage = "index.jsp";
-        if (loggedin) {
-            message = "Login successful";
-            fwdPage = successPage;
-        }
-        else {
-            message = "Kullanıcı adı veya şifre yanlış!";
-            fwdPage = errorPage;
-        }
-        request.getSession().setAttribute("message", message);
-        request.getSession().setAttribute("loggedin", loggedin);
-        request.getSession().setAttribute("user", user);
-        request.getRequestDispatcher(fwdPage).forward(request, response);
-    }
+    
 
 }

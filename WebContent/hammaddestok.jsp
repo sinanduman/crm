@@ -1,3 +1,4 @@
+<%@page import="crm.irfan.UtilFunctions"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
@@ -8,15 +9,17 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
+	<link rel="stylesheet" href="css/irfan.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
+	<link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
+	<link rel="stylesheet/less" type="text/css" href="less/datepicker.less">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -27,100 +30,264 @@
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
+<%@ include file="logincheck.jsp" %>
+
 <%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
+List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
+List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 %>
 
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
-
-<div class="container">
-	<div class="row text-warning" style="text-align:center;">
-		<label class="text-danger">Hammadde Stok Ekleme</label>
-	</div>
-	<script type="text/javascript">
-		function HammaddeEkleCtrl($scope) {
-			$scope.saveHammaddeStok = function(){
-				if(!is_positive(document.hammaddestokform.miktar.value)){
-					alert("Miktar NÜMERİK bir değer olmalıdır!");
-					return false;
-				}
-				else if( is_empty(document.hammaddestokform.irsaliyeno.value) ){
-					alert("İRSALİYE No boş olamaz!");
-					return false;
-				}
-				else{
-					document.hammaddestokform.submit();
-				}
+<script type="text/javascript">
+	function HammaddeEkleCtrl($scope) {
+		$scope.saveHammaddeStok = function(){
+			if(!is_positive(document.hammaddestokform.miktar.value)){
+				alert("Miktar NÜMERİK bir değer olmalıdır!");
+				return false;
+			}
+			else if(is_empty(document.hammaddestokform.irsaliyeno.value) ){
+				alert("İRSALİYE No boş olamaz!");
+				return false;
+			}
+			else if(is_empty(document.hammaddestokform.lot.value) ){
+				alert("LOT/Batch No boş olamaz!");
+				return false;
+			}
+			else{
+				document.hammaddestokform.submit();
 			}
 		}
-	</script>
+	}
+
+	var bilesen = [
+	<%
+	String delimeter = "";
+	for (Bilesen b : hammadde) {
+		out.println(delimeter 
+	+ " { id:" + b.getId()
+	+ ",bilesenid:" + b.getId() 
+	+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
+	+ ",bilesenkod:'" + b.getKod() + "'"
+	+ ",bilesentipid:" + b.getBilesentipid()
+	+ ",bilesentipad:'" + b.getBilesentipad() + "'"
+	+ ",firmaid:" + b.getFirmaid()
+	+ ",firmaad:'" + b.getFirmaad().replaceAll("'", "") + "'" + "}");
+		delimeter = ",";
+	}%>];
+	var bilesen2 = [
+	<%
+	delimeter = "";
+	for (Bilesen b : hammadde) {
+		out.println(delimeter + " { label:'" + b.getKod() +"',id:" + b.getId() + "}");
+		delimeter = ",";
+	}%>];
+
+</script>
+
+<div class="container">
 	<div class="row" ng-controller="HammaddeEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" name="hammaddestokform" id="hammaddestokform" action="/irfanpls/hammaddestok">
+		<form class="form-horizontal" role="form" method="post" name="hammaddestokform" id="hammaddestokform" action="hammaddestok">
+		<div class="text-center">
+			<label class="text-danger rounded">Hammadde ve Yarı Mamül Stok Ekleme</label>
+		</div>
+		<!-- sol -->
+		<div class="col-xs-6">
+			<div class="form-group">
+				<label for="bilesenid" class="col-xs-4 control-label text-baslik">Malzeme Kodu: </label>
+				<div>
+					<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" autocomplete="off">
+					<input type="hidden" name="bilesenid" id="bilesenid">
+				</div>
+			</div>
 			
 			<div class="form-group">
-				<label for="bilesenid" class="col-xs-3 control-label">Hammadde: </label>
-				<div class="col-xs-8">
-					<select class="form-control" id="bilesenid" name="bilesenid">
-						<%
-							List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
-							for (Bilesen h : hammadde) {
-						%>
-						<option value='<%=h.getId()%>'><%=h.getAd() %>
-						</option>
-						<%
-							}
-						%>
-					</select>
+				<label for="bilesenad" class="col-xs-4 control-label text-baslik">Malzeme Adı: </label>
+				<div>
+ 					<input type="text" class="form-control big" name="bilesenad" id="bilesenad" readonly="readonly">
 				</div>
 			</div>
+			
 			<div class="form-group">
-				<label for="miktar" class="col-xs-3 control-label">Miktarı: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="miktar" id="miktar" ng-model="miktar" placeholder="Miktar (<%= BirimTip.KILOGRAM.ad() %>)">
+				<label for="firmaad" class="col-xs-4 control-label text-baslik">Tedarikçi Adı: </label>
+				<div>
+ 					<input type="text" class="form-control big" name="firmaad" id="firmaad" readonly="readonly">
+ 					<input type="hidden" name="firmaid" id="firmaid">
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="irsaliyeno" class="col-xs-3 control-label">İrsaliye No: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="irsaliyeno" id="irsaliyeno" ng-model="irsaliyeno" placeholder="İrsaliye No">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="lot" class="col-xs-3 control-label">LOT/Batch No: </label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="lot" id="lot" ng-model="lot" placeholder="LOT/Batch No">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="not" class="col-xs-3 control-label">Not: </label>
-				<div class="col-xs-8">
-					<textarea name="not" id="not" ng-model="not" cols="30" rows="5"  class="form-control" placeholder="Not"></textarea>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-3 control-label">&nbsp;</label>
 
-				<div class="col-xs-8">
-					<button type="button" class="btn btn-warning" ng-click="saveHammaddeStok()" >Ekle</button>
+			<div class="form-group">
+				<label for="tarih" class="col-xs-4 control-label text-baslik">Tarih</label>
+				<div>
+					<input type="text" class="form-control big" name="tarih" id="tarih" placeholder="Tarih">
 				</div>
 			</div>
+			
+		</div>
+		
+		<!-- sag -->
+		<div class="col-xs-6">
+			<div class="form-group">
+				<label for="miktar" class="col-xs-4 control-label text-baslik">Miktarı: </label>
+				<div>
+					<input type="text" class="form-control big" style="display:inline-block;" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
+					<!-- <span id="malzemebirimad" class="birim">Kg.</span> -->
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="miktar" class="col-xs-4 control-label text-baslik">Birim: </label>
+				<input type="text" class="form-control big" name="birimid_select" id="birimid_select"  value="Adet" readonly="readonly">
+				<input type="hidden" name="birimid" id="birimid" value="2">
+			</div>
+			<div class="form-group">
+				<label for="irsaliyeno" class="col-xs-4 control-label text-baslik">İrsaliye No: </label>
+				<div>
+					<input type="text" class="form-control big" name="irsaliyeno" id="irsaliyeno" placeholder="İrsaliye No" autocomplete="off">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="lot" class="col-xs-4 control-label text-baslik">LOT/Batch No: </label>
+				<div>
+					<input type="text" class="form-control big" name="lot" id="lot" placeholder="LOT/Batch No" autocomplete="off">
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<!-- orta -->
+		<div>
+			<div class="form-group">
+				<div class="text-center">
+					<button type="button" class="btn btn-danger" ng-click="saveHammaddeStok()" >Ekle</button>
+				</div>
+			</div>
+		</div>
 		</form>
+
+	</div>
+
+	<div class="row text-center">
+		<label class="text-danger roundedmini">Malzeme Stok Hareketleri</label>
+	</div>
+	
+	<%
+	int sayac = 0;
+	%>
+	<div class="row" style="font-size:12px;">
+		<table class="tableplan">
+			<% for (Stok s : stok) { %>
+			<% if (sayac++ == 0) { %>
+			<tr>
+				<th>Stok No</th>
+				<th>Malzeme Kodu</th>
+				<th>Malzeme Adı</th>
+				<th>Tipi</th>
+				<th>Miktarı</th>
+				<th>Hareket Tarihi</th>
+				<th>Hareket Tipi</th>
+				<th>GKR. No</th>
+				<th>İrsaliye No</th>
+				<th>Lot/Batch No</th>
+			</tr>
+			<% } %>
+			<tr id="tr<%= s.getId() %>">
+				<td><%= s.getId() %></td>
+				<td><%= s.getBilesenkod() %></td>
+				<td><%= s.getBilesenad() %></td>
+				<td><%= s.getBilesentipad() %></td>
+				<%
+				String smiktar = "";
+				Double dmkitar = 0.0;
+				Integer imiktar= 0;
+				if(s.getBilesentipid() == BilesenTip.HAMMADDE.value()){
+					if( (Integer.valueOf(s.getMiktar()) / 1000.0) > ( Integer.valueOf(s.getMiktar()) / 1000)){
+						dmkitar = (Integer.valueOf(s.getMiktar())) / 1000.0;
+						smiktar = dmkitar.toString() + " Kg.";
+					}
+					else{
+						imiktar = (Integer.valueOf(s.getMiktar()))/1000;
+						smiktar = imiktar.toString() + " Kg.";
+					}
+				}
+				else{
+					smiktar = s.getMiktar().toString() + " Ad.";
+				}
+				%>
+				<td class="text-right"><%= smiktar  %></td>
+				<td class="text-right"><%= (s.getIslemyonu()==0) ? UtilFunctions.getTarihTR(s.getGiristarihi()) : UtilFunctions.getTarihTR(s.getCikistarihi())  %></td>
+				<td><%= (s.getIslemyonu()==0)?"<span class='text-success'>Giriş</span>":"<span class='text-danger'>Çıkış</span>" %></td>
+				<td><%= s.getGkrno() %></td>
+				<td><%= (s.getIrsaliyeno()==null) ? "" : s.getIrsaliyeno() %></td>
+				<td><%= (s.getLot()==null) ? "" : s.getLot() %></td>
+			</tr>
+			<% } %>
+		</table>
+		<jsp:include page="paging.jsp" flush="true" >
+			<jsp:param value="noofpages" name="noofpages"/>
+			<jsp:param value="currentpage" name="currentpage"/>
+			<jsp:param value="hammaddestok" name="pagename"/>
+		</jsp:include>
 	</div>
 
 </div>
-
 
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="js/irfan.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
-</body>
+<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
+<script	src="js/bootbox.js" type="text/javascript"></script>
+<script src="js/irfan.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+$(function() {
+	$('#tarih').datepicker({
+		inline: true,
+		format: 'dd-mm-yy',
+		firstDay:1,
+	}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","today");
+});
+$("#bilesenkod" ).autocomplete({
+	source		: bilesen2,
+	minLength	: 1,
+	select		: function(event, ui){
+		changefun(ui.item);
+	}
+});
+$("#bilesenkod").change(function() {
+	changefun(this);
+});
+function changefun(elem){
+	var found = false;
+	if (elem != null){
+		for (i in bilesen) {
+			if(elem.value == bilesen[i].bilesenkod){
+				found = true;
+				//alert("selam kelam");
+				$("#bilesenid").val(bilesen[i].bilesenid);
+				$("#bilesenad").val(bilesen[i].bilesenad);
+				$("#firmaid").val(bilesen[i].firmaid);
+				$("#firmaad").val(bilesen[i].firmaad);
+				$("#bilesentipid").val(bilesen[i].bilesentipid);
+				if(bilesen[i].bilesentipid==<%= BilesenTip.HAMMADDE.value() %> ){
+					$("#malzemebirimad").text("Kg.");
+					$("#birimid_select").val("KG"); // KG
+					$("#birimid").val(3); // KG
+				}
+				else{
+					$("#malzemebirimad").text("Adet");
+					$("#birimid_select").val("Adet"); // Adet
+					$("#birimid").val(2); // Adet
+				}
+			}
+		}
+	}
+	if(!found){
+		$("#bilesenid").val("");
+		$("#bilesenad").val("");
+		$("#firmaid").val("");
+		$("#firmaad").val("");
+		$("#bilesentipid").val("");
+	}
+}
+</script>
+</body>
 </html>

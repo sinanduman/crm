@@ -1,38 +1,44 @@
 package crm.irfan;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 public final class ConnectionManager {
-    private static Connection con;
-    private static String url;
+    @Resource(name="jdbc/postgres")
     
-    public ConnectionManager(){
+    private static Connection con;
+    private static DataSource ds;
+    private static Context    ctx;
+    
+    public ConnectionManager() {
         ConnectionManager.connectionReady();
     }
     
     private static void connectionReady() {
         try {
-            //url = "jdbc:mysql://localhost:3306/irfandb";
-            //Class.forName("com.mysql.jdbc.Driver");
-            url = "jdbc:postgresql://localhost:5432/crm";
-            Class.forName("org.postgresql.Driver");
+            ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/postgres");
             try {
-                //con = DriverManager.getConnection(url, "root", "nana");
-                con = DriverManager.getConnection(url, "sinanduman", "nana");
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                con = ds.getConnection();
             }
-        } catch (ClassNotFoundException e) {
-            System.out.println(e);
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
         }
     }
-
+    
     public static Connection getConnection() {
         try {
             if (con == null || con.isClosed()) {
-                System.out.println("Hazir Degil!.. " );
+                System.out.println("Baglanti aciliyor!.. ");
                 connectionReady();
             }
         }

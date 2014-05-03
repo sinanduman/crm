@@ -8,14 +8,13 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
-	<link rel="stylesheet" href="css/siparis.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 
@@ -28,17 +27,7 @@
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
-<%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
-%>
-
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
+<%@ include file="logincheck.jsp" %>
 
 <div class="container">
 	<div class="row text-warning" style="text-align:center;">
@@ -62,8 +51,8 @@
 		}
 	</script>
 	<div class="row" ng-controller="YarimamulEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" name="yarimamulstokform" action="/irfanpls/yarimamulstok">
-			
+		<form class="form-horizontal" role="form" method="post" name="yarimamulstokform" action="yarimamulstok">
+
 			<div class="form-group">
 				<label for="bilesenid" class="col-xs-3 control-label">Yarımamül: </label>
 				<div class="col-xs-8">

@@ -5,36 +5,24 @@ public class User {
     private String  surname;
     private String  username;
     private String  password;
-    private Boolean admin;
-    private Boolean valid;
-    
+    private Integer admin;
     public User() {
     }
     
-    public User(String name, String surname, String username, String password, Boolean admin,
-            Boolean valid) {
+    public User(String name, String surname, String username, String password, Integer admin) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.password = password;
         this.admin = admin;
-        this.valid = valid;
     }
     
-    public Boolean isAdmin() {
+    public Integer isAdmin() {
         return admin;
     }
     
-    public void setAdmin(Boolean admin) {
+    public void setAdmin(Integer admin) {
         this.admin = admin;
-    }
-    
-    public Boolean isValid() {
-        return valid;
-    }
-    
-    public void setValid(Boolean valid) {
-        this.valid = valid;
     }
     
     public String getName() {

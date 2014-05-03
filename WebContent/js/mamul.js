@@ -1,7 +1,7 @@
 var mamulislemtip = {
 	add:"Bileşen Ekle",
 	update:"Bileşen Güncelle"
-}
+};
 var mamulApp = angular.module('mamulApp', []);
 mamulApp.controller('MamulCtrl',['$scope', function($scope){
 	var show = true;
@@ -18,16 +18,18 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		{id:2, ad:"KG"}
 	];
 	$scope.on = function(){
-		document.mamulform.birimid.selectedIndex = $scope.birimler[0].id;
+		document.mamulform.birimid_select.selectedIndex	= $scope.birimler[0].id;
+		document.mamulform.birimid.value				= document.mamulform.birimid_select.value;
 		show = true;
-	}
+	};
 	$scope.off = function(){
-		document.mamulform.birimid.selectedIndex = $scope.birimler[1].id;
+		document.mamulform.birimid_select.selectedIndex	= $scope.birimler[1].id;
+		document.mamulform.birimid.value				= document.mamulform.birimid_select.value;
 		show = false;
-	}
+	};
 	$scope.showState = function(){
 		return show;
-	}
+	};
 	$scope.saveBilesen = function() {
 		if(!is_positive(document.mamulform.miktar.value)){
 			alert("Bileşen Miktarı NÜMERİK bir değer olmalı!");
@@ -39,8 +41,8 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 			$scope.yenibilesen.hammaddeid	= document.mamulform.hammadde.options[document.mamulform.hammadde.selectedIndex].value;
 			$scope.yenibilesen.yarimamulad	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].text;
 			$scope.yenibilesen.yarimamulid	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].value;
-			$scope.yenibilesen.birimad		= document.mamulform.birimid.options[document.mamulform.birimid.selectedIndex].text;
-			$scope.yenibilesen.birimid		= document.mamulform.birimid.options[document.mamulform.birimid.selectedIndex].value;
+			$scope.yenibilesen.birimad		= document.mamulform.birimid_select.options[document.mamulform.birimid_select.selectedIndex].text;
+			$scope.yenibilesen.birimid		= document.mamulform.birimid_select.options[document.mamulform.birimid_select.selectedIndex].value;
 			if(show){
 				$scope.yenibilesen.uretimtipid	= $scope.tip[0].id;
 				$scope.yenibilesen.uretimtip	= $scope.tip[0].ad;
@@ -57,12 +59,12 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		} else {
 			for(i in $scope.bilesenler) {
 				if($scope.bilesenler[i].id == $scope.yenibilesen.id) {
-					$scope.yenibilesen.hammaddead 	= document.mamulform.hammadde.options[document.mamulform.hammadde.selectedIndex].text
-					$scope.yenibilesen.hammaddeid 	= document.mamulform.hammadde.options[document.mamulform.hammadde.selectedIndex].value
-					$scope.yenibilesen.yarimamulad	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].text
-					$scope.yenibilesen.yarimamulid	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].value
-					$scope.yenibilesen.birimad		= document.mamulform.birimid.options[document.mamulform.birimid.selectedIndex].text
-					$scope.yenibilesen.birimid		= document.mamulform.birimid.options[document.mamulform.birimid.selectedIndex].value
+					$scope.yenibilesen.hammaddead 	= document.mamulform.hammadde.options[document.mamulform.hammadde.selectedIndex].text;
+					$scope.yenibilesen.hammaddeid 	= document.mamulform.hammadde.options[document.mamulform.hammadde.selectedIndex].value;
+					$scope.yenibilesen.yarimamulad	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].text;
+					$scope.yenibilesen.yarimamulid	= document.mamulform.yarimamul.options[document.mamulform.yarimamul.selectedIndex].value;
+					$scope.yenibilesen.birimad		= document.mamulform.birimid_select.options[document.mamulform.birimid_select.selectedIndex].text;
+					$scope.yenibilesen.birimid		= document.mamulform.birimid_select.options[document.mamulform.birimid_select.selectedIndex].value;
 					if(show){
 						$scope.yenibilesen.uretimtipid	= $scope.tip[0].id;
 						$scope.yenibilesen.uretimtip	= $scope.tip[0].ad;
@@ -81,7 +83,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		}
 		$scope.yenibilesen = {};
 		document.mamulform.bilesen_ekle.textContent = mamulislemtip.add;
-	}
+	};
 
 	$scope.saveMamul = function() {	
 		if($scope.bilesenler.length==0) {
@@ -105,12 +107,14 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 				}
 			}
 		}
-	}
+	};
 
 	$scope.edit = function(id) {
 		for(i in $scope.bilesenler) {
 			if($scope.bilesenler[i].id == id) {
-				document.mamulform.birimid.value = $scope.bilesenler[i].birimid;
+				document.mamulform.birimid_select.value	= $scope.bilesenler[i].birimid;
+				document.mamulform.birimid.value		= $scope.bilesenler[i].birimid;
+				
 				/*1:Hammadde, 2:Yarimamul */
 				if($scope.bilesenler[i].uretimtipid==2){
 					$scope.bilesenler[i].uretimtip		= $scope.tip[1].ad;
@@ -132,7 +136,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 				document.mamulform.bilesen_ekle.textContent = mamulislemtip.update;
 			}
 		}
-	}
+	};
 	$scope.del = function(id) {
 		for(i in $scope.bilesenler) {
 			if($scope.bilesenler[i].id == id) {
@@ -141,7 +145,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 				document.mamulform.bilesen_ekle.textContent = mamulislemtip.add;
 			}
 		}
-	}
+	};
 }]);
 
 function YariMamulEkleCtrl($scope) {
@@ -162,7 +166,7 @@ function YariMamulEkleCtrl($scope) {
 				document.yarimamul_form.submit();
 			}
 		}
-	}
+	};
 }
 
 function updateMamulGo(url,id,action_form,islem){
@@ -170,6 +174,7 @@ function updateMamulGo(url,id,action_form,islem){
 	var f_firmaid	= action_form.liste_firmaid.value;
 	var f_kod		= $.trim(action_form.liste_kod.value);
 	var f_ad		= $.trim(action_form.liste_ad.value);
+	var f_figur		= $.trim(action_form.liste_figurid.value);
 	var f_cevrimsure= $.trim(action_form.liste_cevrimsuresi.value);
 	var f_islemid	= islem;
 	var alert_mesaj	= f_kod + " Kodlu " + f_ad;
@@ -186,11 +191,12 @@ function updateMamulGo(url,id,action_form,islem){
 			url: url,
 			type: "POST",
 			data: { 
-				bilesenid: f_bilesenid, 
-				firmaid: f_firmaid, 
-				bilesenkod: f_kod,
-				bilesenad: f_ad,
-				islemid: f_islemid,
+				bilesenid	: f_bilesenid, 
+				firmaid		: f_firmaid, 
+				bilesenkod	: f_kod,
+				bilesenad	: f_ad,
+				islemid		: f_islemid,
+				figur		: f_figur,
 				cevrimsuresi: f_cevrimsure
 			},
 			dataType: 'html',
@@ -204,7 +210,7 @@ function updateMamulGo(url,id,action_form,islem){
 		}).done(function( msg ) {
 			if(is_number( msg )){
 				$("#tr"+id).css('background-color','darkkhaki');
-				alert( f_kod + " Kodlu " + f_ad +" Mamül bilgisi başarıyla GÜNCELLENDİ" );
+				alert(alert_mesaj +" Mamül bilgisi başarıyla GÜNCELLENDİ" );
 			}
 			else{
 				alert("Hata:"+ msg + ":" );
@@ -224,8 +230,8 @@ function deleteMamulGo(url,id,action_form,islem){
 			url: url,
 			type: "POST",
 			data: { 
-				bilesenid: f_bilesenid, 
-				islemid: f_islemid
+				bilesenid:	f_bilesenid, 
+				islemid:	f_islemid
 			},
 			dataType: "html",
 			beforeSend: function ( xhr ) {

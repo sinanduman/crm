@@ -12,12 +12,10 @@ public class Bilesen {
     private String  birimad;
     private Integer firmaid;
     private String  firmaad;
-    private Integer cevrimsuresi;
     private Date    eklemetarihi;
     
-    public Bilesen(Integer id, String ad, String kod, Integer bilesentipid, String bilesentipad,
-            Integer birimid, String birimad, Integer firmaid, String firmaad, Integer cevrimsuresi,
-            Date eklemetarihi) {
+    public Bilesen(Integer id, String ad, String kod, Integer bilesentipid, String bilesentipad, Integer birimid,
+                    String birimad, Integer firmaid, String firmaad, Date eklemetarihi) {
         super();
         this.id = id;
         this.ad = ad;
@@ -28,7 +26,6 @@ public class Bilesen {
         this.birimad = birimad;
         this.firmaid = firmaid;
         this.firmaad = firmaad;
-        this.cevrimsuresi = cevrimsuresi;
         this.eklemetarihi = eklemetarihi;
     }
     
@@ -102,14 +99,6 @@ public class Bilesen {
     
     public void setFirmaad(String firmaad) {
         this.firmaad = firmaad;
-    }
-    
-    public Integer getCevrimsuresi() {
-        return cevrimsuresi;
-    }
-    
-    public void setCevrimsuresi(Integer cevrimsuresi) {
-        this.cevrimsuresi = cevrimsuresi;
     }
     
     public Date getEklemetarihi() {

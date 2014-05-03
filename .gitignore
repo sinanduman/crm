@@ -1,5 +1,6 @@
 # ignore all bin directories
 # matches "bin" in any subfolder
+*.json
 bin/
 build/
 .classpath

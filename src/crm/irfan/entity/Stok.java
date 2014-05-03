@@ -13,18 +13,24 @@ public class Stok {
     private String    birimad;
     private Integer   firmaid;
     private String    firmaad;
-    private Integer   miktar;
+    private String    miktar;
+    private Integer   kalan;
     private String    gkrno;
     private String    irsaliyeno;
     private String    lot;
     private Timestamp giristarihi;
     private Timestamp cikistarihi;
     private String    not;
+    private String    miktarstr;
+    private String    gkrnostr;
+    private String    stokidstr;
+    private Integer   islemyonu;
     
     public Stok(Integer id, Integer bilesenid, String bilesenad, String bilesenkod, Integer bilesentipid,
                     String bilesentipad, Integer birimid, String birimad, Integer firmaid, String firmaad,
-                    Integer miktar, String gkrno, String irsaliyeno, String lot, Timestamp giristarihi,
-                    Timestamp cikistarihi, String not) {
+                    String miktar, Integer kalan, String gkrno, String irsaliyeno, String lot, Timestamp giristarihi,
+                    Timestamp cikistarihi, String not, String miktarstr, String gkrnostr, String stokidstr,
+                    Integer islemyonu) {
         super();
         this.id = id;
         this.bilesenid = bilesenid;
@@ -37,12 +43,17 @@ public class Stok {
         this.firmaid = firmaid;
         this.firmaad = firmaad;
         this.miktar = miktar;
+        this.kalan = kalan;
         this.gkrno = gkrno;
         this.irsaliyeno = irsaliyeno;
         this.lot = lot;
         this.giristarihi = giristarihi;
         this.cikistarihi = cikistarihi;
         this.not = not;
+        this.miktarstr = miktarstr;
+        this.gkrnostr = gkrnostr;
+        this.stokidstr = stokidstr;
+        this.islemyonu = islemyonu;
     }
     
     public Integer getId() {
@@ -125,12 +136,20 @@ public class Stok {
         this.firmaad = firmaad;
     }
     
-    public Integer getMiktar() {
+    public String getMiktar() {
         return miktar;
     }
     
-    public void setMiktar(Integer miktar) {
+    public void setMiktar(String miktar) {
         this.miktar = miktar;
+    }
+    
+    public Integer getKalan() {
+        return kalan;
+    }
+    
+    public void setKalan(Integer kalan) {
+        this.kalan = kalan;
     }
     
     public String getGkrno() {
@@ -179,6 +198,38 @@ public class Stok {
     
     public void setNot(String not) {
         this.not = not;
+    }
+    
+    public String getMiktarstr() {
+        return miktarstr;
+    }
+    
+    public void setMiktarstr(String miktarstr) {
+        this.miktarstr = miktarstr;
+    }
+    
+    public String getGkrnostr() {
+        return gkrnostr;
+    }
+    
+    public void setGkrnostr(String gkrnostr) {
+        this.gkrnostr = gkrnostr;
+    }
+    
+    public String getStokidstr() {
+        return stokidstr;
+    }
+    
+    public void setStokidstr(String stokidstr) {
+        this.stokidstr = stokidstr;
+    }
+    
+    public Integer getIslemyonu() {
+        return islemyonu;
+    }
+    
+    public void setIslemyonu(Integer islemyonu) {
+        this.islemyonu = islemyonu;
     }
     
 }

@@ -1,15 +1,14 @@
 package crm.irfan.entity;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class Irsaliye {
     private Integer   id;
-    private Integer   irsaliyeno;
+    private String    irsaliyeno;
     private Timestamp olusturmatarihi;
     private Timestamp gonderimtarihi;
     
-    public Irsaliye(Integer id, Integer irsaliyeno, Timestamp olusturmatarihi, Timestamp gonderimtarihi) {
+    public Irsaliye(Integer id, String irsaliyeno, Timestamp olusturmatarihi, Timestamp gonderimtarihi) {
         super();
         this.id = id;
         this.irsaliyeno = irsaliyeno;
@@ -21,11 +20,11 @@ public class Irsaliye {
         return id;
     }
     
-    public Integer getIrsaliyeno() {
+    public String getIrsaliyeno() {
         return irsaliyeno;
     }
     
-    public void setIrsaliyeno(Integer irsaliyeno) {
+    public void setIrsaliyeno(String irsaliyeno) {
         this.irsaliyeno = irsaliyeno;
     }
     
@@ -37,16 +36,12 @@ public class Irsaliye {
         this.id = id;
     }
     
-    public String getOlusturmatarihi() {
-        String date = (this.olusturmatarihi != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm")
-                        .format(olusturmatarihi)) : "";
-        return date;
+    public Timestamp getOlusturmatarihi() {
+        return olusturmatarihi;
     }
     
-    public String getGonderimtarihi() {
-        String date = (this.gonderimtarihi != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm").format(gonderimtarihi))
-                        : "";
-        return date;
+    public Timestamp getGonderimtarihi() {
+        return gonderimtarihi;
     }
     
     public void setGonderimtarihi(Timestamp gonderimtarihi) {

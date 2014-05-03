@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import crm.irfan.entity.Calisan;
 import crm.irfan.entity.DurusSebep;
 import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
 import crm.irfan.entity.HataSebep;
 import crm.irfan.entity.Makina;
-import crm.irfan.entity.Siparis;
-import crm.irfan.entity.SiparisPlan;
-import crm.irfan.entity.SiparisTip;
+import crm.irfan.entity.Mamul;
+import crm.irfan.entity.UretimDurum;
+import crm.irfan.entity.UretimPlan;
 
 public class UretimTakipServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -26,47 +27,8 @@ public class UretimTakipServlet extends HttpServlet {
         super();
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        List<HataSebep> hatasebep = new ArrayList<HataSebep>();
-        hatasebep = DAOFunctions.hataSebepListeGetir();
-        
-        List<DurusSebep> durussebep = new ArrayList<DurusSebep>();
-        durussebep = DAOFunctions.durusSebepListeGetir();
-                
-        List<Makina> makina = new ArrayList<Makina>();
-        makina = DAOFunctions.makinaListeGetirTum(0);
-        
-        List<Calisan> calisan = new ArrayList<Calisan>();
-        calisan = DAOFunctions.calisanListeGetirTum();
-        
-        List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
-        
-        List<Siparis> siparis = new ArrayList<Siparis>();
-        siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.BEKLEYEN);
-        
-        int totalrecord = DAOFunctions.recordCount("siparisplan");
-        int page = 1;
-        if(request.getParameter("page") != null)
-            page = Integer.parseInt(request.getParameter("page"));
-        
-        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
-        
-        List<SiparisPlan> siparisplan = new ArrayList<SiparisPlan>();
-        siparisplan  = DAOFunctions.siparisPlanListeGetirTum(SiparisTip.BEKLEYEN,page);
-        
-        request.setAttribute("hatasebep", hatasebep);
-        request.setAttribute("durussebep", durussebep);
-        request.setAttribute("makina", makina);
-        request.setAttribute("calisan", calisan);
-        request.setAttribute("firma", firma);
-        request.setAttribute("siparis", siparis);
-        request.setAttribute("siparisplan", siparisplan);
-        request.setAttribute("totalrecord", totalrecord);
-        request.setAttribute("currentpage", page);
-        request.setAttribute("noofpages", noofpages);
-        request.getRequestDispatcher("uretimtakip.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {        
+        doPost(request, response);
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -76,87 +38,104 @@ public class UretimTakipServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         
-        //String baszaman = request.getParameter("bassaat").toString() +":"+ request.getParameter("basdakika").toString()+":"+"00";
-        //String bitzaman = request.getParameter("bitsaat").toString() +":"+ request.getParameter("bitdakika").toString()+":"+"00";
-        Integer islemid  = Integer.valueOf(request.getParameter("islemid"));
-        /*1:Update, 2:Completed, 3: Delete*/
-        Integer result = 0;
-        switch (islemid) {
-            case 1:
-                result = DAOFunctions.SiparisPlanGuncelle(
-                                request.getParameter("siparisplanid"),
-                                request.getParameter("miktar"),
-                                request.getParameter("makinaid"),
-                                request.getParameter("calisanid"),
-                                request.getParameter("tarih"),
-                                request.getParameter("bassaat"),
-                                request.getParameter("basdakika"),
-                                request.getParameter("bitsaat"),
-                                request.getParameter("bitdakika"),
-                                request.getParameter("hataid"),
-                                request.getParameter("hatamiktar"),
-                                request.getParameter("durusid"),
-                                request.getParameter("not")
+        String message      = "";
+        Boolean ajaxInAction= false;
+        
+        System.out.println(request.getParameter("islemid"));
+        if(request.getParameter("islemid")!=null) {
+            Integer islemid     = (request.getParameter("islemid")==null)?-1:Integer.valueOf(request.getParameter("islemid"));
+            String uretimplanid = request.getParameter("uretimplanid");        
+            String mamulid      = request.getParameter("mamulid");        
+            String uret_miktar  = request.getParameter("uretilenmiktar");
+            String hata_miktar  = (request.getParameter("hatalimiktar")==null || request.getParameter("hatalimiktar")=="") ? "0" : request.getParameter("hatalimiktar");
+            
+            if(islemid==3) {  /* Stok Yeterli mi ? */
+                //String result = DAOFunctions.stokYeterli(Integer.valueOf(uretimplanid), String mamulid, String miktar);
+                ajaxInAction    = true;
+                String result   = DAOFunctions.stokYeterli(
+                                Integer.valueOf(uretimplanid), 
+                                Integer.valueOf(mamulid),  
+                                Integer.valueOf(uret_miktar) + Integer.valueOf(hata_miktar)
                                 );
-                break;
-            case 2:
-                result = DAOFunctions.SiparisPlanTamamla(request.getParameter("siparisplanid"));
-                break;
-            case 3:
-                result = DAOFunctions.SiparisPlanSil(request.getParameter("siparisplanid"));
-                break;            
+                PrintWriter out = response.getWriter();
+                out.print(result);
+            }
+            else if(islemid==2) {  /* Silme */
+                ajaxInAction    = true;
+                String result   = DAOFunctions.uretimPlanSil(Integer.valueOf(uretimplanid));
+                PrintWriter out = response.getWriter();
+                out.print(result);
+            }
+            else if(islemid==1) {  /* Onaylama */
+                ajaxInAction    = true;
+                String result   = DAOFunctions.uretimPlanOk(Integer.valueOf(uretimplanid));
+                PrintWriter out = response.getWriter();
+                out.print(result);
+            }else if(islemid==0){ /* Takip ekleme */
+                System.out.println("islemid: " +request.getParameter("islemid"));
+                String baszaman = request.getParameter("bassaat").toString() +":"+ request.getParameter("basdakika").toString()+":"+"00";
+                String bitzaman = request.getParameter("bitsaat").toString() +":"+ request.getParameter("bitdakika").toString()+":"+"00";
+                String hataliad = (request.getParameter("hataliadet").trim() == "")?"0":request.getParameter("hataliadet");
+                int result = DAOFunctions.uretimTakipEkleGuncelle(
+                                new String(request.getParameter("mamulid").getBytes("UTF-8")),
+                                new String(request.getParameter("uretimadet").getBytes("UTF-8")),
+                                hataliad,
+                                new String(request.getParameter("makinaid").getBytes("UTF-8")),
+                                new String(request.getParameter("calisanid").getBytes("UTF-8")),
+                                new String(request.getParameter("tarih").getBytes("UTF-8")),                        
+                                baszaman,
+                                bitzaman,
+                                new String(request.getParameter("hatasebepid").getBytes("UTF-8")),
+                                new String(request.getParameter("durussebepid").getBytes("UTF-8")),
+                                new String(request.getParameter("duruszaman").getBytes("UTF-8")),
+                                Integer.valueOf(uretimplanid)
+                                );
+                message = (result==-1) ? "Hata oluştu" : "";
+            }
         }
-        PrintWriter out = response.getWriter();
-        out.print(result);
-        
-        /*
-        PrintWriter out = response.getWriter();
-        out.println(request.getParameter("siparisplanid"));
-        out.println(request.getParameter("miktar"));
-        out.println(request.getParameter("makinaid"));
-        out.println(request.getParameter("calisanid"));
-        out.println(request.getParameter("tarih"));
-        out.println(request.getParameter("bassaat"));
-        out.println(request.getParameter("basdakika"));
-        out.println(request.getParameter("bitsaat"));
-        out.println(request.getParameter("bitdakika"));
-        out.println(request.getParameter("islemid"));
-                
-        
-        List<SiparisPlan> siparisplan = new ArrayList<SiparisPlan>();
-        siparisplan = DAOFunctions.siparisPlanEkle(
-                        new String(request.getParameter("siparis").getBytes("UTF-8")),
-                        new String(request.getParameter("miktar").getBytes("UTF-8")),
-                        new String(request.getParameter("makina").getBytes("UTF-8")),
-                        new String(request.getParameter("calisan").getBytes("UTF-8")),
-                        new String(request.getParameter("tarih").getBytes("UTF-8")),
-                        baszaman,
-                        bitzaman,
-                        new String(request.getParameter("not").getBytes("UTF-8")));
-        
-        List<Birim> birim = new ArrayList<Birim>();
-        birim = DAOFunctions.birimListeGetirTum();
-        
-        List<Makina> makina = new ArrayList<Makina>();
-        makina = DAOFunctions.makinaListeGetirTum();
-        
-        List<Calisan> calisan = new ArrayList<Calisan>();
-        calisan = DAOFunctions.calisanListeGetirTum();
-        
-        List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
-        
-        List<Siparis> siparis = new ArrayList<Siparis>();
-        siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.BEKLEYEN);
-        
-        request.setAttribute("birim", birim);
-        request.setAttribute("makina", makina);
-        request.setAttribute("calisan", calisan);
-        request.setAttribute("firma", firma);
-        request.setAttribute("siparis", siparis);
-        request.setAttribute("siparisplan", siparisplan);
-        request.getRequestDispatcher("uretimtakip.jsp").forward(request, response);
-        */
+        if(!ajaxInAction) {
+            List<HataSebep> hatasebep = new ArrayList<HataSebep>();
+            hatasebep = DAOFunctions.hataSebepListeGetir();
+            
+            List<DurusSebep> durussebep = new ArrayList<DurusSebep>();
+            durussebep = DAOFunctions.durusSebepListeGetir();
+            
+            List<Makina> makina = new ArrayList<Makina>();
+            makina = DAOFunctions.makinaListeGetirTum(0);
+            
+            List<Calisan> calisan = new ArrayList<Calisan>();
+            calisan = DAOFunctions.calisanListeGetirTum(0);
+            
+            List<Firma> firma = new ArrayList<Firma>();
+            firma = DAOFunctions.firmaListeGetirTum(0);
+            
+            List<Mamul> mamul = new ArrayList<Mamul>();
+            mamul = DAOFunctions.mamulListeGetir(0);
+            
+            int totalrecord = DAOFunctions.recordCount("uretimplan"," where tamamlandi=0 ");
+            int page = 1;
+            if(request.getParameter("page") != null)
+                page = Integer.parseInt(request.getParameter("page"));
+            
+            int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+            
+            List<UretimPlan> uretimplan = new ArrayList<UretimPlan>();
+            uretimplan  = DAOFunctions.uretimPlanListeGetir(UretimDurum.BEKLEYEN, page, "");
+            
+            request.setAttribute("hatasebep", hatasebep);
+            request.setAttribute("durussebep", durussebep);
+            request.setAttribute("makina", makina);
+            request.setAttribute("calisan", calisan);
+            request.setAttribute("firma", firma);
+            request.setAttribute("mamul", mamul);
+            request.setAttribute("uretimplan", uretimplan);
+            request.setAttribute("totalrecord", totalrecord);
+            request.setAttribute("currentpage", page);
+            request.setAttribute("noofpages", noofpages);
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("uretimtakip.jsp").forward(request, response);
+            
+        }        
     }
     
 }

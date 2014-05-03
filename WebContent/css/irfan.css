@@ -15,34 +15,48 @@
 }
 .tableplan{
 	width:100%;
-	background-color:#E1DFBA;
-	/*background-color:##E6E6E6;*/
+	/*background-color:#E1E1B8; #E1DFBA*/
 	border-top:2px solid darkkhaki;
+	border-left: 1px dotted darkkhaki;
+	border-right: 1px dotted darkkhaki;
+	margin-top: 10px;
+	margin-bottom: 20px;
 }
-.tableplan tr {
-	border-bottom:1px solid darkkhaki;
-}
-.tableplan td {
+.tableplan td {	
 	vertical-align: top;
-	padding: 5px 2px 5px 2px;
+	padding: 3px;
+	border-right: 1px dotted darkkhaki;
+	border-bottom: 1px dotted darkkhaki;
+}
+
+.tableplan th {
+	color:green;
+	vertical-align: top;
+	padding: 3px;
+	border-right: 1px dotted darkkhaki;
+	border-bottom: 1px solid darkkhaki;
+}
+
+.tableplan tr:nth-of-type(odd) {
+	background-color: #E1E1B8;
+	border-bottom: 1px solid darkkhaki;
 }
 
 /* Pagination */
-
 #pagination {
 	border: 1px solid darkkhaki;
 	margin-top: 5px;
-	margin-bottom:5px;
+	margin-bottom: 5px;
 	text-align: center;
 }
 #pagination td.link_diger{
-	color: white;
+	color: #f6f6f6;
 	font-weight: bold;
 	background-color: darkkhaki;
 	padding: 4px 8px;
 }
 #pagination td a{
-	color: white;
+	color: #f6f6f6;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -51,7 +65,7 @@
 	color: darkkhaki;
 	font-weight: bold;
 	/*  background-color: #E1DDBC; */
-	background-color: #E1DDBC;
+	/*background-color: #E1DDBC;*/
 	padding: 4px 8px;
 }
 
@@ -60,7 +74,7 @@
 	text-decoration: none;
 	font-size: 12px;
 	background:goldenrod;
-	color:#fff;
+	color: #f6f6f6;
 	border:2px solid khaki;
 }
 #pagination input[type=button].nolink {
@@ -68,10 +82,125 @@
 	text-decoration: none;
 	font-size: 12px;
 	background:darkkhaki;
-	color:#fff;
+	color: #f6f6f6;
 	border:2px solid khaki;
 }
 #pagination input[type=button]:hover {
 	font-weight: normal;
 	background: darkkhaki;
+}
+select.time{
+	width: 60px; 
+	display: inline-block !important;
+}
+select.xs{
+	width: 80px; 
+	display: inline-block !important;
+}
+select.xm{
+	width: 120px; 
+	display: inline-block !important;
+}
+select.small{
+	width: 150px; 
+	display: inline-block !important;
+}
+input.xs, textarea.xs, select.xs{
+	width: 80px; 
+	display: inline-block !important;
+}
+input.xm, textarea.xm, select.xm{
+	width: 120px; 
+	display: inline-block !important;
+}
+input.small, textarea.small, select.small{
+	width: 150px; 
+	display: inline-block !important;
+}
+input.normal, textarea.normal, select.normal{
+	width: 200px; 
+	display: inline-block !important;
+}
+input.big, textarea.big, select.big {
+	width: 300px; 
+	display: inline-block !important;
+}
+label.bgdarkkhaki{
+	font-size: 12px;
+	background-color: #E1DFBA;
+	padding: 2px;
+	margin-top: 2px;
+	border-bottom: 1px solid darkkhaki;	
+}
+
+label.bgsaydam{
+	font-size: 12px;
+	background-color: transparent;
+	padding: 2px;
+	margin-top: 2px;
+	border-bottom: 1px solid transparent;
+	line-height: 2em !important;
+}
+
+label.text-baslik{
+	font-size: 12px;
+	color:green;
+	background-color: #E1DFBA;
+	padding: 2px;
+	margin-top: 2px;
+	border-bottom: 1px solid darkkhaki;
+	line-height: 2em !important;
+}
+
+button[disabled], input[disabled], textarea[disabled],
+button[readonly], input[readonly], textarea[readonly] {
+	cursor: default;
+	background-color: #eee;
+}
+/*
+button[disabled]:focus, input[disabled]:focus,
+button[readonly]:focus, input[readonly]:focus  {
+	border-color: #a47e3c;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #dbc59e;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #dbc59e;
+}
+*/
+.bb-alert {
+	position: fixed;
+	bottom: 25%;
+	right: 0;
+	margin-bottom: 0;
+	font-size: 1em;
+	padding: 1em 1.3em;
+	z-index: 2000;
+}
+.birim{
+	font-size:12px;
+}
+div.size12px{
+	font-size:12px;
+}
+.rounded{
+	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-weight:300 !important;
+	font-size:1.3em;	
+}
+
+.roundedmini{
+	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-weight:300 !important;
+	font-size:1.1em;	
+}
+
+.loginclass{
+	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
+	/* font-family:"lucida grande", tahoma, verdana, arial, sans-serif; */ 
+	font-size: 1em;
+	font-weight:300;
+}
+.color-chocolate {
+	color: chocolate;
+}
+.color-red {
+	color: #E21E27;
 }

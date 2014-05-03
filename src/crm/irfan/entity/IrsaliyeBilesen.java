@@ -1,31 +1,41 @@
 package crm.irfan.entity;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class IrsaliyeBilesen {
     private Integer   id;
     private Integer   irsaliyeid;
-    private Integer   irsaliyebilesenid;
+    private String    irsaliyeno;
+    private Integer   firmaid;
+    private String    firmaad;
     private Integer   mamulid;
     private String    mamulad;
     private String    mamulkod;
+    private Integer   gkrno;
+    private Integer   stokid;
     private Integer   miktar;
     private Timestamp olusturmatarihi;
     private Timestamp gonderimtarihi;
+    private String    not;
     
-    public IrsaliyeBilesen(Integer id, Integer irsaliyeid, Integer irsaliyebilesenid, Integer mamulid, String mamulad,
-                    String mamulkod, Integer miktar, Timestamp olusturmatarihi, Timestamp gonderimtarihi) {
+    public IrsaliyeBilesen(Integer id, Integer irsaliyeid, String irsaliyeno, Integer firmaid, String firmaad,
+                    Integer mamulid, String mamulad, String mamulkod, Integer gkrno, Integer stokid, Integer miktar,
+                    Timestamp olusturmatarihi, Timestamp gonderimtarihi, String not) {
         super();
         this.id = id;
         this.irsaliyeid = irsaliyeid;
-        this.irsaliyebilesenid = irsaliyebilesenid;
+        this.irsaliyeno = irsaliyeno;
+        this.firmaid = firmaid;
+        this.firmaad = firmaad;
         this.mamulid = mamulid;
         this.mamulad = mamulad;
         this.mamulkod = mamulkod;
+        this.gkrno = gkrno;
+        this.stokid = stokid;
         this.miktar = miktar;
         this.olusturmatarihi = olusturmatarihi;
         this.gonderimtarihi = gonderimtarihi;
+        this.not = not;
     }
     
     public Integer getId() {
@@ -44,12 +54,28 @@ public class IrsaliyeBilesen {
         this.irsaliyeid = irsaliyeid;
     }
     
-    public Integer getIrsaliyebilesenid() {
-        return irsaliyebilesenid;
+    public String getIrsaliyeno() {
+        return irsaliyeno;
     }
     
-    public void setIrsaliyebilesenid(Integer irsaliyebilesenid) {
-        this.irsaliyebilesenid = irsaliyebilesenid;
+    public void setIrsaliyeno(String irsaliyeno) {
+        this.irsaliyeno = irsaliyeno;
+    }
+    
+    public Integer getFirmaid() {
+        return firmaid;
+    }
+    
+    public void setFirmaid(Integer firmaid) {
+        this.firmaid = firmaid;
+    }
+    
+    public String getFirmaad() {
+        return firmaad;
+    }
+    
+    public void setFirmaad(String firmaad) {
+        this.firmaad = firmaad;
     }
     
     public Integer getMamulid() {
@@ -76,6 +102,22 @@ public class IrsaliyeBilesen {
         this.mamulkod = mamulkod;
     }
     
+    public Integer getGkrno() {
+        return gkrno;
+    }
+    
+    public void setGkrno(Integer gkrno) {
+        this.gkrno = gkrno;
+    }
+    
+    public Integer getStokid() {
+        return stokid;
+    }
+    
+    public void setStokid(Integer stokid) {
+        this.stokid = stokid;
+    }
+    
     public Integer getMiktar() {
         return miktar;
     }
@@ -84,24 +126,28 @@ public class IrsaliyeBilesen {
         this.miktar = miktar;
     }
     
-    public String getOlusturmatarihi() {
-        String date = (this.olusturmatarihi != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm")
-                        .format(olusturmatarihi)) : "";
-        return date;
+    public Timestamp getOlusturmatarihi() {
+        return olusturmatarihi;
     }
     
     public void setOlusturmatarihi(Timestamp olusturmatarihi) {
         this.olusturmatarihi = olusturmatarihi;
     }
     
+    public Timestamp getGonderimtarihi() {
+        return gonderimtarihi;
+    }
+    
     public void setGonderimtarihi(Timestamp gonderimtarihi) {
         this.gonderimtarihi = gonderimtarihi;
     }
     
-    public String getGonderimtarihi() {
-        String date = (this.gonderimtarihi != null) ? (new SimpleDateFormat("yyyy-MM-dd HH:mm").format(gonderimtarihi))
-                        : "";
-        return date;
+    public String getNot() {
+        return not;
+    }
+    
+    public void setNot(String not) {
+        this.not = not;
     }
     
 }

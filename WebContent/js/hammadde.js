@@ -1,18 +1,21 @@
 function HammaddeEkleCtrl($scope) {
 	$scope.hammaddeEkle = function(){
 		var message	= "";
-		if($.trim(document.hammadde_form.hamkod.value)==""){
-			message += "Hammadde Kodu giriniz!\n";
+		if($.trim($("#hamkod").val())==""){
+			message += "Malzeme Kodu giriniz!\n";
 		}
-		if($.trim(document.hammadde_form.hamad.value)==""){
-			message += "Hammadde Adı giriniz!\n";
+		if($.trim($("#hamad").val())==""){
+			message += "Malzeme Adı giriniz!\n";
+		}
+		if($("#hamtip").val()!=$("#hambirim").val()){
+			message += "Malzeme Tipi ve Birimi uyuşmamaktadır!\n";
 		}
 		if(message!=""){
 			alert(message);
 			return false;
 		}
 		else{
-			if(confirm('Hammadde EKLEMEYİ onaylıyor musun?')){
+			if(confirm('Malzeme EKLEMEYİ onaylıyor musun?')){
 				document.hammadde_form.submit();
 			}
 		}
@@ -27,10 +30,10 @@ function updateHammaddeGo(url,id,action_form,islem){
 	var f_islemid	= islem;
 	var alert_mesaj	= f_kod + " Kodlu " + f_ad;
 	if(f_kod=="" || f_ad=="" ){
-		alert("Hammade ADI veya KODU boş olamaz!");
+		alert("Malzeme ADI veya KODU boş olamaz!");
 		return false;
 	}
-	if(confirm(alert_mesaj +"\n\n" + "Hammadde bilgisini GÜNCELLEMEK istediğinden"+"\n\n"+"Emin misin?")){
+	if(confirm(alert_mesaj +"\n\n" + "Malzeme bilgisini GÜNCELLEMEK istediğinden"+"\n\n"+"Emin misin?")){
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -53,7 +56,7 @@ function updateHammaddeGo(url,id,action_form,islem){
 		}).done(function( msg ) {
 			if(is_number( msg )){
 				$("#tr"+id).css('background-color','darkkhaki');
-				alert( f_kod + " Kodlu " + f_ad +" Hammadde bilgisi başarıyla GÜNCELLENDİ" );
+				alert( f_kod + " Kodlu " + f_ad +" Malzeme bilgisi başarıyla GÜNCELLENDİ" );
 			}
 			else{
 				alert("Hata:"+ msg + ":" );
@@ -63,13 +66,11 @@ function updateHammaddeGo(url,id,action_form,islem){
 }
 function deleteHammaddeGo(url,id,action_form,islem){
 	var f_bilesenid	= id;
-	var f_birimid	= action_form.liste_birimid.value;
-	var f_firmaid	= action_form.liste_firmaid.value;
 	var f_kod		= $.trim(action_form.liste_kod.value);
 	var f_ad		= $.trim(action_form.liste_ad.value);
 	var f_islemid	= islem;
 	var alert_mesaj	= f_kod + " Kodlu " + f_ad;
-	if(confirm(alert_mesaj +"\n\n" + "Hammadde bilgisini SİLMEK istediğinden" +"\n\n" + "Emin misin?")){
+	if(confirm(alert_mesaj +"\n\n" + "Malzeme bilgisini SİLMEK istediğinden" +"\n\n" + "Emin misin?")){
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -88,7 +89,7 @@ function deleteHammaddeGo(url,id,action_form,islem){
 		}).done(function( msg ) {
 			if(is_number( msg )){					
 				$("#tr"+id).css("display","none");
-				alert( f_kod + " Kodlu " + f_ad +" Hammadde bilgisi başarıyla SİLİNDİ" );
+				alert( f_kod + " Kodlu " + f_ad +" Malzeme bilgisi başarıyla SİLİNDİ" );
 			}
 			else{
 				alert("Hata: "+ msg );

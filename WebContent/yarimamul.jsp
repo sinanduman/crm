@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
+	<title><%= Genel.TITLE %></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -27,59 +27,19 @@
 <body>
 <%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
 
-<%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
-%>
+<%@ include file="logincheck.jsp" %>
+
 <%
 List<Firma> firma = (List<Firma>) request.getAttribute("firma");
 List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 %>
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
 
 <div class="container">
 	<div class="row text-danger" style="text-align:center;">
 		<label class="text-danger">Yarımamül Ekleme</label>
 	</div>
-	<script type="text/javascript">
-		function YariMamulEkleCtrl($scope, $http) {
-			$scope.yarimamulEkle = function () {
-				return false;
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				//console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/irfanpls/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8",
-						"Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
-			}
-		}
-	</script>
 	<div class="row" ng-controller="YariMamulEkleCtrl">
-		<form class="form-horizontal" role="form" name="yarimamul_form"  method="post" action="/irfanpls/yarimamul">
+		<form class="form-horizontal" role="form" name="yarimamul_form"  method="post" action="yarimamul">
 			<div class="form-group">
 				<label for="yarimamulkod" class="col-xs-3 control-label">Yarımamül Kodu: </label>
 
@@ -120,7 +80,7 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 			</div>
 			<div class="form-group">
 				<label for="yarimamulfirma" class="col-xs-3 control-label">Tedarikçi: </label>
-				
+
 				<div class="col-xs-8">
 					<select class="form-control" name="yarimamulfirma">
 						<%
@@ -202,8 +162,8 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 							</select>
 						</td>
 						<td>
-							<input class="updateHref" type="button" id="updateButton<%=y.getId()%>" value="Gün. &rarr;" onclick="javascript:updateYarimamulGo('/irfanpls/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,1);">
-							<input class="deleteHref" type="button" id="deleteButton<%=y.getId()%>" value="Sil &rarr;" onclick="javascript:deleteYarimamulGo('/irfanpls/yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,3);">
+							<input class="updateHref" type="button" id="updateButton<%=y.getId()%>" value="Gün. &rarr;" onclick="javascript:updateYarimamulGo('yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,1);">
+							<input class="deleteHref" type="button" id="deleteButton<%=y.getId()%>" value="Sil &rarr;" onclick="javascript:deleteYarimamulGo('yarimamul',<%=y.getId()%>,document.action_form<%=y.getId()%>,3);">
 						</td>
 					</tr>
 					</form>

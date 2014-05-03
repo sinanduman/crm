@@ -107,7 +107,13 @@ public class AjaxUtils extends HttpServlet {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                temp.add(new Calisan(rs.getInt("id"), rs.getString("adsoy"), rs.getString("gorev")));
+                temp.add(new Calisan(
+                                rs.getInt("id"), 
+                                rs.getString("ad"), 
+                                rs.getString("soyad"), 
+                                rs.getString("gorev")
+                                )
+                );
             }
         } catch (SQLException e) {
             System.err.println(e.getStackTrace());

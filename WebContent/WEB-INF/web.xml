@@ -85,16 +85,6 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>DepoServlet</display-name>
-    <servlet-name>DepoServlet</servlet-name>
-    <servlet-class>crm.irfan.DepoServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DepoServlet</servlet-name>
-    <url-pattern>/depo</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
     <display-name>MakinaServlet</display-name>
     <servlet-name>MakinaServlet</servlet-name>
     <servlet-class>crm.irfan.MakinaServlet</servlet-class>
@@ -183,6 +173,7 @@
     <servlet-name>UretimTakipServlet</servlet-name>
     <url-pattern>/uretimtakip</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>IrsaliyeServlet</display-name>
@@ -193,4 +184,74 @@
     <servlet-name>IrsaliyeServlet</servlet-name>
     <url-pattern>/irsaliye</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>IrsaliyeGonderServlet</display-name>
+    <servlet-name>IrsaliyeGonderServlet</servlet-name>
+    <servlet-class>crm.irfan.IrsaliyeGonderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>IrsaliyeGonderServlet</servlet-name>
+    <url-pattern>/irsaliyegonder</url-pattern>
+  </servlet-mapping> 
+  
+  <servlet>
+    <description></description>
+    <display-name>ExcelServlet</display-name>
+    <servlet-name>ExcelServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelServlet</servlet-name>
+    <url-pattern>/excel</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExcelStokServlet</display-name>
+    <servlet-name>ExcelStokServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelStokServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelStokServlet</servlet-name>
+    <url-pattern>/excelstok</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExcelMamulServlet</display-name>
+    <servlet-name>ExcelMamulServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelMamulServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelMamulServlet</servlet-name>
+    <url-pattern>/excelmamulstok</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>StokRaporServlet</display-name>
+    <servlet-name>StokRaporServlet</servlet-name>
+    <servlet-class>crm.irfan.StokRaporServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StokRaporServlet</servlet-name>
+    <url-pattern>/stokrapor</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>UretimRaporServlet</display-name>
+    <servlet-name>UretimRaporServlet</servlet-name>
+    <servlet-class>crm.irfan.UretimRaporServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UretimRaporServlet</servlet-name>
+    <url-pattern>/uretimrapor</url-pattern>
+  </servlet-mapping>
+  
+  <resource-ref>
+    <description>postgreSQL Datasource</description>
+    <res-ref-name>jdbc/postgres</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
 </web-app>

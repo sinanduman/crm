@@ -27,10 +27,10 @@ public class TamamlananSiparisServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         List<Bilesen> bilesen = new ArrayList<Bilesen>();
-        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
+        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL,0);
         
         List<Siparis> siparis = new ArrayList<Siparis>();
-        siparis = DAOFunctions.siparisListeGetirTum(SiparisTip.TAMAMLANMIS);
+        siparis = DAOFunctions.siparisListeGetir(SiparisTip.TAMAMLANMIS);
         
         request.setAttribute("bilesen", bilesen);
         request.setAttribute("siparis", siparis);
@@ -46,7 +46,7 @@ public class TamamlananSiparisServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         List<Bilesen> bilesen = new ArrayList<Bilesen>();
-        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL);
+        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.MAMUL,0);
         
         List<Siparis> siparis = new ArrayList<Siparis>();
         siparis = DAOFunctions.siparisEkle(
@@ -58,7 +58,7 @@ public class TamamlananSiparisServlet extends HttpServlet {
         birim = DAOFunctions.birimListeGetirTum();
         
         List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum();
+        firma = DAOFunctions.firmaListeGetirTum(0);
         
         request.setAttribute("firma", firma);
         request.setAttribute("birim", birim);

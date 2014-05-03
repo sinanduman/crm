@@ -1,22 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="crm.irfan.User, crm.irfan.entity.*,java.util.List" %>
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title>Irfan Plastik</title>
-
+	<title><%= Genel.TITLE %></title>
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/siparis.css">
+	<link rel="stylesheet" href="css/irfan.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
+	<link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -25,123 +26,123 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.Calisan,java.util.List" %>
+
+<%@ include file="logincheck.jsp" %>
 
 <%
-	Boolean loggedin = (Boolean) session.getAttribute("loggedin");
-	if (loggedin == null || !loggedin) {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-	}
-	User user = (User) session.getAttribute("user");
+	List<Calisan> calisan = (List<Calisan>) request.getAttribute("calisan");
+	String message = (String) request.getAttribute("message");
 %>
-
-<jsp:include page="navigate.jsp">
-	<jsp:param value="user" name="user"/>
-</jsp:include>
 
 <div class="container">
 	<div class="row text-danger" style="text-align:center;">
-		<label class="text-danger">Çalışan Ekleme</label>
+		<div class="col-xs-8">
+			<label class="text-danger rounded">Calısan Ekleme</label>
+		</div>
 	</div>
-	<script type="text/javascript">
-		function CalisanEkleCtrl($scope, $http) {
-			$scope.calisanEkle = function () {
-				//alert($scope.adsoy + " : " + $scope.gorev);
-				console.log($scope.adsoy + ' : ' + $scope.gorev);
-				$.ajax({
-					url: '/irfanpls/ajaxutils',
-					method: 'post',
-					crossDomain: true,
-					data: {username: $scope.adsoy, password: $scope.gorev},
-					headers: {
-						Accept: "text/plain; charset=utf-8",
-						"Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-					},
-					success: function (data, textStatus, xhr) {
-						console.log(data);
-					},
-					error: function (xhr, textStatus, errorThrown) {
-						console.log("Hata Oluştu: " + textStatus + " , " + errorThrown);
-					}
-				}).done(function (msg) {
-							if (msg) {
-								console.log(name + " ürünün Stok bilgisi başarıyla GÜNCELLENDİ");
-							}
-							else {
-								console.log("Hata: " + msg);
-							}
-						});
-			}
-		}
-	</script>
-	<div class="row" ng-controller="CalisanEkleCtrl">
-		<form class="form-horizontal" role="form" method="post" action="/irfanpls/calisan">
-			<div class="form-group">
-				<label for="adsoy" class="col-xs-3 control-label">Adı Soyadı: </label>
-
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="adsoy" ng-model="adsoy" placeholder="Adı Soyadı">
+	<div class="row">
+		<form class="form-horizontal" method="post" name="calisanform" id="calisanform" action="calisan">
+			<div class="form-group col-xs-8">
+				<label for="ad" class="col-xs-3 control-label text-baslik">Adı: </label>
+				<div>
+					<input type="text" class="form-control big" name="ad" id="ad" placeholder="Adı" autocomplete="off">
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="gorev" class="col-xs-3 control-label">Görevi: </label>
-
-				<div class="col-xs-8">
-					<input type="text" class="form-control" name="gorev" ng-model="gorev" placeholder="Görevi">
+			<div class="form-group col-xs-8">
+				<label for="soyad" class="col-xs-3 control-label text-baslik">Soyadı: </label>
+				<div>
+					<input type="text" class="form-control big" name="soyad" id="soyad" placeholder="Soyadı" autocomplete="off">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group col-xs-8">
+				<label for="gorev" class="col-xs-3 control-label text-baslik">Görevi: </label>
+				<div>
+					<input type="text" class="form-control big" name="gorev" id="gorev" placeholder="Görevi" autocomplete="off">
+				</div>
+			</div>
+			<div class="form-group col-xs-8">
 				<label class="col-xs-3 control-label">&nbsp;</label>
-
-				<div class="col-xs-8">
-					<button type="submit" class="btn btn-warning">Ekle</button>
+				<div>
+					<button type="submit" class="btn btn-danger">Ekle</button>
 				</div>
 			</div>
 		</form>
 	</div>
+	<!-- ALERT BOX -->
+	<% 
+	if(message.equals("0")) {
+	    %>
+		<div class="row col-xs-8 alert alert-success">
+			<strong>Başarılı</strong> olarak eklendi!
+		</div>
+		<%
+	}
+	else if(!message.equals("") && message.length()>1){
+	    %>
+		<div class="row col-xs-8 alert alert-danger">
+			<strong>Hata!</strong><%= message %>
+		</div>
+		<%
+	}
+	%>
+	<!-- ALERT BOX -->
 	<%
-		List<Calisan> calisan = (List<Calisan>) request.getAttribute("calisan");
 		int sayac = 0;
 	%>
-
 	<div class="row" style="font-size:12px;">
-		<div class="container">
-			<div class="col-sm-3"></div>
-			<div class="col-sm-8">
-				<table class="tableplan">
-					<% for (Calisan c : calisan) { %>
-					<% if (sayac++ == 0) { %>
-					<tr>
-						<td><label class="text-success">Adsoy</label></td>
-						<td><label class="text-success">Görev</label></td>
-						<td><label class="text-success">Aksiyon</label></td>
-					</tr>
-					<% } %>
-					<tr>
-						<td><%= c.getAdsoy() %>
-						</td>
-						<td><%= c.getGorev() %>
-						</td>
-						<td>
-							<input class="updateHref" type="button" value="Guncelle &rarr;">
-							<input class="deleteHref" type="button" value="Sil &rarr;">
-						</td>
-					</tr>
-					<% } %>
-				</table>
-			</div>
-			<div class="col-sm-1"></div>
+		<div class="col-sm-8">
+			<table class="tableplan">
+				<% for (Calisan c : calisan) { %>
+				<% if (sayac++ == 0) { %>
+				<tr>
+					<td><label class="text-success">Adı</label></td>
+					<td><label class="text-success">Soyadı</label></td>
+					<td><label class="text-success">Görev</label></td>
+					<td><label class="text-success">Aksiyon</label></td>
+				</tr>
+				<% } %>
+				<form name="action_form<%=c.getId()%>" id="action_form<%=c.getId()%>">
+				<tr id="tr<%=c.getId() %>">
+					<td><input type="text" class="form-control" value="<%= c.getAd() %>" name="liste_calisanad" id="liste_calisanad" autocomplete="off"></td>
+					<td><input type="text" class="form-control" value="<%= c.getSoyad() %>" name="liste_calisansoyad" id="liste_calisansoyad" autocomplete="off"></td>
+					<td><input type="text" class="form-control" value="<%= c.getGorev() %>" name="liste_calisangorev" id="liste_calisangorev" autocomplete="off"></td>
+					<td>
+						<div id="div<%= c.getId() %>" class="text-center">
+							<a href="javascript:updateCalisanGo('calisan',<%=c.getId()%>,document.action_form<%=c.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a> 
+							<a href="javascript:deleteCalisanGo('calisan',<%=c.getId()%>,document.action_form<%=c.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+						</div>
+					</td>
+				</tr>
+				</form>
+				<% } %>
+			</table>
+			<jsp:include page="paging.jsp" flush="true" >
+				<jsp:param value="noofpages" name="noofpages"/>
+				<jsp:param value="currentpage" name="currentpage"/>
+				<jsp:param value="calisan" name="pagename"/>
+			</jsp:include>
 		</div>
+		<div class="col-sm-1"></div>
 	</div>
 
 
 </div>
 
 
-<script src="js/angular.min.js"></script>
-<script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/irfan.js" type="text/javascript"></script>
+<script	src="js/calisan.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
+
+<script>
+$(".calisan").attr("readonly","readonly");
+$('.calisan').blur(function(){
+	$(this).attr("readonly","readonly");
+});
+$('.calisan').click(function(){
+	$(this).removeAttr("readonly");
+});
+</script>
 </body>
 
 </html>
