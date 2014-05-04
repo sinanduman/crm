@@ -233,29 +233,11 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 		<%--For displaying Previous link except for the 1st page --%>
 		<%--For displaying Page numbers.
 		The when condition does not display a link for the current page--%>
-		<c:if test="${noofpages > 1}">
-		<table id="pagination">
-			<tr>
-				<c:if test="${currentpage != 1}">
-					<td class="link_diger"><a href="uretimtakip?page=${currentpage - 1}">Önceki</a></td>
-				</c:if>
-				<c:forEach begin="1" end="${noofpages}" var="i">
-					<c:choose>
-						<c:when test="${currentpage eq i}">
-							<td class="link_aktif">${i}</td>
-						</c:when>
-						<c:otherwise>
-							<td class="link_diger"><a href="uretimtakip?page=${i}">${i}</a></td>
-						</c:otherwise>
-					</c:choose>
-				</c:forEach>
-				<%--For displaying Next link --%>
-				<c:if test="${currentpage lt noofpages}">
-					<td class="link_diger"><a href="uretimtakip?page=${currentpage + 1}">Sonraki</a></td>
-				</c:if>
-			</tr>
-		</table>
-		</c:if>
+		<jsp:include page="paging.jsp">
+			<jsp:param value="noofpages" name="noofpages"/>
+			<jsp:param value="currentpage" name="currentpage"/>
+			<jsp:param value="irsaliye" name="pagename"/>
+		</jsp:include>
 	</div>
 	
 	<% if (syc>0){ %>
