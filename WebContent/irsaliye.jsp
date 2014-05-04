@@ -230,14 +230,6 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			<% } %>
 		</table>
 		
-		<%--For displaying Previous link except for the 1st page --%>
-		<%--For displaying Page numbers.
-		The when condition does not display a link for the current page--%>
-		<jsp:include page="paging.jsp">
-			<jsp:param value="noofpages" name="noofpages"/>
-			<jsp:param value="currentpage" name="currentpage"/>
-			<jsp:param value="irsaliye" name="pagename"/>
-		</jsp:include>
 	</div>
 	
 	<% if (syc>0){ %>

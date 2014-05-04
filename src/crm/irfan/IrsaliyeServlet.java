@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import crm.irfan.entity.Birim;
 import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
 import crm.irfan.entity.Irsaliye;
 import crm.irfan.entity.IrsaliyeBilesen;
 import crm.irfan.entity.IrsaliyeTip;
+import crm.irfan.entity.LogMod;
 import crm.irfan.entity.Stok;
 
 public class IrsaliyeServlet extends HttpServlet {
@@ -53,7 +55,9 @@ public class IrsaliyeServlet extends HttpServlet {
 				out.print(result);
 			}
 			else {
-				System.out.println("islemid :" + islemid);
+			    if(Genel.LOGMOD == LogMod.DEBUG) {
+			        System.out.println("islemid :" + islemid);
+			    }
 				if (islemid == 1) {
 					int irsaliyeid         = Integer.valueOf(request.getParameter("irsaliyeid"));
 					int irsaliyebilesenid  = Integer.valueOf(request.getParameter("irsaliyebilesenid"));
