@@ -1,25 +1,24 @@
 package crm.irfan;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.annotation.Resource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public final class ConnectionManager {
     @Resource(name="jdbc/postgres")
     
-    private static Connection con;
-    private static DataSource ds;
-    private static Context    ctx;
+    private static Connection con   = null;
+    private static DataSource ds    = null;
+    private static Context    ctx   = null;
     
-    public ConnectionManager() {
-        ConnectionManager.connectionReady();
+    private ConnectionManager() {
+        // ConnectionManager.connectionReady();
     }
     
-    private static void connectionReady() {
+    private static synchronized void connectionReady() {
         try {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup("java:comp/env/jdbc/postgres");

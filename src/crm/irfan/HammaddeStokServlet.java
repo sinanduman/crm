@@ -1,19 +1,16 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.Stok;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HammaddeStokServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -58,43 +55,56 @@ public class HammaddeStokServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         
-        String message = null;
-        String result = DAOFunctions.stokEkle(
-                        request.getParameter("bilesenid"),
-                        request.getParameter("miktar"),
-                        request.getParameter("irsaliyeno"),
-                        request.getParameter("lot"),
-                        null,
-                        request.getParameter("tarih"),
-                        null
-        );
-        message = (result!="0")?"Hata oluştu!..":"";
+        String islemid  = request.getParameter("islemid");
+        String message  = "";
+        if(islemid != null && islemid != "" ) {
+            switch (Integer.valueOf(islemid)) {
+                case 3:
+                    message = DAOFunctions.hammaddeStokSil(Integer.valueOf(request.getParameter("stokid")));
+                    break;
+            }
+            PrintWriter out = response.getWriter();
+            out.print(message);      
+        }
+        else {
+            String result = DAOFunctions.stokEkle(
+                            request.getParameter("bilesenid"),
+                            request.getParameter("miktar"),
+                            request.getParameter("irsaliyeno"),
+                            request.getParameter("lot"),
+                            null,
+                            request.getParameter("tarih"),
+                            null
+            );
+            message = (result!="0")? result:"";
+            
+            // PAGING
+            int totalrecord = DAOFunctions.recordCount("stokbilesen"," where bilesentipid IN (1,2) ");
+            int page = 1;
+            if(request.getParameter("page") != null)
+                page = Integer.parseInt(request.getParameter("page"));        
+            int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+            // PAGING
+            
+            List<Stok> stok = new ArrayList<Stok>();
+            stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,0,page);
+            
+            List<Bilesen> hammadde = new ArrayList<Bilesen>();
+            hammadde = DAOFunctions.bilesenListeGetirTum( null, 0 );
+            
+            List<Firma> firma = new ArrayList<Firma>();
+            firma = DAOFunctions.firmaListeGetirTum(0);
+            
+            request.setAttribute("hammadde", hammadde);
+            request.setAttribute("firma", firma);
+            request.setAttribute("stok", stok);
+            request.setAttribute("totalrecord", totalrecord);
+            request.setAttribute("currentpage", page);
+            request.setAttribute("noofpages", noofpages);
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("hammaddestok.jsp").forward(request, response);
+        }
         
-        // PAGING
-        int totalrecord = DAOFunctions.recordCount("stokbilesen"," where bilesentipid IN (1,2) ");
-        int page = 1;
-        if(request.getParameter("page") != null)
-            page = Integer.parseInt(request.getParameter("page"));        
-        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
-        // PAGING
-        
-        List<Stok> stok = new ArrayList<Stok>();
-        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,0,page);
-        
-        List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum( null, 0 );
-        
-        List<Firma> firma = new ArrayList<Firma>();
-        firma = DAOFunctions.firmaListeGetirTum(0);
-        
-        request.setAttribute("hammadde", hammadde);
-        request.setAttribute("firma", firma);
-        request.setAttribute("stok", stok);
-        request.setAttribute("totalrecord", totalrecord);
-        request.setAttribute("currentpage", page);
-        request.setAttribute("noofpages", noofpages);
-        request.setAttribute("message", message);
-        request.getRequestDispatcher("hammaddestok.jsp").forward(request, response);
     }
 
 }

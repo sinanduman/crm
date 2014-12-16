@@ -248,6 +248,17 @@
     <url-pattern>/uretimrapor</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description></description>
+    <display-name>SevkRaporServlet</display-name>
+    <servlet-name>SevkRaporServlet</servlet-name>
+    <servlet-class>crm.irfan.SevkRaporServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SevkRaporServlet</servlet-name>
+    <url-pattern>/sevkrapor</url-pattern>
+  </servlet-mapping>
+  
   <resource-ref>
     <description>postgreSQL Datasource</description>
     <res-ref-name>jdbc/postgres</res-ref-name>

@@ -1,30 +1,20 @@
 package crm.irfan;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import crm.irfan.entity.StokRapor;
+
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import crm.irfan.entity.StokRapor;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
 
 public class ExcelStokServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -61,17 +51,17 @@ public class ExcelStokServlet extends HttpServlet {
             int cnt = 0;
             Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
             data.put(++cnt, new Object[] {
-                            "Bileşen Ad",
-                            "Bileşen Kod",
+                            "Ürün Kodu",
+                            "Ürün Adı",
                             "Miktar",
-                            "Firma"
+                            "Müşteri"
                             }
             );
             for(StokRapor sr: stokrapor) {
                 data.put(++cnt, new Object[] {
-                                sr.getBilesenad(),
                                 sr.getBilesenkod(),
-                                (sr.getBilesentipid()==1 ? UtilFunctions.Round(sr.getMiktar(),1000) : sr.getMiktar() ),
+                                sr.getBilesenad(),
+                                (sr.getBilesentipid()==1 ? Util.Round(sr.getMiktar(),1000) : sr.getMiktar() ),
                                 sr.getFirmaad()
                                 });
                 if(cnt==2) {

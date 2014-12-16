@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.User, crm.irfan.UtilFunctions, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.Util,crm.irfan.entity.*,java.util.List" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -31,16 +31,17 @@
 <%@ include file="logincheck.jsp" %>
 
 <%
-	List<Irsaliye> irsaliye = (List<Irsaliye>) request.getAttribute("irsaliye");
+    List<Irsaliye> irsaliye = (List<Irsaliye>) request.getAttribute("irsaliye");
 	List<IrsaliyeBilesen> irsaliyebilesenopen = (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesenopen");
 	List<IrsaliyeBilesen> irsaliyebilesencompleted = (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesencompleted");
-	List<Stok> stok = (List<Stok>) request.getAttribute("stok");
-	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
-	List<Birim> birim = (List<Birim>) request.getAttribute("birim");
+	List<Stok> stok 	= (List<Stok>) request.getAttribute("stok");
+	List<Firma> firma	= (List<Firma>) request.getAttribute("firma");
+	List<Birim> birim	= (List<Birim>) request.getAttribute("birim");
+	String admin		= (String) session.getAttribute("admin");
 %>
 
 <%
-int acikirsaliyeid=0;
+    int acikirsaliyeid=0;
 String acikirsaliyeno="";
 for(IrsaliyeBilesen ib: irsaliyebilesenopen){
     acikirsaliyeid = ib.getIrsaliyeid();
@@ -51,8 +52,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 
 <script>
 	var mamul = [
-	<%		
-	String delimeter = "";
+	<%String delimeter = "";
 	for (Stok s : stok) {
 		out.println(delimeter 
 		+ " { id:" + s.getId()
@@ -65,17 +65,14 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 		+ ",firmaid:" + s.getFirmaid()
 		+ ",firmaad:'" + s.getFirmaad().replaceAll("'", "") + "'}");
 		delimeter = ",";
-	}
-	%>];
+	}%>];
 	
 	var mamul2 = [
-	<%
-	delimeter = "";
+	<%delimeter = "";
 	for (Stok s : stok) {
 		out.println(delimeter + " { label:'" + s.getBilesenkod() + "'" + ",id:" + s.getBilesenid() + "}");
 		delimeter = ",";
-	}
-	%>];
+	}%>];
 </script>
 
 <div class="container">
@@ -95,17 +92,17 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 				<label for="irsaliyeno" class="text-baslik">İrsaliye No</label>
 				<div>
 					<%
-					if(acikirsaliyeno.equals("")){
-						%>
+					    if(acikirsaliyeno.equals("")){
+					%>
 						<input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" placeholder="İrsaliye No" autocomplete="off">
 						<%
-					}
-					else{
-					    %>
-					    <input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno %>" readonly="readonly">
+						    }
+											else{
+						%>
+					    <input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno%>" readonly="readonly">
 					    <%
-					}
-					%>
+					        }
+					    %>
 				</div>
 			</div>
 			
@@ -158,16 +155,22 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			</div>
 			
 			<div class="clearfix"></div>
-			
+			<%
+			    if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group" style="margin:20px 0;">
 				<div>
 					<button type="button" class="btn btn-danger" name="irsaliyeekle" id="irsaliyeekle">İrsaliyeye Ekle</button>
 					<button type="button" class="btn btn-danger" name="irsaliyeiptal" id="irsaliyeiptal" style="display:none;">İptal</button>
 					<input type="hidden" name="islemid" id="islemid" value="0">
-					<input type="hidden" name="irsaliyeid" id="irsaliyeid" value="<%= acikirsaliyeid %>">
+					<input type="hidden" name="irsaliyeid" id="irsaliyeid" value="<%=acikirsaliyeid%>">
 					<input type="hidden" name="irsaliyebilesenid" id="irsaliyebilesenid" value="0">
 				</div>
 			</div>
+			<div class="clearfix"></div>
+			<%
+			    }
+			%>
 			
 		</form>
 	</div>
@@ -179,28 +182,36 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			var paket = {};
 			var pakettemp = {};
 			</script>
-			<% int syc = 0; %>
-			<% String not = ""; %>
-			<% for (IrsaliyeBilesen ib : irsaliyebilesenopen) { %>
+			<%
+			    int syc = 0;
+			%>
+			<%
+			    String not = "";
+			%>
+			<%
+			    for (IrsaliyeBilesen ib : irsaliyebilesenopen) {
+			%>
 			<script type="text/javascript" charset="utf-8">
 				pakettemp = {
-					id:"<%= ib.getId() %>",
-					irsaliyeid:"<%= ib.getIrsaliyeid() %>",
-					tarihtr:"<%= UtilFunctions.getTarihTR(ib.getOlusturmatarihi()) %>",
-					tarihtrshort:"<%= UtilFunctions.getTarihTRShort(ib.getOlusturmatarihi()) %>",
-					firmaad:"<%= ib.getFirmaad() %>",
-					firmaid:"<%= ib.getFirmaid() %>",
-					mamulad:"<%= ib.getMamulad() %>",
-					mamulid:"<%= ib.getMamulid() %>",
-					mamulkod:"<%= ib.getMamulkod() %>",
-					miktar:"<%= ib.getMiktar() %>",
-					gkrno:"<%= ib.getGkrno() %>",
-					stokid:"<%= ib.getStokid() %>",
-					not:"<%= (ib.getNot() == null) ? "" : ib.getNot().replaceAll("\"", "") %>"
+					id:"<%=ib.getId()%>",
+					irsaliyeid:"<%=ib.getIrsaliyeid()%>",
+					tarihtr:"<%=Util.getTarihTR(ib.getOlusturmatarihi())%>",
+					tarihtrshort:"<%=Util.getTarihTRShort(ib.getOlusturmatarihi())%>",
+					firmaad:"<%=ib.getFirmaad()%>",
+					firmaid:"<%=ib.getFirmaid()%>",
+					mamulad:"<%=ib.getMamulad()%>",
+					mamulid:"<%=ib.getMamulid()%>",
+					mamulkod:"<%=ib.getMamulkod()%>",
+					miktar:"<%=ib.getMiktar()%>",
+					gkrno:"<%=ib.getGkrno()%>",
+					stokid:"<%=ib.getStokid()%>",
+					not:"<%=(ib.getNot() == null) ? "" : ib.getNot().replaceAll("\"", "")%>"
 				};
-				paket[<%= ib.getId() %>] = pakettemp;
+				paket[<%=ib.getId()%>] = pakettemp;
 			</script>
-			<% if (syc++ == 0) { %>			
+			<%
+			    if (syc++ == 0) {
+			%>			
 			<tr>
 				<th>Tarih</th>
 				<th>İrsaliye No</th>
@@ -210,29 +221,52 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 				<th>İzleme No</th>
 				<th>Sevk Adedi</th>
 				<th>Açıklama</th>
+				<%
+				    if(admin!=null && admin.equals("1")){
+				%>
 				<th class="text-center">Aksiyon</th>
+				<%
+				    }
+				%>
 			</tr>
-			<% } %>
-			<tr id="tr<%= ib.getId() %>">
-				<% not  = (ib.getNot() == null) ? "" : ib.getNot().replaceAll("\"", ""); %>
-				<td><%= UtilFunctions.getTarihTR(ib.getOlusturmatarihi()) %></td>
-				<td><%= ib.getIrsaliyeno() %></td>
-				<td><%= ib.getFirmaad() %></td>
-				<td><%= ib.getMamulkod() %></td>
-				<td><%= ib.getMamulad() %></td>
-				<td class="text-right"><%= ib.getGkrno() %></td>
-				<td class="text-right"><%= ib.getMiktar() %></td>
-				<td><%= not %></td>
+			<%
+			    }
+			%>
+			<tr id="tr<%=ib.getId()%>">
+				<%
+				    not  = (ib.getNot() == null) ? "" : ib.getNot().replaceAll("\"", "");
+				%>
+				<td><%=Util.getTarihTR(ib.getOlusturmatarihi())%></td>
+				<td><%=ib.getIrsaliyeno()%></td>
+				<td><%=ib.getFirmaad()%></td>
+				<td><%=ib.getMamulkod()%></td>
+				<td><%=ib.getMamulad()%></td>
+				<td class="text-right"><%=ib.getGkrno()%></td>
+				<td class="text-right"><%=ib.getMiktar()%></td>
+				<td><%=not%></td>
+				<%
+				    if(admin!=null && admin.equals("1")){
+				%>
 				<td class="text-center">
-					<div class="text-center" id="div<%= ib.getId() %>"><a href="javascript:irsaliyepaketguncelle('#tr<%= ib.getId() %>',<%= ib.getId() %>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a></div>
+					<div class="text-center" id="div<%=ib.getId()%>"><a href="javascript:irsaliyepaketguncelle('#tr<%=ib.getId()%>',<%=ib.getId()%>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a></div>
 				</td>
+				<%
+				    }
+				%>
 			</tr>
-			<% } %>
+			<%
+			    }
+			%>
 		</table>
 		
 	</div>
 	
-	<% if (syc>0){ %>
+	<%
+		    if (syc>0){
+		%>
+	<%
+	    if(admin!=null && admin.equals("1")){
+	%>
 	<div class="row size12px">
 		<div class="form-group">
 			<div class="text-right">
@@ -240,31 +274,48 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			</div>
 		</div>
 	</div>
-	<% } %>
+	<%
+	    }
+	%>
+	<%
+	    }
+	%>
 
 	<div class="row" style="font-size:12px;">
 		<div>
 			<table class="tableplan">
-				<% int sayac = 0; %>
-				<% for (Irsaliye i : irsaliye) { %>
-				<% if (sayac++ == 0) { %>
+				<%
+				    int sayac = 0;
+				%>
+				<%
+				    for (Irsaliye i : irsaliye) {
+				%>
+				<%
+				    if (sayac++ == 0) {
+				%>
 				<tr>
 					<td><label class="text-success">İrsaliye No</label></td>
 					<td><label class="text-success">Oluşturma Tarihi</label></td>
 					<td><label class="text-success">Gönderim Tarihi</label></td>
 					<td class="text-center"><label class="text-success">Aksiyon</label></td>
 				</tr>
-				<% } %>
+				<%
+				    }
+				%>
 				<form name="action_form<%=i.getId()%>" id="action_form<%=i.getId()%>">
 				<tr id="tr<%=i.getId()%>">
-					<td><%= i.getIrsaliyeno() %></td>
-					<td><%= UtilFunctions.getTarihTR(i.getOlusturmatarihi()) %></td>
-					<td><%= UtilFunctions.getTarihTR(i.getGonderimtarihi()) %></td>
+					<td><%=i.getIrsaliyeno()%></td>
+					<td><%=Util.getTarihTR(i.getOlusturmatarihi())%></td>
+					<td><%=Util.getTarihTR(i.getGonderimtarihi())%></td>
 					<td class="text-center">
 						<div id="divirsaliye<%= i.getId() %>">
 							<a href="javascript:hideshow('#tr_irs_detay<%= i.getId() %>');" title="İçerik"><span class="fa fa-chevron-down fa-lg text-success"></span></a>
+							<% 
+							if(admin!=null && admin.equals("1")){
+							%>
 							<a href="javascript:okGoIrsaliyePaket('irsaliye',<%=i.getId()%>,'<%=i.getIrsaliyeno() %>',4);" title="Onayla"><span class="fa fa-check-circle fa-lg text-success"></span></a>
 							<a href="javascript:deleteGoIrsaliyePaket('irsaliye',<%=i.getId()%>,'<%=i.getIrsaliyeno() %>',3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+							<% } %>
 						</div>
 						
 					</td>

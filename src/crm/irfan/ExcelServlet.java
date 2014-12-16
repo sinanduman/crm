@@ -1,31 +1,20 @@
 package crm.irfan;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import crm.irfan.entity.UretimDurum;
+import crm.irfan.entity.UretimPlan;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import crm.irfan.entity.UretimDurum;
-import crm.irfan.entity.UretimPlan;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
 
 public class ExcelServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,6 +34,8 @@ public class ExcelServlet extends HttpServlet {
         String excelegonder = request.getParameter("excelegonder");
         String exceltarih   = request.getParameter("exceltarih");
         String excelsql     = request.getParameter("excelsql");
+        
+        System.out.println("xls: " +excelsql);
         
         
         if(excelegonder!=null && excelegonder.equals("1")) {
@@ -78,7 +69,7 @@ public class ExcelServlet extends HttpServlet {
             
             for(UretimPlan p: uretimplan) {
                 data.put(++cnt, new Object[] {
-                                UtilFunctions.date_tr_to_month(p.getTarihTR()),
+                                Util.date_tr_to_month(p.getTarihTR()),
                                 p.getTarihTR(),
                                 p.getBasZaman(),
                                 p.getBitZaman(),

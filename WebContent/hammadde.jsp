@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,18 +27,20 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.*, java.util.List" %>
 
 <%@ include file="logincheck.jsp" %>
 
 <%
 	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
 	List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
-	String message = (String) request.getAttribute("message");
+	Long token		= (Long) request.getAttribute("token");
+	String message	= (String) request.getAttribute("message");
+	String admin	= (String) session.getAttribute("admin");
 %>
 
-<div class="container" ng-controller="HammaddeEkleCtrl">
-	<form class="form-horizontal" role="form" name="hammadde_form" id="hammadde_form" method="post" action="hammadde">
+<div class="container">
+	<form class="form-horizontal" name="hammadde_form" id="hammadde_form" method="post" action="hammadde" onsubmit="return false;">
 	<div class="row text-warning" style="text-align:center;">
 		<div class="col-xs-8">
 			<label class="text-danger rounded">Hammadde ve Yarı Mamül Tanımı</label>
@@ -50,14 +52,14 @@
 			<div class="form-group">
 				<label for="hamkod" class="col-xs-3 control-label text-baslik">Malzeme Kodu: </label>
 				<div>
-					<input type="text" class="form-control big" name="hamkod" id="hamkod" ng-model="hamkod" placeholder="Malzeme Kodu">
+					<input type="text" class="form-control big" name="hamkod" id="hamkod" placeholder="Malzeme Kodu" autocomplete="off">
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label for="hamad" class="col-xs-3 control-label text-baslik">Malzeme Adı: </label>
 				<div>
-					<input type="text" class="form-control big" name="hamad" id="hamad" ng-model="hamad" placeholder="Malzeme Adı">
+					<input type="text" class="form-control big" name="hamad" id="hamad" placeholder="Malzeme Adı" autocomplete="off">
 				</div>
 			</div>
 			
@@ -105,20 +107,28 @@
 					</select>
 				</div>
 			</div>
-			
+			<% 
+			if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group">
 				<label class="col-xs-3 control-label">&nbsp;</label>
 				<div>
-					<button type="button" class="btn btn-danger" ng-click="hammaddeEkle()" >Ekle</button>
+					<button type="button" class="btn btn-danger" onclick="hammaddeEkle()" >Ekle</button>
+					<input type="hidden" name="token" id="token" value="<%= token %>">
 				</div>
 			</div>
+			<% } %>
 		</div>
 	</div>
 	</form>
 	
 	<!-- ALERT BOX -->
-	<% 
-	if(message.equals("0")) {
+	<%
+	if(message.equals("-1")) {
+	    %>
+		<%
+	}
+	else if(message.equals("0")) {
 	    %>
 		<div class="row col-sm-8 alert alert-success">
 			<strong>Başarılı</strong> olarak eklendi!
@@ -128,7 +138,7 @@
 	else if(!message.equals("") && message.length() >1){
 	    %>
 		<div class="row col-sm-8 alert alert-danger">
-			<strong>Hata!</strong><%= message %>
+			<strong>Hata! </strong><%= message %>
 		</div>
 		<%
 	}
@@ -147,16 +157,20 @@
 				<td><label class="text-success">Malzeme Tipi</label></td>
 				<td><label class="text-success">Birim</label></td>
 				<td><label class="text-success">Tedarikçi</label></td>
+				<% 
+				if(admin!=null && admin.equals("1")){
+				%>
 				<td><label class="text-success">Aksiyon</label></td>
+				<% } %>
 			</tr>
 			<% } %>
 			<form name="action_form<%=h.getId()%>" id="action_form<%=h.getId()%>">
 			<tr id="tr<%=h.getId()%>">
 				<td><input type="text" class="form-control" value="<%= h.getKod() %>" name="liste_kod" id="liste_kod" autocomplete="off"></td>
-				<td><input type="text" class="form-control" value="<%= h.getAd() %>" name="liste_ad" id="liste_ad" autocomplete="off"></td>
+				<td><input type="text" class="form-control" value="<%= h.getAd().replaceAll("\"", "") %>" name="liste_ad" id="liste_ad" autocomplete="off"></td>
 				<td><span><%= h.getBilesentipad() %></span></td>
 				<td>
-					<select id="liste_birimid" name="liste_birimid">
+					<select class="form-control xs" id="liste_birimid" name="liste_birimid">
 					<%
 						for (BirimTip bt : BirimTip.values()){
 							if (bt.value() == h.getBirimid() ){
@@ -173,7 +187,7 @@
 					<%-- h.getBirimad() --%>
 				</td>
 				<td>
-					<select id="liste_firmaid" name="liste_firmaid">
+					<select class="form-control" id="liste_firmaid" name="liste_firmaid">
 					<%
 						for (Firma f : firma) {
 							if (f.getId() == h.getFirmaid()){
@@ -186,12 +200,16 @@
 					%>
 					</select>						
 				</td>
+				<% 
+				if(admin!=null && admin.equals("1")){
+				%>
 				<td>
 					<div id="div<%= h.getId() %>" class="text-center">
 						<a href="javascript:updateHammaddeGo('hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a> 
 						<a href="javascript:deleteHammaddeGo('hammadde',<%=h.getId()%>,document.action_form<%=h.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
 					</div>
 				</td>
+				<% } %>
 			</tr>
 			</form>
 			<% } %>
@@ -215,8 +233,8 @@
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
-<script src="js/irfan.js?<%=System.currentTimeMillis()%>"></script>
-<script	src="js/hammadde.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
+<script src="js/irfan.js"></script>
+<script	src="js/hammadde.js" type="text/javascript"></script>
 </body>
 
 </html>

@@ -1,14 +1,14 @@
 package crm.irfan;
 
+import crm.irfan.entity.Aylar;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import crm.irfan.entity.Aylar;
-
-public class UtilFunctions {
+public class Util {
     
     public static String mamulInfoDecompose(String bileseninfo, int type) {
         if (bileseninfo == null)
@@ -60,12 +60,33 @@ public class UtilFunctions {
         System.out.println(dateinfo);
         return returnValue;
     }
+    
     public static String date_eng_to_tr(String dateinfo) {
         String returnValue = dateinfo;
         if (returnValue.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
             returnValue = dateinfo.substring(8) + "-" + dateinfo.substring(5, 7) + "-" +  dateinfo.substring(0, 4);
         }
         return returnValue;
+    }
+    
+    public static Boolean isNumeric(String str) {
+        Boolean returnValue = false;
+        if (str.matches("[0-9]+")) {
+            returnValue = true;
+        }
+        return returnValue;
+    }
+    
+    public static Boolean isDate(String str) {
+        Boolean returnValue = false;
+        if (str.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}") || str.matches("[0-9]{2}-[0-9]{2}-[0-9]{4}")) {
+            returnValue = true;
+        }
+        return returnValue;
+    }
+    
+    public static long getToken() {
+        return System.currentTimeMillis();
     }
     
     public static Timestamp date_tr_to_timestamp(String dateinfo) {
@@ -101,5 +122,12 @@ public class UtilFunctions {
         double temp = (pay)*1.0/payda;
         temp= ((double)((int)(temp*100)))/100;
         return temp;        
+    }
+    
+    public static boolean isNotEmptyOrNull(Object o ) {        
+        if(o!=null && !o.equals("")){
+            return true;
+        }
+        return false;
     }
 }

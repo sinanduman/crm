@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.User, crm.irfan.entity.Genel" %>
+<%@ page import="crm.irfan.User" %>
 <%
 User user = (User) request.getSession().getAttribute("user");
 %>
@@ -17,7 +17,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="uretimtakip">
 						<span class="fa fa-dot-circle-o text-primary"></span> Üretim Takibi</a>
@@ -35,7 +35,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="siparis"><span class="fa fa-dot-circle-o text-info"></span> Yeni Sipariş</a>
 				</li>
@@ -56,7 +56,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="hammaddestok"><span class="fa fa-dot-circle-o text-success"></span> Hammadde ve Yarı Mamül</a>
 				</li>
@@ -75,7 +75,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="hammadde">
 						<span class="fa fa-dot-circle-o text-warning"></span> Hammadde ve Yarı Mamül</a>
@@ -110,7 +110,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="stokrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Stok</a>
@@ -118,6 +118,10 @@ User user = (User) request.getSession().getAttribute("user");
 				<li>
 					<a href="uretimrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Üretim</a>
+				</li>
+				<li>
+					<a href="sevkrapor">
+						<span class="fa fa-dot-circle-o text-danger"></span> Sevk</a>
 				</li>
 			</ul>
 		</div>
@@ -128,7 +132,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<span class="caret"></span>
 				<span class="sr-only">Toggle Dropdown</span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="irsaliye">
 						<span class="fa fa-dot-circle-o text-sevk"></span> İrsaliye Hazırla</a>
@@ -148,7 +152,7 @@ User user = (User) request.getSession().getAttribute("user");
 					data-toggle="dropdown">
 				<%= user.getFullName()  %> <span class="caret" style="border-top-color:darkkhaki;"></span>
 			</button>
-			<ul class="dropdown-menu" role="menu">
+			<ul class="dropdown-menu">
 				<li>
 					<a href="logout">
 						<span class="fa fa-sign-out" style="color:darkkhaki;"></span> Çıkış</a>

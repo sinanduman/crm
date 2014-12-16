@@ -1,21 +1,14 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Birim;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.ResultTip;
-import crm.irfan.entity.Siparis;
-import crm.irfan.entity.SiparisTip;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SiparisServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

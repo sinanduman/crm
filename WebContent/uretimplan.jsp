@@ -1,6 +1,6 @@
-<%@ page import="java.util.Date"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="crm.irfan.User, crm.irfan.UtilFunctions, crm.irfan.entity.*, java.util.List"%>
+<%@ page import="crm.irfan.Util"%>
+<%@ page import="crm.irfan.entity.*"%>
+<%@ page import="java.text.SimpleDateFormat,java.util.Date,java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!doctype html>
@@ -11,7 +11,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 	
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css">
@@ -32,23 +32,22 @@
 <body>
 	<%@ include file="logincheck.jsp" %>
 	<%
-		List<HataSebep> hatasebep = (List<HataSebep>) request.getAttribute("hatasebep");
-		List<DurusSebep> durussebep = (List<DurusSebep>) request.getAttribute("durussebep");
-		List<Calisan> calisan = (List<Calisan>) request.getAttribute("calisan");
-		List<Makina> makina = (List<Makina>) request.getAttribute("makina");
-		List<Mamul> mamul = (List<Mamul>) request.getAttribute("mamul");
-		List<UretimPlan> uretimplan = (List<UretimPlan>) request.getAttribute("uretimplan");
-		
-		String tarih = (String) ((request.getAttribute("tarih")==null)? (new SimpleDateFormat("dd-MM-yyyy").format(new Date())) : UtilFunctions.date_eng_to_tr((String)request.getAttribute("tarih")));
-		String makinaid = (String) ((request.getAttribute("makinaid")==null || request.getAttribute("makinaid")=="")?"":request.getAttribute("makinaid"));
-		String excelsql = (String) request.getAttribute("excelsql");
-		
+	    List<HataSebep> hatasebep = (List<HataSebep>) request.getAttribute("hatasebep");
+			List<DurusSebep> durussebep = (List<DurusSebep>) request.getAttribute("durussebep");
+			List<Calisan> calisan = (List<Calisan>) request.getAttribute("calisan");
+			List<Makina> makina = (List<Makina>) request.getAttribute("makina");
+			List<Mamul> mamul = (List<Mamul>) request.getAttribute("mamul");
+			List<UretimPlan> uretimplan = (List<UretimPlan>) request.getAttribute("uretimplan");
+			
+			String tarih	= (String) ((request.getAttribute("tarih")==null)? (new SimpleDateFormat("dd-MM-yyyy").format(new Date())) : Util.date_eng_to_tr((String)request.getAttribute("tarih")));
+			String makinaid = (String) ((request.getAttribute("makinaid")==null || request.getAttribute("makinaid")=="")?"":request.getAttribute("makinaid"));
+			String excelsql = (String) request.getAttribute("excelsql");
+			String admin	= (String) session.getAttribute("admin");
 	%>
 	
 	<script>
 		var mamul = [
-		<%
-		String delimeter = "";
+		<%String delimeter = "";
 		for (Mamul m : mamul) {
 			out.println(delimeter 
 		+ " { id:" + m.getId()
@@ -65,18 +64,16 @@
 			delimeter = ",";
 		}%>];
 		var mamul2 = [
-		<%
-		delimeter = "";
+		<%delimeter = "";
 		for (Mamul m : mamul) {
 			out.println(delimeter + " { label:'" + m.getKod() + "'" + ",id:" + m.getId() + "}");
 			delimeter = ",";
 		}%>];
 		
 		var hatasebep = {
-   		<%		
-   		delimeter = "";
+   		<%delimeter = "";
    		for (HataSebep h : hatasebep) {
-   			out.println(delimeter + h.getKod() + ": { id:" + h.getId()
+   			out.println(delimeter + "'" + h.getKod() + "'" +": { id:" + h.getId()
    		+ ",hataid:" + h.getId() 
    		+ ",hataad:'" + h.getAd() + "'"
    		+ ",hatakod:'" + h.getKod() + "'" + "}");
@@ -91,7 +88,7 @@
 			<label class="text-danger rounded">Üretim Planlama</label>
 		</div>
 		<div class="row">
-			<form class="form-inline" role="form" name="uretimplanform" id="uretimplanform" method="post" action="uretimplan">
+			<form class="form-inline" name="uretimplanform" id="uretimplanform" method="post" action="uretimplan">
 				<div class="form-group">
 					<label for="tarih" class="text-baslik">Tarih</label>
 					<div>
@@ -104,15 +101,15 @@
 					<div>
 						<select	class="form-control" id="makinaid" name="makinaid">
 							<%
-									out.println("<option value=''>...Tüm...</option>");
-								for (Makina m : makina) {
-								    if(m.getId().toString().equals(makinaid)){
-								        out.print("<option value='" + m.getId() + "' selected>" + m.getMakinaad() + "</option>");
-								    }
-								    else{
-								        out.print("<option value='" + m.getId() + "'>" + m.getMakinaad() + "</option>");
-								    }
-								}
+							    out.println("<option value=''>...Tüm...</option>");
+															for (Makina m : makina) {
+															    if(m.getId().toString().equals(makinaid)){
+															        out.print("<option value='" + m.getId() + "' selected>" + m.getMakinaad() + "</option>");
+															    }
+															    else{
+															        out.print("<option value='" + m.getId() + "'>" + m.getMakinaad() + "</option>");
+															    }
+															}
 							%>
 						</select>
 					</div>
@@ -132,7 +129,7 @@
 				<div class="form-group">
 					<label for="mamulkod" class="text-baslik">Mamül Kodu</label>
 					<div>
-  						<input type="text" class="form-control small" name="mamulkod" id="mamulkod" autocomplete="off">
+  						<input type="text" class="form-control small" name="mamulkod" id="mamulkod" readonly="readonly" autocomplete="off">
   						<input type="hidden" name="mamulid" id="mamulid">
   						<input type="hidden" name="yarimamulgkrno" id="yarimamulgkrno">
 					</div>
@@ -178,9 +175,9 @@
 					<div>
 						<select	class="form-control" id="calisanid" name="calisanid" disabled="disabled">
 							<%
-								for (Calisan c : calisan) {
-									out.println("<option value='" + c.getId() + "'>"+ c.getFullName() +"</option>");
-								}
+							    for (Calisan c : calisan) {
+																out.println("<option value='" + c.getId() + "'>"+ c.getFullName() +"</option>");
+															}
 							%>
 						</select>
 					</div>
@@ -197,9 +194,16 @@
 				</div>
 
 				<div class="form-group">
+					<%
+					    String readonly	= "readonly='readonly'";
+										if(admin!=null && admin.equals("1")){
+										    readonly	= "readonly='readonly'";
+										}
+					%>
 					<label for="gercekuretim" class="text-baslik">Gerçek Ürt.</label>
 					<div>
-						<input type="text" class="form-control xs text-right" name="gercekuretim" id="gercekuretim" readonly="readonly"><span class="birim">Ad.</span>
+						<input type="text" class="form-control xs text-right" name="gercekuretim" id="gercekuretim" <%=readonly%>><span class="birim">Ad.</span>
+						<input type="hidden" name="gercekuretim_hidden" id="gercekuretim_hidden">
 					</div>
 				</div>
 
@@ -221,22 +225,20 @@
 					<label for="hatasebepid" class="text-baslik">Açıklama</label>
 					<div>
 						<select name="hatasebepid" id="hatasebepid" class="form-control small">
-						<% 
-								out.println("<option value='0' selected>...Seçiniz...</option>");
-							for (HataSebep hs : hatasebep) {
-								out.println("<option value='" + hs.getId() + "'>"+ hs.getAd() + " ("+ hs.getKod() +")</option>");
-							}
+						<%
+						    out.println("<option value='0' selected>...Seçiniz...</option>");
+													for (HataSebep hs : hatasebep) {
+														out.println("<option value='" + hs.getId() + "'>"+ hs.getAd() + " ("+ hs.getKod() +")</option>");
+													}
 						%>
 						</select>
 					</div>
 				</div>
 
-
 				<div class="clearfix"></div>
-
+				
 				<div class="form-group" style="margin:10px 0;">
 					<div>
-						<!--button type="button" class="btn btn-danger" ng-click="savePlan()">Ekle</button-->
 						<input type="hidden" name="uretimplanid" id="uretimplanid" value="0">
 						<button type="button" class="btn btn-danger" name="uretimplanguncelle" id="uretimplanguncelle" disabled="disabled">Güncelle</button>
 						<button type="button" class="btn btn-danger" name="uretimplaniptal" id="uretimplaniptal" style="display:none;">İptal</button>
@@ -250,16 +252,16 @@
 		</div>
 		
 		<%
-		if( uretimplan.size() > 0){
-		%>
+				    if( uretimplan.size() > 0){
+				%>
 			<div class="row text-warning" style="text-align: center;">
-				<label class="text-danger roundedmini"><%= tarih %> Tarihli Üretim Planlaması</label>
+				<label class="text-danger roundedmini"><%=tarih%> Tarihli Üretim Planlaması</label>
 			</div>
 		<%
-		}
+		    }
 		%>
 		<%
-			int sayac = 0;
+		    int sayac = 0;
 		%>
 		<div class="row" style="font-size:12px;">
 			<table class="tableplan">
@@ -267,41 +269,45 @@
 				var plan = {};
 				var plantemp = {};
 				</script>
-				<% for (UretimPlan u : uretimplan) { %>
+				<%
+				    for (UretimPlan u : uretimplan) {
+				%>
 				<script type="text/javascript" charset="utf-8">
 					plantemp = {
-						id:"<%= u.getId() %>", 
-						tarihtr:"<%= u.getTarihTR() %>",
-						tarihtrshort:"<%= u.getTarihTRShort() %>",
-						baslangic:"<%= u.getBasZaman() %>",
-						bitis:"<%= u.getBitZaman() %>",
-						makinaad:"<%= u.getMakinaad() %>",
-						makinaid:"<%= u.getMakinaid() %>",
-						calisanad:"<%= u.getCalisanShortName() %>", 
-						calisanid:"<%= u.getCalisanid() %>",
-						firmaad:"<%= u.getFirmaad() %>",
-						firmaid:"<%= u.getFirmaid() %>",
-						hammadde:"<%= u.getHammaddead() %>",
-						gkrno:"<%= u.getHammaddeizlno() %>",
-						mamulad:"<%= u.getMamulad() %>",
-						mamulid:"<%= u.getMamulid() %>",
-						mamulkod:"<%= u.getMamulkod() %>",
-						uretimadet:"<%= u.getUretilenmiktar() %>",
-						hedefuretim:"<%= (u.getPlanlananmiktar()==0) ? "" : u.getPlanlananmiktar() %>",
-						fark:"<%= (u.getFark()==0)? "" : u.getFark() %>",
-						sapma:"<%= (u.getSapma()==0)? "" : u.getSapma() %>",
-						hataliadet:"<%= (u.getHatalimiktar()==0) ? "" : u.getHatalimiktar() %>",
-						hataid:"<%= u.getHataid() %>",
-						hatakod:"<%= u.getHatakodu() %>",
-						duruszaman:"<%= (u.getDuruszaman()==0)? "" : u.getDuruszaman() %>",
-						durusid:"<%= u.getDurusid() %>",
-						duruskod:"<%= u.getDuruskodu() %>",
-						izlemeno:"<%= u.getMamulizlno() %>",
-						agirlik:"<%= u.getAgirlik() %>"
+						id:"<%=u.getId()%>", 
+						tarihtr:"<%=u.getTarihTR()%>",
+						tarihtrshort:"<%=u.getTarihTRShort()%>",
+						baslangic:"<%=u.getBasZaman()%>",
+						bitis:"<%=u.getBitZaman()%>",
+						makinaad:"<%=u.getMakinaad()%>",
+						makinaid:"<%=u.getMakinaid()%>",
+						calisanad:"<%=u.getCalisanShortName()%>", 
+						calisanid:"<%=u.getCalisanid()%>",
+						firmaad:"<%=u.getFirmaad()%>",
+						firmaid:"<%=u.getFirmaid()%>",
+						hammadde:"<%=u.getHammaddead()%>",
+						gkrno:"<%=u.getHammaddeizlno()%>",
+						mamulad:"<%=u.getMamulad()%>",
+						mamulid:"<%=u.getMamulid()%>",
+						mamulkod:"<%=u.getMamulkod()%>",
+						uretimadet:"<%=u.getUretilenmiktar()%>",
+						hedefuretim:"<%=(u.getPlanlananmiktar()==0) ? "" : u.getPlanlananmiktar()%>",
+						fark:"<%=(u.getFark()==0)? "" : u.getFark()%>",
+						sapma:"<%=(u.getSapma()==0)? "" : u.getSapma()%>",
+						hataliadet:"<%=(u.getHatalimiktar()==0) ? "" : u.getHatalimiktar()%>",
+						hataid:"<%=u.getHataid()%>",
+						hatakod:"<%=u.getHatakodu()%>",
+						duruszaman:"<%=(u.getDuruszaman()==0)? "" : u.getDuruszaman()%>",
+						durusid:"<%=u.getDurusid()%>",
+						duruskod:"<%=u.getDuruskodu()%>",
+						izlemeno:"<%=u.getMamulizlno()%>",
+						agirlik:"<%=u.getAgirlik()%>"
 					};
-					plan[<%= u.getId() %>] = plantemp;
+					plan[<%=u.getId()%>] = plantemp;
 				</script>
-				<% if (sayac++ == 0) { %>
+				<%
+				    if (sayac++ == 0) {
+				%>
 				<tr>
 					<th>Tarih</th>
 					<th>Başl.</th>
@@ -321,16 +327,18 @@
 					<th>Açıklama</th>
 					<th>Aksiyon</th>
 				</tr>
-				<% } %>
-				<tr id="tr<%= u.getId() %>">
-					<td nowrap><%= u.getTarihTRShort() %></td>
-					<td><%= u.getBasZaman() %></td>
-					<td><%= u.getBitZaman() %></td>
-					<td nowrap><%= u.getMakinaad() %></td>
-					<td><%= u.getCalisanShortName() %></td>
-					<td><%= u.getFirmaad() %></td>
-					<td><%= UtilFunctions.splitLine(u.getHammaddead(), ";", "<br>") %></td>
-					<td><%= UtilFunctions.splitLine(u.getHammaddeizlno(), ";", "<br>") %></td>
+				<%
+				    }
+				%>
+				<tr id="tr<%=u.getId()%>">
+					<td nowrap><%=u.getTarihTRShort()%></td>
+					<td><%=u.getBasZaman()%></td>
+					<td><%=u.getBitZaman()%></td>
+					<td nowrap><%=u.getMakinaad()%></td>
+					<td><%=u.getCalisanShortName()%></td>
+					<td><%=u.getFirmaad()%></td>
+					<td><%=Util.splitLine(u.getHammaddead(), ";", "<br>")%></td>
+					<td><%=Util.splitLine(u.getHammaddeizlno(), ";", "<br>")%></td>
 					<td><%= u.getMamulkod() %></td>
 					<td><%= u.getMamulad() %></td>
 					<td><%= (u.getMamulizlno()==0) ? "" : u.getMamulizlno() %></td>
@@ -339,7 +347,11 @@
 					<td class="text-right" nowrap><%= (u.getFark()==0) ? "" : u.getFark() + " Ad." %></td>
 					<td class="text-right"><%= (u.getSapma()==0) ? "" : "% " + u.getSapma() %></td>					
 					<td><%= u.getHataad() %></td>
-					<td><div class="text-center" id="div<%= u.getId() %>"><a href="javascript:uretimplanguncelle('#tr<%= u.getId() %>',<%= u.getId() %>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a></div></td>
+					<td>
+						<div class="text-center" id="div<%= u.getId() %>">
+							<a href="javascript:uretimplanguncelle('#tr<%= u.getId() %>',<%= u.getId() %>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a>
+						</div>
+					</td>
 				</tr>
 				<% } %>
 			</table>
@@ -402,9 +414,9 @@
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 	<script	src="js/bootbox.js" type="text/javascript"></script>
 	<script src="js/irfan.js" type="text/javascript"></script>
-	<script	src="js/siparis.js" type="text/javascript"></script>
+	<script	src="js/siparis.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
-	var today = '<%= tarih.equals("")?"today":tarih %>';
+	var today	= '<%= tarih.equals("")?"today":tarih %>';
 	$(function() {
 		$('#tarih').datepicker({
 			inline: true,

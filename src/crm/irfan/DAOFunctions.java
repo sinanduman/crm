@@ -1,46 +1,19 @@
 package crm.irfan;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Types;
+import crm.irfan.entity.*;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Birim;
-import crm.irfan.entity.Calisan;
-import crm.irfan.entity.Depo;
-import crm.irfan.entity.DurusSebep;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.HataSebep;
-import crm.irfan.entity.Irsaliye;
-import crm.irfan.entity.IrsaliyeBilesen;
-import crm.irfan.entity.IrsaliyeTip;
-import crm.irfan.entity.Makina;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.MamulBilesen;
-import crm.irfan.entity.Siparis;
-import crm.irfan.entity.SiparisPlan;
-import crm.irfan.entity.SiparisTip;
-import crm.irfan.entity.Stok;
-import crm.irfan.entity.StokRapor;
-import crm.irfan.entity.UretimDurum;
-import crm.irfan.entity.UretimPlan;
-
 public class DAOFunctions {
+    
+    public static Connection conn = null;
 
 	protected static List<Birim> birimListeGetirTum() {
-		List<Birim> temp = new ArrayList<Birim>();
-		Connection conn = ConnectionManager.getConnection();
-
-		String searchQuery = "select * from irfan.birim order by ad ";
+		List<Birim> temp  = new ArrayList<Birim>();
+		conn              = ConnectionManager.getConnection();
+		String searchQuery= "select * from irfan.birim order by ad ";
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -74,11 +47,11 @@ public class DAOFunctions {
 	}
 
 	protected static List<Firma> firmaListeGetirTum(int offset) {
-		List<Firma> temp = new ArrayList<Firma>();
-		Connection conn = ConnectionManager.getConnection();
+		List<Firma> temp  = new ArrayList<Firma>();
+		conn              = ConnectionManager.getConnection();
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-		String searchQuery = "select * from irfan.firma order by id DESC " + pageFilter;
+		String searchQuery = "select * from irfan.firma order by ad ASC" + pageFilter;
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -113,10 +86,9 @@ public class DAOFunctions {
 	}
 
 	protected static String hammaddeEkle(String kod, String ad, String birimid, String firmaid, String bilesentip) {
-		String result     = "0";
-		Connection conn   = ConnectionManager.getConnection();
-
-		String insertQuery = "insert into irfan.bilesen (kod, ad, birimid, bilesentipid, firmaid) values (?,?,?,?,?) ";
+	    String result      = "0";
+	    conn               = ConnectionManager.getConnection();
+	    String insertQuery = "insert into irfan.bilesen (kod, ad, birimid, bilesentipid, firmaid) values (?,?,?,?,?) ";
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -129,7 +101,7 @@ public class DAOFunctions {
 			pstmt.setInt(4, Integer.valueOf(bilesentip));
 			pstmt.setInt(5, Integer.valueOf(firmaid));
 
-			pstmt.executeUpdate();			
+			pstmt.executeUpdate();		
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -143,15 +115,16 @@ public class DAOFunctions {
 			}
 			catch (SQLException e) {
 				e.printStackTrace();
+				result = e.getMessage();
 			}
 		}
 		return result;
 	}
-	
+
 	protected static int gkrnoGetir() {
-		int result = -1;
-		Connection conn = ConnectionManager.getConnection();
-		String selectQuery = "select irfan.gkrno_next()";
+		int result        = -1;
+		conn              = ConnectionManager.getConnection();
+		String selectQuery= "select irfan.gkrno_next()";
 		//System.out.println(selectQuery);
 
 		// connect to DB
@@ -180,14 +153,12 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
-	protected static List<Calisan> calisanListeGetirTum(int offset) {
-		List<Calisan> temp = new ArrayList<Calisan>();
-		Connection conn = ConnectionManager.getConnection();
-		
-		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-		String searchQuery = "select * from irfan.calisan order by id DESC " + pageFilter;
+	protected static List<Calisan> calisanListeGetirTum(int offset) {
+		List<Calisan> temp= new ArrayList<Calisan>();
+		conn              = ConnectionManager.getConnection();	
+		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+		String searchQuery= "select * from irfan.calisan order by ad ASC " + pageFilter;
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -223,8 +194,7 @@ public class DAOFunctions {
 
 	protected static String calisanEkle(String ad, String soyad, String gorev) {
 		String retVal     = "0";
-		Connection conn   = ConnectionManager.getConnection();
-
+		conn              = ConnectionManager.getConnection();
 		String insertQuery= "insert into irfan.calisan (ad, soyad, gorev) values (?,?,?) ";
 
 		// connect to DB
@@ -255,10 +225,9 @@ public class DAOFunctions {
 	}
 
 	protected static List<Depo> depoListeGetirTum() {
-		List<Depo> temp = new ArrayList<Depo>();
-		Connection conn = ConnectionManager.getConnection();
-
-		String searchQuery = "select * from irfan.depo order by ad";
+		List<Depo> temp   = new ArrayList<Depo>();
+		conn              = ConnectionManager.getConnection();
+		String searchQuery= "select * from irfan.depo order by ad";
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -286,12 +255,11 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
-	
+
 	protected static String firmaEkle(String ad, String telefon, String adres) {
 		String retVal     = "0";
-		Connection conn   = ConnectionManager.getConnection();
-
-		String insertQuery = "insert into irfan.firma (ad, telefon, adres) values (?,?, ?) ";
+		conn              = ConnectionManager.getConnection();
+		String insertQuery= "insert into irfan.firma (ad, telefon, adres) values (?,?, ?) ";
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -323,13 +291,13 @@ public class DAOFunctions {
 
 	protected static List<Makina> makinaListeGetirTum(Integer offset) {
 		List<Makina> temp = new ArrayList<Makina>();
-		Connection conn = ConnectionManager.getConnection();
+		conn              = ConnectionManager.getConnection();
 	   
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-		String searchQuery = "select m.*, mt.ad makinatipad "
+		String searchQuery= "select m.*, mt.ad makinatipad "
 						+ "from irfan.makina m join irfan.makinatip mt on mt.id=m.makinatipid " 
-						+ "order by m.id DESC "
+						+ "order by m.ad ASC "
 						+ pageFilter;
 
 		// connect to DB
@@ -346,10 +314,7 @@ public class DAOFunctions {
 								rs.getString("makinatipad")
 								)
 				);
-
-
 			}
-
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -369,9 +334,8 @@ public class DAOFunctions {
 
 	protected static String makinaEkle(String ad, String makinatip) {
 		String retVal     = "0";
-		Connection conn   = ConnectionManager.getConnection();
-
-		String insertQuery = "insert into irfan.makina (ad, makinatipid) values (?, ?) ";
+		conn              = ConnectionManager.getConnection();
+		String insertQuery= "insert into irfan.makina (ad, makinatipid) values (?, ?) ";
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -400,15 +364,15 @@ public class DAOFunctions {
 		return retVal;
 	}
 
-	protected static int mamulEkle(String ad, String kod, String cevrimSuresi, String firmaid, String figur ) {
-		Connection conn = ConnectionManager.getConnection();
+	protected static String mamulEkle(String ad, String kod, String cevrimSuresi, String firmaid, String figur ) {
+		conn = ConnectionManager.getConnection();
 
 		BilesenTip bilesen = BilesenTip.MAMUL;
 		String insertQuery = "insert into irfan.mamul (ad, kod, cevrimsuresi, bilesentipid, firmaid, figur) values (?,?,?,?,?,?) ";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		int newMamulId = -1;
+		String newMamulId = "-1";
 		try {
 			pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, ad);
@@ -421,11 +385,12 @@ public class DAOFunctions {
 
 			rs = pstmt.getGeneratedKeys();
 			if (rs.next()) {
-				newMamulId = rs.getInt(1);
+				newMamulId = String.valueOf(rs.getInt(1)) ;
 			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
+			newMamulId = e.getMessage();
 		}
 		finally {
 			try {
@@ -435,13 +400,14 @@ public class DAOFunctions {
 			}
 			catch (SQLException e) {
 				e.printStackTrace();
+				newMamulId = e.getMessage();
 			}
 		}
 		return newMamulId;
 	}
-	
-	protected static void mamulBilesenEkle(int mamulid, int bilesen, int birim, int miktar) {
-		Connection conn = ConnectionManager.getConnection();
+
+	protected static void mamulBilesenEkle(int mamulid, int bilesen, int birim, float miktar) {
+		conn = ConnectionManager.getConnection();
 
 		String insertQuery = "insert into irfan.mamulbilesen (mamulid, bilesenid, birimid, miktar) values (?,?,?,?)";
 
@@ -452,7 +418,7 @@ public class DAOFunctions {
 			pstmt.setInt(1, mamulid);
 			pstmt.setInt(2, bilesen);
 			pstmt.setInt(3, birim);
-			pstmt.setInt(4, miktar);
+			pstmt.setFloat(4, miktar);
 			pstmt.executeUpdate();
 		}
 		catch (SQLException e) {
@@ -473,7 +439,7 @@ public class DAOFunctions {
 
 	protected static List<MamulBilesen> mamulBilesenListeGetirTum() {
 		List<MamulBilesen> temp = new ArrayList<MamulBilesen>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String searchQuery = "select * from irfan.mamulbilesentum";
 
@@ -498,7 +464,7 @@ public class DAOFunctions {
 								rs.getString("birimad"),
 								rs.getInt("firmaid"), 
 								rs.getString("firmaad"), 
-								rs.getInt("miktar"))
+								rs.getFloat("miktar"))
 				);
 			}
 
@@ -518,11 +484,11 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
-	
+
 	protected static List<Stok> stokMamulListeGetirTum(Integer mamulid) {
 		List<Stok> temp = new ArrayList<Stok>();
-		Connection conn = ConnectionManager.getConnection();
-		
+		conn = ConnectionManager.getConnection();
+	
 		String filter = (mamulid==null)?"":"where bilesenid = " + mamulid + " ";
 		String searchQuery = "select * from irfan.stokmamultum " + filter;
 
@@ -534,7 +500,7 @@ public class DAOFunctions {
 			pstmt = conn.prepareStatement(searchQuery);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				temp.add(new Stok(								
+				temp.add(new Stok(
 								rs.getInt("id"), 
 								rs.getInt("bilesenid"), 
 								rs.getString("bilesenad"),
@@ -577,13 +543,13 @@ public class DAOFunctions {
 		return temp;
 	}
 
-	
+
 	protected static List<Stok> stokListeGetirTum(BilesenTip bilesentip, Integer bilesenid, int offset) {
 		List<Stok> temp = new ArrayList<Stok>();
-		Connection conn = ConnectionManager.getConnection();
-		
+		conn = ConnectionManager.getConnection();
+	
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		
+	
 		String join0	= (bilesentip!=null && bilesentip.value()==BilesenTip.MAMUL.value())?"join irfan.mamul b on b.id=s.bilesenid ":"join irfan.bilesen b on b.id=s.bilesenid ";
 		String filter0  = (bilesentip==null) ? "" : "where bilesentipid IN (" + bilesentip.id() + ") ";
 		if(bilesenid!=0) {
@@ -592,7 +558,7 @@ public class DAOFunctions {
 			}
 			else {
 				filter0 = filter0 + " and s.bilesenid = " + bilesenid + " ";
-			}			
+			}		
 		}
 
 		String searchQuery = "select s.*, "
@@ -608,6 +574,7 @@ public class DAOFunctions {
 						+ "join irfan.firma f on f.id = b.firmaid "
 						+ filter0 
 						+ "order by s.id desc "
+						//+ "order by b.kod asc "
 						+ pageFilter;
 
 		System.out.println(searchQuery);
@@ -660,24 +627,78 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
-	
-	
+
+
 	protected static List<StokRapor> stokBilesenRapor(String tablename, String filter, int offset) {
+		List<StokRapor> temp = new ArrayList<StokRapor>();
+		conn = ConnectionManager.getConnection();
+	
+		String pageFilter   = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+
+		String searchQuery = "SELECT b.*, null as stokid, s.miktar, s.tarih, f.ad firmaad, bt.ad bilesentipad FROM "
+						+ tablename 
+						+ " LEFT JOIN (SELECT bilesenid, "
+						+ " MAX(CASE WHEN islemyonu = 0 THEN giristarihi ELSE cikistarihi END) tarih, "
+						+ " SUM(CASE WHEN islemyonu = 0 THEN miktar ELSE -1*miktar END) miktar FROM stok "
+						+ " GROUP BY bilesenid) s on s.bilesenid=b.id "
+						+ " JOIN firma f ON f.id=b.firmaid "
+						+ " JOIN bilesentip bt ON bt.id=b.bilesentipid "
+						+ " WHERE 1=1 " + filter
+						+ " ORDER BY b.bilesentipid, b.ad "
+						+ pageFilter;
+
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(searchQuery);
+			System.out.println(pstmt);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				temp.add(new StokRapor(
+								rs.getInt("id"),
+								rs.getInt("stokid"),
+								rs.getString("ad"),
+								rs.getString("kod"),
+								rs.getInt("bilesentipid"),
+								rs.getString("bilesentipad"),
+								rs.getInt("firmaid"),
+								rs.getString("firmaad"),
+								rs.getInt("miktar"),
+								rs.getTimestamp("tarih")
+								));
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return temp;
+	}
+	
+	protected static List<StokRapor> stokBilesenDetayRapor(String tablename, String filter, int offset, int bilesenid) {
         List<StokRapor> temp = new ArrayList<StokRapor>();
-        Connection conn = ConnectionManager.getConnection();
-        
+        conn = ConnectionManager.getConnection();
+    
         String pageFilter   = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-        String searchQuery = "SELECT b.*, s.miktar,f.ad firmaad,bt.ad bilesentipad FROM "
+        String searchQuery = "SELECT b.*, s.id stokid, s.miktar,f.ad firmaad,bt.ad bilesentipad, "
+                        + "s.islemyonu, case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END as tarih FROM "
                         + tablename 
-                        + " LEFT JOIN (SELECT bilesenid, SUM(CASE WHEN islemyonu = 0 "
-                        + " THEN miktar "
-                        + " ELSE -1*miktar END) miktar FROM stok "
-                        + " GROUP BY bilesenid) s on s.bilesenid=b.id "
+                        + " LEFT JOIN stok s on s.bilesenid=b.id "
                         + " JOIN firma f ON f.id=b.firmaid "
                         + " JOIN bilesentip bt ON bt.id=b.bilesentipid "
                         + " WHERE 1=1 " + filter
-                        + " ORDER BY b.bilesentipid, b.ad "
+                        + " ORDER BY stokid DESC "
                         + pageFilter;
 
         // connect to DB
@@ -689,14 +710,16 @@ public class DAOFunctions {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 temp.add(new StokRapor(
-                                rs.getInt("id"), 
+                                rs.getInt("id"),
+                                rs.getInt("stokid"),
                                 rs.getString("ad"),
                                 rs.getString("kod"),
                                 rs.getInt("bilesentipid"),
                                 rs.getString("bilesentipad"),
                                 rs.getInt("firmaid"),
                                 rs.getString("firmaad"),
-                                rs.getInt("miktar")
+                                rs.getInt("miktar"),
+                                rs.getTimestamp("tarih")
                                 ));
             }
         }
@@ -715,89 +738,89 @@ public class DAOFunctions {
         }
         return temp;
     }
-	
+
 	protected static List<UretimPlan> uretimBilesenRapor(String bilesenid, int offset, String filterPage) {
-        List<UretimPlan> temp = new ArrayList<UretimPlan>();
-        Connection conn = ConnectionManager.getConnection();
-        
-        String pageFilter   = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-        String filter0      = filterPage;
+		List<UretimPlan> temp = new ArrayList<UretimPlan>();
+		conn                  = ConnectionManager.getConnection();
+	
+		String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+		String filter0        = filterPage;
 
-        String searchQuery = "SELECT * FROM irfan.uretimplanexcel e "
-                        + " WHERE 1=1 " + filter0
-                        + " ORDER BY e.tarih DESC, e.mamulad "
-                        + pageFilter;
+		String searchQuery    = "SELECT * FROM irfan.uretimplanexcel e "		                
+						    + " WHERE 1=1 " + filter0
+						    + " ORDER BY e.tarih DESC, e.mamulad "
+						    + pageFilter;
 
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(searchQuery);
-            System.out.println(pstmt);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                temp.add(new UretimPlan(
-                                rs.getInt("id"), 
-                                rs.getInt("mamulid"), 
-                                rs.getString("mamulad"), 
-                                rs.getString("mamulkod"),
-                                UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
-                                rs.getString("yarimamul"),
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(searchQuery);
+			System.out.println(pstmt);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				temp.add(new UretimPlan(
+								rs.getInt("id"), 
+								rs.getInt("mamulid"), 
+								rs.getString("mamulad"), 
+								rs.getString("mamulkod"),
+								Util.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
+								rs.getString("yarimamul"),
 
-                                rs.getInt("planlananmiktar"), 
-                                rs.getInt("uretilenmiktar"),
-                                rs.getInt("hatalimiktar"),
+								rs.getInt("planlananmiktar"), 
+								rs.getInt("uretilenmiktar"),
+								rs.getInt("hatalimiktar"),
 
-                                rs.getInt("makinaid"),
-                                rs.getString("makinaad"),
+								rs.getInt("makinaid"),
+								rs.getString("makinaad"),
 
-                                rs.getInt("firmaid"),
-                                rs.getString("firmaad"),
+								rs.getInt("firmaid"),
+								rs.getString("firmaad"),
 
-                                rs.getInt("calisanid"),
-                                rs.getString("calisanad"),
-                                rs.getString("calisansoyad"),
+								rs.getInt("calisanid"),
+								rs.getString("calisanad"),
+								rs.getString("calisansoyad"),
 
-                                rs.getInt("hataid"),
-                                rs.getString("hataad"),
-                                (rs.getString("hatakodu")==null)?"":(rs.getString("hatakodu")),
-                                rs.getInt("durusid"),
-                                rs.getString("durusad"),
-                                (rs.getString("duruskodu")==null)?"":(rs.getString("duruskodu")),
-                                rs.getInt("duruszaman"),
+								rs.getInt("hataid"),
+								rs.getString("hataad"),
+								(rs.getString("hatakodu")==null)?"":(rs.getString("hatakodu")),
+								rs.getInt("durusid"),
+								rs.getString("durusad"),
+								(rs.getString("duruskodu")==null)?"":(rs.getString("duruskodu")),
+								rs.getInt("duruszaman"),
 
-                                rs.getDate("tarih"), 
-                                rs.getTime("baszaman"), 
-                                rs.getTime("bitzaman"), 
+								rs.getDate("tarih"), 
+								rs.getTime("baszaman"), 
+								rs.getTime("bitzaman"), 
 
-                                rs.getInt("mamulizleno"),
-                                (rs.getString("hammadde")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
-                                (rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
-                                rs.getInt("tamamlandi"),
-                                (rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
-                                rs.getInt("cevrimsuresi")
-                                ));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return temp;
-    }
+								rs.getInt("mamulizleno"),
+								(rs.getString("hammadde")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
+								rs.getInt("tamamlandi"),
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
+								rs.getInt("cevrimsuresi")
+								));
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return temp;
+	}
 
 	protected static List<DurusSebep> durusSebepListeGetir() {
 		List<DurusSebep> temp = new ArrayList<DurusSebep>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 
 		String searchQuery = "select * from irfan.durussebep order by ad";
@@ -835,7 +858,7 @@ public class DAOFunctions {
 
 	protected static List<HataSebep> hataSebepListeGetir() {
 		List<HataSebep> temp = new ArrayList<HataSebep>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 
 		String searchQuery = "select * from irfan.hatasebep order by ad";
@@ -873,10 +896,10 @@ public class DAOFunctions {
 
 	protected static List<Bilesen> bilesenListeGetirTum(BilesenTip bilesentip, int offset) {
 		List<Bilesen> temp = new ArrayList<Bilesen>();
-		Connection conn = ConnectionManager.getConnection();
-		
+		conn = ConnectionManager.getConnection();
+	
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		
+	
 		String filter0 = (bilesentip==null)?"":"where bilesentipid IN (" + bilesentip.id() + ") ";
 
 		String searchQuery = "select b.*, bt.ad bilesentipad, f.ad firmaad, bm.ad birimad "
@@ -885,7 +908,8 @@ public class DAOFunctions {
 						+ "left join irfan.birim bm on bm.id = b.birimid "
 						+ "join irfan.firma f on f.id = b.firmaid " 
 						+ filter0 
-						+ "order by b.id DESC "
+						//+ "order by b.id DESC "
+						+ "order by b.kod ASC "
 						+ pageFilter;
 
 		// connect to DB
@@ -893,7 +917,7 @@ public class DAOFunctions {
 		//System.out.println(searchQuery);
 		ResultSet rs = null;
 		try {
-		    
+		
 			pstmt = conn.prepareStatement(searchQuery);
 			System.out.println(pstmt);
 			rs = pstmt.executeQuery();
@@ -931,11 +955,11 @@ public class DAOFunctions {
 
 	protected static List<Mamul> mamulListeGetir(int offset) {
 		List<Mamul> temp = new ArrayList<Mamul>();
-		Connection conn = ConnectionManager.getConnection();
-		
+		conn = ConnectionManager.getConnection();
+	
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		
-		String searchQuery = "select * from irfan.mamultum" + " ORDER BY id DESC " +pageFilter; /* view */
+	
+		String searchQuery = "select * from irfan.mamultum" + " ORDER BY kod ASC " + pageFilter; /* view */
 
 		// connect to DB
 		//System.out.println(searchQuery);
@@ -953,17 +977,17 @@ public class DAOFunctions {
 								rs.getInt("firmaid"), 
 								rs.getString("firmaad"), 
 								rs.getInt("cevrimsuresi"),
-								rs.getInt("agirlik"),
+								rs.getFloat("agirlik"),
 								rs.getInt("figur"),
 								rs.getDate("eklemetarihi"),
-								UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde gkrno icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 1: hammadde agirlik icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),5), /* -- 1: hammadde mamul basi icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),1), /* -- 1: yarimamul adi icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul gkrno icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),3), /* -- 1: yarimamul agirlik icin */
-								UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),5) /* -- 1: yarimamul mamul basi icin */
+								Util.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
+								Util.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde gkrno icin */
+								Util.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 1: hammadde agirlik icin */
+								Util.mamulInfoDecompose(rs.getString("hammadde"),5), /* -- 1: hammadde mamul basi icin */
+								Util.mamulInfoDecompose(rs.getString("yarimamul"),1), /* -- 1: yarimamul adi icin */
+								Util.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul gkrno icin */
+								Util.mamulInfoDecompose(rs.getString("yarimamul"),3), /* -- 1: yarimamul agirlik icin */
+								Util.mamulInfoDecompose(rs.getString("yarimamul"),5) /* -- 1: yarimamul mamul basi icin */
 								)
 				);
 			}
@@ -986,7 +1010,7 @@ public class DAOFunctions {
 
 	protected static List<Siparis> siparisEkle(String bilesenid, String miktar, String not) {
 		List<Siparis> temp = new ArrayList<Siparis>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String insertQuery = "insert into irfan.siparis ( bilesenid, miktar, \"not\") values (?,?,?)";
 
@@ -1026,7 +1050,7 @@ public class DAOFunctions {
 
 	protected static List<Siparis> siparisListeGetir(SiparisTip siparis) {
 		List<Siparis> temp = new ArrayList<Siparis>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String filter = null;
 		if (siparis == SiparisTip.BEKLEYEN) {
@@ -1083,9 +1107,9 @@ public class DAOFunctions {
 		return temp;
 	}
 
-	protected static List<UretimPlan> uretimPlanListeGetir(UretimDurum uretimdurum, int offset, String filter) {
+	protected static List<UretimPlan> uretimPlanListeGetir(UretimDurum uretimdurum, int offset, String filter, String view) {
 		List<UretimPlan> temp = new ArrayList<UretimPlan>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
@@ -1099,17 +1123,20 @@ public class DAOFunctions {
 		else {
 			filter0 = " ";
 		}
-		System.out.println(filter0);
 
-		String searchQuery ="select * from irfan.uretimplantum " /* view */
+		String searchQuery ="select * from irfan.uretimplantum_"+ view + " " /* view */
 							+ filter0
-							+ "order by id "
+							+ " order by id "
 							+ pageFilter;
-		//System.out.println(searchQuery);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = conn.prepareStatement(searchQuery);
+			
+			if(Genel.LOGMOD==LogMod.DEBUG) {
+			    System.out.println(pstmt);
+			}
+			
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -1118,7 +1145,7 @@ public class DAOFunctions {
 								rs.getInt("mamulid"), 
 								rs.getString("mamulad"), 
 								rs.getString("mamulkod"),
-								UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
+								Util.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
 								rs.getString("yarimamul"),
 
 								rs.getInt("planlananmiktar"), 
@@ -1148,10 +1175,10 @@ public class DAOFunctions {
 								rs.getTime("bitzaman"), 
 
 								rs.getInt("mamulizleno"),
-								(rs.getString("hammadde")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
-								(rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
+								(rs.getString("hammadde")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
 								rs.getInt("tamamlandi"),
-								(rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
 								rs.getInt("cevrimsuresi")
 								)
 				);
@@ -1173,89 +1200,91 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
-	
+
 	protected static List<UretimPlan> uretimPlanListeGetirExcel(UretimDurum uretimdurum, String tarih, String excelsql) {
-        List<UretimPlan> temp = new ArrayList<UretimPlan>();
-        Connection conn = ConnectionManager.getConnection();
+		List<UretimPlan> temp = new ArrayList<UretimPlan>();
+		conn = ConnectionManager.getConnection();
+		
+		System.out.println("excel: " + excelsql);
 
-        //String searchQuery ="SELECT * FROM irfan.uretimplantum WHERE tamamlandi=? AND tarih=? "; /* view */
-        String searchQuery = excelsql; /* view */
-        //System.out.println(searchQuery);
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(searchQuery);
-            //pstmt.setInt(1, uretimdurum.value());
-            //pstmt.setDate(2, Date.valueOf(UtilFunctions.date_tr_to_eng(tarih)));
-            rs = pstmt.executeQuery();
-            System.out.println(pstmt);
+		//String searchQuery ="SELECT * FROM irfan.uretimplantum WHERE tamamlandi=? AND tarih=? "; /* view */
+		String searchQuery = excelsql; /* view */
+		//System.out.println(searchQuery);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(searchQuery);
+			//pstmt.setInt(1, uretimdurum.value());
+			//pstmt.setDate(2, Date.valueOf(UtilFunctions.date_tr_to_eng(tarih)));
+			rs = pstmt.executeQuery();
+			System.out.println(pstmt);
 
-            while (rs.next()) {
-                temp.add(new UretimPlan(
-                                rs.getInt("id"), 
-                                rs.getInt("mamulid"), 
-                                rs.getString("mamulad"), 
-                                rs.getString("mamulkod"),
-                                UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
-                                rs.getString("yarimamul"),
+			while (rs.next()) {
+				temp.add(new UretimPlan(
+								rs.getInt("id"), 
+								rs.getInt("mamulid"), 
+								rs.getString("mamulad"), 
+								rs.getString("mamulkod"),
+								Util.mamulInfoDecompose(rs.getString("hammadde"),1), /* -- 1: hammadde adi icin */
+								rs.getString("yarimamul"),
 
-                                rs.getInt("planlananmiktar"), 
-                                rs.getInt("uretilenmiktar"),
-                                rs.getInt("hatalimiktar"),
+								rs.getInt("planlananmiktar"), 
+								rs.getInt("uretilenmiktar"),
+								rs.getInt("hatalimiktar"),
 
-                                rs.getInt("makinaid"),
-                                rs.getString("makinaad"),
+								rs.getInt("makinaid"),
+								rs.getString("makinaad"),
 
-                                rs.getInt("firmaid"),
-                                rs.getString("firmaad"),
+								rs.getInt("firmaid"),
+								rs.getString("firmaad"),
 
-                                rs.getInt("calisanid"),
-                                rs.getString("calisanad"),
-                                rs.getString("calisansoyad"),
+								rs.getInt("calisanid"),
+								rs.getString("calisanad"),
+								rs.getString("calisansoyad"),
 
-                                rs.getInt("hataid"),
-                                rs.getString("hataad"),
-                                (rs.getString("hatakodu")==null)?"":(rs.getString("hatakodu")),
-                                rs.getInt("durusid"),
-                                rs.getString("durusad"),
-                                (rs.getString("duruskodu")==null)?"":(rs.getString("duruskodu")),
-                                rs.getInt("duruszaman"),
+								rs.getInt("hataid"),
+								rs.getString("hataad"),
+								(rs.getString("hatakodu")==null)?"":(rs.getString("hatakodu")),
+								rs.getInt("durusid"),
+								rs.getString("durusad"),
+								(rs.getString("duruskodu")==null)?"":(rs.getString("duruskodu")),
+								rs.getInt("duruszaman"),
 
-                                rs.getDate("tarih"), 
-                                rs.getTime("baszaman"), 
-                                rs.getTime("bitzaman"), 
+								rs.getDate("tarih"), 
+								rs.getTime("baszaman"), 
+								rs.getTime("bitzaman"), 
 
-                                rs.getInt("mamulizleno"),
-                                (rs.getString("hammadde")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
-                                (rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
-                                rs.getInt("tamamlandi"),
-                                (rs.getString("yarimamul")==null)?"":UtilFunctions.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
-                                rs.getInt("cevrimsuresi")
-                                )
-                );
-            }
+								rs.getInt("mamulizleno"),
+								(rs.getString("hammadde")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),4), /* -- 1: hammadde izle no adi icin */
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("yarimamul"),4), /* -- 1: yarimamul izle no adi icin */
+								rs.getInt("tamamlandi"),
+								(rs.getString("yarimamul")==null)?"":Util.mamulInfoDecompose(rs.getString("hammadde"),3), /* -- 3: hammadde toplam agirlik icin */
+								rs.getInt("cevrimsuresi")
+								)
+				);
+			}
 
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return temp;
-    }
-	
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return temp;
+	}
+
 	protected static List<SiparisPlan> siparisPlanEkle(String siparisid, String miktar, String makinaid, String calisanid,
 													String tarih, String bassaat, String bitsaat, String not) {
 		List<SiparisPlan> temp = new ArrayList<SiparisPlan>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String insertQuery = "insert into irfan.siparisplan (siparisid, miktar, makinaid, calisanid, tarih, bassaat, bitsaat, \"not\") " 
 		+ " values (?,?,?,?,?,?,?,?)";
@@ -1335,10 +1364,11 @@ public class DAOFunctions {
 					String hataid,
 					String durusid,
 					String duruszaman,
-					Integer uretimplanid
+					Integer uretimplanid,
+					Integer mamulizleno
 					) {
 		int result = -1;
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String insertQuery = null;
 
@@ -1354,9 +1384,10 @@ public class DAOFunctions {
 					+ "bitzaman, "
 					+ "hataid, "
 					+ "durusid, "
-					+ "duruszaman "
+					+ "duruszaman, "
+					+ "mamulizleno "
 					+ ")"
-					+ "values (?,?,?,?,?,?,?,?,?,?,?)";
+					+ "values (?,?,?,?,?,?,?,?,?,?,?,?)";
 		}
 		else {
 			insertQuery = "update irfan.uretimplan set "
@@ -1370,7 +1401,8 @@ public class DAOFunctions {
 							+ "bitzaman = ?, "
 							+ "hataid = ?, "
 							+ "durusid = ?, "
-							+ "duruszaman = ? "
+							+ "duruszaman = ?, "
+							+ "mamulizleno = ? "
 							+ "where id  = ?";
 		}
 		// connect to DB
@@ -1389,7 +1421,7 @@ public class DAOFunctions {
 			pstmt.setInt(4, Integer.valueOf(makinaid));
 			pstmt.setInt(5, Integer.valueOf(calisanid));
 
-			pstmt.setDate(6, Date.valueOf(UtilFunctions.date_tr_to_eng(tarih)));
+			pstmt.setDate(6, Date.valueOf(Util.date_tr_to_eng(tarih)));
 			pstmt.setTime(7, Time.valueOf(baszaman));
 			pstmt.setTime(8, Time.valueOf(bitzaman));
 
@@ -1408,10 +1440,15 @@ public class DAOFunctions {
 			else
 				pstmt.setInt(11, Integer.valueOf(duruszaman));
 
-			if(uretimplanid!=0) {
-				pstmt.setInt(12, uretimplanid);
+			if(uretimplanid!=0) { /* Guncelleme */
+				pstmt.setInt(12, mamulizleno);
+				pstmt.setInt(13, uretimplanid);
 			}
-			//System.out.println(insertQuery);
+			else { /* Ekleme */
+				pstmt.setInt(12, mamulizleno);
+			}
+		
+			System.out.println(pstmt);
 			result = pstmt.executeUpdate();
 		}
 		catch (SQLException e) {
@@ -1431,15 +1468,17 @@ public class DAOFunctions {
 	}
 
 	protected static String uretimPlanGuncelle(
+					Integer gerceklesenmiktar,
 					Integer planlananmiktar,
 					Integer hatalimiktar,
 					Integer hataid,
 					Integer uretimplanid
 					) {
 		String result = "0";
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String updateQuery = "update irfan.uretimplan set "
+							+ "uretilenmiktar = ?, "
 							+ "planlananmiktar = ?, "
 							+ "hatalimiktar = ?, "
 							+ "hataid = ? "
@@ -1449,23 +1488,24 @@ public class DAOFunctions {
 		ResultSet rs = null;
 		try {
 			pstmt = conn.prepareStatement(updateQuery);
-			pstmt.setInt(1, planlananmiktar);
-			
+			pstmt.setInt(1, gerceklesenmiktar);
+			pstmt.setInt(2, planlananmiktar);
+		
 			if (hatalimiktar==null)
-				pstmt.setNull(2, Types.INTEGER);
-			else
-				pstmt.setInt(2, hatalimiktar);
-			
-			if (hataid==null)
 				pstmt.setNull(3, Types.INTEGER);
 			else
-				pstmt.setInt(3, hataid);
-			
-			pstmt.setInt(4, uretimplanid);
+				pstmt.setInt(3, hatalimiktar);
+		
+			if (hataid==null)
+				pstmt.setNull(4, Types.INTEGER);
+			else
+				pstmt.setInt(4, hataid);
+		
+			pstmt.setInt(5, uretimplanid);
 			pstmt.executeUpdate();
 		}
 		catch (SQLException e) {
-		    result = e.getMessage();
+			result = e.getMessage();
 			e.printStackTrace();
 		}
 		finally {
@@ -1480,10 +1520,10 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
+
 	protected static List<SiparisPlan> siparisPlanListeGetir(SiparisTip siparistip, int offset) {
 		List<SiparisPlan> temp = new ArrayList<SiparisPlan>();
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
@@ -1549,7 +1589,7 @@ public class DAOFunctions {
 												 String hataid, String hatamiktar, String durusid, String not
 					) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		int result = 0;
 		String updateQuery = "update irfan.siparisplan "
 						+ "set "
@@ -1612,7 +1652,7 @@ public class DAOFunctions {
 
 	protected static Integer SiparisPlanTamamla(String siparisplanid) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		int result = 0;
 		String updateQuery = "update irfan.siparisplan set tamamlandi  = ? where id = ?";
 		// connect to DB
@@ -1642,7 +1682,7 @@ public class DAOFunctions {
 
 	protected static Integer SiparisPlanSil(String siparisplanid) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		int result = 0;
 		String updateQuery = "delete from irfan.siparisplan where id = ?";
 		// connect to DB
@@ -1671,9 +1711,9 @@ public class DAOFunctions {
 
 	protected static String uretimPlanSil(Integer uretimplanid) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		String retVal = "0";	 
-		String deleteQuery = "select plan_sil(?)";
+		String deleteQuery = "select irfan.plan_sil(?)";
 		// connect to DB
 		PreparedStatement pstmt = null;
 		try {
@@ -1681,9 +1721,9 @@ public class DAOFunctions {
 			pstmt.setInt(1, uretimplanid);
 
 			ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
-                retVal = rs.getString(1);
-            }
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -1701,24 +1741,24 @@ public class DAOFunctions {
 		return retVal;
 	}
 	
-	protected static String stokYeterli(Integer uretimplanid, Integer mamulid, Integer miktar) {
-	    String retVal     = "0";
-        Connection conn   = ConnectionManager.getConnection();
+	protected static String hammaddeStokSil(Integer stokid) {
 
-        String insertQuery= "SELECT stok_yeterli(?,?,?) ";
-        
+        conn = ConnectionManager.getConnection();
+        String retVal = "0";     
+        String deleteQuery = "select irfan.hammaddestok_sil(?)";
+        // connect to DB
         PreparedStatement pstmt = null;
         try {
-            pstmt = conn.prepareStatement(insertQuery);
-            pstmt.setInt(1, uretimplanid);
-            pstmt.setInt(2, mamulid); 
-            pstmt.setInt(3, miktar); 
+            pstmt = conn.prepareStatement(deleteQuery);
+            pstmt.setInt(1, stokid);
             
-            System.out.println(pstmt);
+            //System.out.println(pstmt);
+
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()) {
                 retVal = rs.getString(1);
-            }           
+                //System.out.println("Sonuc: " + retVal);
+            }            
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -1734,13 +1774,48 @@ public class DAOFunctions {
             }
         }
         return retVal;
+    }
+
+	protected static String stokYeterli(Integer uretimplanid, Integer mamulid, Integer miktar) {
+		String retVal	 = "0";
+		conn   = ConnectionManager.getConnection();
+
+		String insertQuery= "SELECT irfan.stok_yeterli(?,?,?) ";
+	
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement(insertQuery);
+			pstmt.setInt(1, uretimplanid);
+			pstmt.setInt(2, mamulid); 
+			pstmt.setInt(3, miktar); 
+		
+			System.out.println(pstmt);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}		   
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return retVal;
 	}
 
 	protected static String uretimPlanOk(Integer uretimplanid) {
 
-		Connection conn = ConnectionManager.getConnection();
-		String retVal     = "0";	 
-		String planQuery  = "SELECT plan_ok (?) ";
+		conn = ConnectionManager.getConnection();
+		String retVal	 = "0";	 
+		String planQuery  = "SELECT irfan.plan_ok (?) ";
 		/*
 		String mamulPlanQuery = "select b.*, coalesce( p.uretilenmiktar,0) uretilenmiktar, coalesce(p.hatalimiktar,0) hatalimiktar "
 								+ "from irfan.mamulbilesen b "
@@ -1751,11 +1826,11 @@ public class DAOFunctions {
 		try {
 			pstmt = conn.prepareStatement(planQuery);
 			pstmt.setInt(1, uretimplanid);
-			
+		
 			ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
-                retVal = rs.getString(1);
-            }
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -1775,48 +1850,49 @@ public class DAOFunctions {
 
 	protected static String stokEkle(String bilesenid, String miktar, String irsaliyeno,
 										 String lot, String gkrno, String tarih, String not) {
-		String retVal     = "0";
-		Connection conn   = ConnectionManager.getConnection();
+		String retVal	 = "0";
+		conn   = ConnectionManager.getConnection();
 
-		String insertQuery= "SELECT stok_ekle(?,?,?,?,?,?,?,?) ";
-		
+		String insertQuery= "SELECT irfan.stok_ekle(?,?,?,?,?,?,?,?) ";
+	
 		PreparedStatement pstmt = null;
 		try {
-		    System.out.println(tarih);
-		    
-		    pstmt = conn.prepareStatement(insertQuery);
-            pstmt.setNull(1, Types.INTEGER); // planid
-	        pstmt.setInt(2, Integer.valueOf(bilesenid));
-	        pstmt.setInt(3, Integer.valueOf(miktar)); // Triggerda KG * 1000 = Gram olarak kaydediliyor
-	        
-	        if (gkrno!=null) 
-	            pstmt.setInt(4, Integer.valueOf(gkrno));
-            else 
-                pstmt.setNull(4, Types.INTEGER);	   
-	        if (irsaliyeno!=null) 
-	            pstmt.setString(5, irsaliyeno);
-            else 
-                pstmt.setNull(5, Types.VARCHAR);  
-	        if (lot!=null) 
-	            pstmt.setString(6, lot);
-            else 
-                pstmt.setNull(6, Types.VARCHAR);	       
-	        if (not!=null) 
-	            pstmt.setString(7, not);
-	        else 
-	            pstmt.setNull(7, Types.VARCHAR);	        
-	        if (tarih!=null) 
-                pstmt.setTimestamp(8, UtilFunctions.date_tr_to_timestamp(tarih));
-            else 
-                pstmt.setNull(8, Types.TIMESTAMP);
-	        
-	        System.out.println(pstmt);
-	        ResultSet rs = pstmt.executeQuery();
-	        if(rs.next()) {
-	            retVal = rs.getString(1);
-	        }	        
+			System.out.println(tarih);
+		
+			pstmt = conn.prepareStatement(insertQuery);
+			pstmt.setNull(1, Types.INTEGER); // planid
+			pstmt.setInt(2, Integer.valueOf(bilesenid));
+			pstmt.setInt(3, Integer.valueOf(miktar)); // Triggerda KG * 1000 = Gram olarak kaydediliyor
+		
+			if (gkrno!=null) 
+				pstmt.setInt(4, Integer.valueOf(gkrno));
+			else 
+				pstmt.setNull(4, Types.INTEGER);
+			if (irsaliyeno!=null) 
+				pstmt.setString(5, irsaliyeno);
+			else 
+				pstmt.setNull(5, Types.VARCHAR);
+			if (lot!=null) 
+				pstmt.setString(6, lot);
+			else 
+				pstmt.setNull(6, Types.VARCHAR);
+			if (not!=null) 
+				pstmt.setString(7, not);
+			else 
+				pstmt.setNull(7, Types.VARCHAR);
+			if (tarih!=null) 
+				pstmt.setTimestamp(8, Util.date_tr_to_timestamp(tarih));
+			else 
+				pstmt.setNull(8, Types.TIMESTAMP);
+		
+			System.out.println(pstmt);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}
 		}
 		catch (SQLException e) {
+		    retVal = e.getMessage();
 			e.printStackTrace();
 		}
 		finally {
@@ -1826,99 +1902,62 @@ public class DAOFunctions {
 				}
 			}
 			catch (SQLException e) {
+			    retVal = e.getMessage();
 				e.printStackTrace();
 			}
 		}
 		return retVal;
 	}
-	
-	public static String stokDus(
-                                String bilesenid, 
-                                String miktar,
-                                String gkrno,
-                                String irsaliyeno,
-                                String lot,
-                                String not
-                                ) {
-        String retVal="-1";
-        Connection conn = ConnectionManager.getConnection();
-        String updateQuery  = "SELECT stok_mamul_dus(?,?,?,?,?,?,?) ";
 
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setNull(1, Types.INTEGER);  // Planid
-            pstmt.setInt(2, Integer.valueOf(bilesenid));
-            pstmt.setInt(3, Integer.valueOf(miktar));       
-            if (gkrno!=null) 
-                pstmt.setInt(4, Integer.valueOf(gkrno));
-            else 
-                pstmt.setNull(4, Types.INTEGER);
-            if (irsaliyeno!=null) 
-                pstmt.setString(5, irsaliyeno);
-            else 
-                pstmt.setNull(5, Types.VARCHAR);           
-            if (lot!=null) 
-                pstmt.setString(6, lot);
-            else 
-                pstmt.setNull(6, Types.VARCHAR);
-            if (not!=null) 
-                pstmt.setString(7, not);
-            else 
-                pstmt.setNull(7, Types.VARCHAR);
-            
-            System.out.println(pstmt);
-            ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
-                retVal = rs.getString(1);
-            }
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        return retVal;
-    }
-	
-	protected static int __mamulStokEkle(String mamulid, String miktar, String irsaliyeno, String lot, String tarih,
-										String not) {
-		
-		int result = -1;
-		Connection conn = ConnectionManager.getConnection();
-		
-		String insertQuery = "insert into irfan.stok (bilesenid, miktar, irsaliyeno, lot, giristarihi, \"not\") values (?,?,?,?,?,?) ";
-		
-		// connect to DB
-		
+	public static String stokDus(
+								String bilesenid, 
+								String miktar,
+								String irsaliyeno,
+								String lot,
+								String gkrno,
+								String not
+								) {
+		String retVal="-1";
+		conn = ConnectionManager.getConnection();
+		String updateQuery  = "SELECT irfan.stok_mamul_dus(?,?,?,?,?,?,?) ";
+
 		PreparedStatement pstmt = null;
 		try {
-			pstmt = conn.prepareStatement(insertQuery);
-			pstmt.setInt(1, Integer.valueOf(mamulid));
-			pstmt.setInt(2, Integer.valueOf(miktar)*1000); //Gram olarak kaydediliyor
-			pstmt.setString(3, irsaliyeno);
-			pstmt.setString(4, lot);
-			pstmt.setDate(5, Date.valueOf(UtilFunctions.date_tr_to_eng(tarih)));
-			pstmt.setString(6, not);
-			
-			result = pstmt.executeUpdate();
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setNull(1, Types.INTEGER);  // Planid
+			pstmt.setInt(2, Integer.valueOf(bilesenid));
+			pstmt.setInt(3, Integer.valueOf(miktar));	   
+			if (gkrno!=null) 
+				pstmt.setInt(4, Integer.valueOf(gkrno));
+			else 
+				pstmt.setNull(4, Types.INTEGER);
+			if (irsaliyeno!=null) 
+				pstmt.setString(5, irsaliyeno);
+			else 
+				pstmt.setNull(5, Types.VARCHAR);		   
+			if (lot!=null) 
+				pstmt.setString(6, lot);
+			else 
+				pstmt.setNull(6, Types.VARCHAR);
+			if (not!=null) 
+				pstmt.setString(7, not);
+			else 
+				pstmt.setNull(7, Types.VARCHAR);
+		
+			System.out.println(pstmt);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}
 		}
-		catch (SQLException e) {
+		catch(Exception e) {
 			e.printStackTrace();
 		}
-		finally {
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-				}
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
+		return retVal;
 	}
 
 	protected static int irsaliyeEkle(String irsaliyeno) {
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 
 		String insertQuery = "insert into irfan.irsaliye (olusturmatarihi,irsaliyeno) values (now(),?) ";
 
@@ -1953,10 +1992,10 @@ public class DAOFunctions {
 
 
 	protected static String irsaliyeBilesenEkle(int irsaliyeid, String irsaliyeno, int mamulid, int gkrno, int miktar, String not) {
-		Connection conn   = ConnectionManager.getConnection();
-		String retVal     ="-1";
+		conn   = ConnectionManager.getConnection();
+		String retVal	 ="-1";
 
-		String insertQuery = "SELECT irsaliyebilesen_ekle (?,?,?,?,?,?) ";
+		String insertQuery = "SELECT irfan.irsaliyebilesen_ekle (?,?,?,?,?,?) ";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1968,14 +2007,14 @@ public class DAOFunctions {
 			pstmt.setInt(4, gkrno);
 			pstmt.setInt(5, miktar);
 			if (not!=null) 
-                pstmt.setString(6, not);
-            else 
-                pstmt.setNull(6, Types.VARCHAR);
+				pstmt.setString(6, not);
+			else 
+				pstmt.setNull(6, Types.VARCHAR);
 			System.out.println(pstmt);
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                retVal = rs.getString(1);
-            }
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				retVal = rs.getString(1);
+			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
@@ -1992,16 +2031,82 @@ public class DAOFunctions {
 		}
 		return retVal;
 	}
+	
+	
+	protected static int irsaliyeListeGetirCount(IrsaliyeTip irsaliyetip, String irsaliyeid, String firmaid, String tarih) {
+        int temp = 0;
+        conn = ConnectionManager.getConnection();
+        
+        String irsaliyeFilter   = (irsaliyeid==null)?"":" and id = " + Integer.valueOf(irsaliyeid) + " ";
+        String tarihFilter      = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
+        String firmaFilter      = (firmaid==null)?"":""
+                                    + " and id IN ("
+                                    + "   select irsaliyeid from irfan.irsaliyebilesen ib "
+                                    + "   join irfan.mamul m on m.id = ib.mamulid "
+                                    + "   join irfan.firma f on f.id = m.firmaid "
+                                    + "   WHERE f.id= " + Integer.valueOf(firmaid)
+                                    + ")";
 
-	protected static List<Irsaliye> irsaliyeListeGetirTum(IrsaliyeTip irsaliyetip, int offset) {
+        String searchQuery = "select count(*) from irfan.irsaliye "
+                        + "where kapatildi=1 and onaylandi = ? "
+                        + firmaFilter
+                        + tarihFilter
+                        + irsaliyeFilter;
+        
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+
+            pstmt = conn.prepareStatement(searchQuery);
+            pstmt.setInt(1, irsaliyetip.value());
+            
+            if (Genel.LOGMOD==LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+            
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                temp=rs.getInt(1);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
+
+	protected static List<Irsaliye> irsaliyeListeGetirTum(IrsaliyeTip irsaliyetip, int offset, String irsaliyeid, String firmaid, String tarih) {
 		List<Irsaliye> temp = new ArrayList<Irsaliye>();
-		Connection conn = ConnectionManager.getConnection();
-		
-		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+		conn = ConnectionManager.getConnection();
+	
+		String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+		String irsaliyeFilter = (irsaliyeid==null)?"":" and id = " + Integer.valueOf(irsaliyeid) + " ";
+		String tarihFilter    = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
+		String firmaFilter    = (firmaid==null)?"":""
+		                            + " and id IN ("
+                    		        + "   select irsaliyeid from irfan.irsaliyebilesen ib "
+                    		        + "   join irfan.mamul m on m.id = ib.mamulid "
+                    		        + "   join irfan.firma f on f.id = m.firmaid "
+                    		        + "   WHERE f.id= " + Integer.valueOf(firmaid)
+                    		        + ")";
 
 		String searchQuery = "select * from irfan.irsaliye "
 						+ "where kapatildi=1 and onaylandi = ? "
-						+ "order by id "
+						+ firmaFilter
+						+ irsaliyeFilter
+						+ tarihFilter
+						+ "order by id DESC "
 						+ pageFilter;
 		
 		PreparedStatement pstmt = null;
@@ -2010,8 +2115,13 @@ public class DAOFunctions {
 
 			pstmt = conn.prepareStatement(searchQuery);
 			pstmt.setInt(1, irsaliyetip.value());
+			
+			if (Genel.LOGMOD==LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+			
 			rs = pstmt.executeQuery();
-
+			
 			while (rs.next()) {
 				temp.add(new Irsaliye(
 								rs.getInt("id"), 
@@ -2038,9 +2148,13 @@ public class DAOFunctions {
 		return temp;
 	}
 
-	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeGetirTum(IrsaliyeTip irsaliyetip, int onaylandi) {
+	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeGetirTum(IrsaliyeTip irsaliyetip, int onaylandi, String irsaliyeid, String firmaid, String tarih) {
 		List<IrsaliyeBilesen> temp = new ArrayList<IrsaliyeBilesen>();
-		Connection conn = ConnectionManager.getConnection();
+		conn       = ConnectionManager.getConnection();
+		String irsaliyeFilter = (irsaliyeid==null)?"":" and i.id = " + Integer.valueOf(irsaliyeid) + " ";
+		String tarihFilter    = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
+		String firmaFilter    = (firmaid==null)?"":" and f.id = " + Integer.valueOf(firmaid) + " ";
+		
 		/* acik olan irsaliye bilsenlerini getirir */
 		String searchQuery = "select ib.*, i.olusturmatarihi, i.gonderimtarihi, i.irsaliyeno, "
 						+ "m.ad mamulad, m.kod mamulkod, f.id firmaid, f.ad firmaad "
@@ -2049,6 +2163,9 @@ public class DAOFunctions {
 						+ "join irfan.mamul m on m.id = ib.mamulid "
 						+ "join irfan.firma f on f.id = m.firmaid "
 						+ "where i.kapatildi = ? and i.onaylandi = ? "
+						+ irsaliyeFilter
+						+ tarihFilter
+						+ firmaFilter
 						+ "order by i.id desc, ib.id ";
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -2057,7 +2174,11 @@ public class DAOFunctions {
 			pstmt= conn.prepareStatement(searchQuery);
 			pstmt.setInt(1, irsaliyetip.value());
 			pstmt.setInt(2, onaylandi);
-			System.out.println(pstmt);
+			
+			if (Genel.LOGMOD==LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+			
 			rs   = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -2096,48 +2217,19 @@ public class DAOFunctions {
 		return temp;
 	}
 
-	protected static Integer IrsaliyeSilOld(String irsaliyeid) {
-
-		Connection conn = ConnectionManager.getConnection();
-		int result = 0;
-		String updateQuery = "delete from irfan.irsaliye where id = ?";
-		// connect to DB
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = conn.prepareStatement(updateQuery);
-			pstmt.setInt(1, Integer.valueOf(irsaliyeid));
-
-			result = pstmt.executeUpdate();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-				}
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-	
 	protected static String IrsaliyeSil(String irsaliyeid) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		String result = "0";
-		String updateQuery = "select irsaliye_sil(?)";
-		
+		String updateQuery = "select irfan.irsaliye_sil(?)";
+	
 		// connect to DB
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = conn.prepareStatement(updateQuery);
 			pstmt.setInt(1, Integer.valueOf(irsaliyeid));
-			
+		
 			System.out.println(irsaliyeid);
 
 			rs = pstmt.executeQuery();
@@ -2161,48 +2253,48 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
+
 	protected static String IrsaliyeOnayla(String irsaliyeid) {
 
-        Connection conn = ConnectionManager.getConnection();
-        String result = "0";
-        String updateQuery = "SELECT irsaliye_onayla(?)";
-        
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(irsaliyeid));
-            
-            System.out.println(irsaliyeid);
+		conn = ConnectionManager.getConnection();
+		String result = "0";
+		String updateQuery = "SELECT irfan.irsaliye_onayla(?)";
+	
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(irsaliyeid));
+		
+			System.out.println(irsaliyeid);
 
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-                rs.close();
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
-	
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+				rs.close();
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+
 	protected static void IrsaliyeKapat(String irsaliyeid) {
 
-		Connection conn = ConnectionManager.getConnection();
+		conn = ConnectionManager.getConnection();
 		String updateQuery = "update irfan.irsaliye set kapatildi=1 where id = ?";
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -2230,21 +2322,21 @@ public class DAOFunctions {
 
 	protected static String bilesenSil(String bilesenid) {
 
-	    Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "select bilesen_sil(?)";
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(bilesenid));
-            
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-            }
-        }
+		conn	 = ConnectionManager.getConnection();
+		String result	   = "0";
+		String updateQuery  = "select irfan.bilesen_sil(?)";
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(bilesenid));
+		
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+			}
+		}
 		catch (SQLException e) {
 			e.printStackTrace();
 			result = e.getMessage();
@@ -2261,147 +2353,147 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
+
 	protected static String mamulSil(String mamulid) {
-	    
-	    Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "select mamul_sil(?)";
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(mamulid));
-            
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
 	
+		conn	 = ConnectionManager.getConnection();
+		String result	   = "0";
+		String updateQuery  = "select irfan.mamul_sil(?)";
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(mamulid));
+		
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	protected static String calisanSil(String id) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "select calisan_sil(?)";
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(id));
-            
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
+		conn	 = ConnectionManager.getConnection();
+		String result	   = "0";
+		String updateQuery  = "select irfan.calisan_sil(?)";
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(id));
+		
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	protected static String firmaSil(String id) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "select firma_sil(?)";
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(id));
-            
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
-	
+		conn	 = ConnectionManager.getConnection();
+		String result	   = "0";
+		String updateQuery  = "select irfan.firma_sil(?)";
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(id));
+		
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+
 	protected static String makinaSil(String id) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "select makina_sil(?)";
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, Integer.valueOf(id));
-            
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                result = rs.getString(1);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
+		conn	 = ConnectionManager.getConnection();
+		String result	   = "0";
+		String updateQuery  = "select irfan.makina_sil(?)";
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, Integer.valueOf(id));
+		
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString(1);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 
 	protected static String bilesenGuncelle(String bilesenid, String birimid, String firmaid, String bilesenkod, String bilesenad) {
 
-		Connection conn   = ConnectionManager.getConnection();
+	    conn              = ConnectionManager.getConnection();
 		String result     = "0";
 		String updateQuery= "update irfan.bilesen "
 						+ "set "
@@ -2423,7 +2515,7 @@ public class DAOFunctions {
 			pstmt.setString(3, bilesenkod);
 			pstmt.setString(4, bilesenad);
 			pstmt.setInt(5, Integer.valueOf(bilesenid));
-			
+		
 			pstmt.executeUpdate();
 		}
 		catch (SQLException e) {
@@ -2442,172 +2534,170 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
+
 	protected static String calisanGuncelle(String id, String ad, String soyad, String gorev) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "update irfan.calisan "
-                        + "set "
-                        + "ad = ? ,"
-                        + "soyad  = ? ,"
-                        + "gorev  = ? "
-                        + "where id = ?";
+	    conn	          = ConnectionManager.getConnection();
+		String result	  = "0";
+		String updateQuery= "update irfan.calisan "
+						+ "set "
+						+ "ad = ? ,"
+						+ "soyad  = ? ,"
+						+ "gorev  = ? "
+						+ "where id = ?";
 
-        // connect to DB
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setString(1, ad);
-            pstmt.setString(2, soyad);
-            pstmt.setString(3, gorev);
-            pstmt.setInt(4, Integer.valueOf(id));
-            System.out.println(pstmt);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
+		// connect to DB
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setString(1, ad);
+			pstmt.setString(2, soyad);
+			pstmt.setString(3, gorev);
+			pstmt.setInt(4, Integer.valueOf(id));
+			System.out.println(pstmt);
+			pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	protected static String firmaGuncelle(String id, String ad, String tel, String adres) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "update irfan.firma "
-                        + "set "
-                        + "ad = ? ,"
-                        + "telefon  = ? ,"
-                        + "adres  = ? "
-                        + "where id = ?";
+	    conn	          = ConnectionManager.getConnection();
+		String result	  = "0";
+		String updateQuery= "update irfan.firma "
+						+ "set "
+						+ "ad = ? ,"
+						+ "telefon  = ? ,"
+						+ "adres  = ? "
+						+ "where id = ?";
 
-        // connect to DB
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setString(1, ad);
-            pstmt.setString(2, tel);
-            pstmt.setString(3, adres);
-            pstmt.setInt(4, Integer.valueOf(id));
-            System.out.println(pstmt);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
+		// connect to DB
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setString(1, ad);
+			pstmt.setString(2, tel);
+			pstmt.setString(3, adres);
+			pstmt.setInt(4, Integer.valueOf(id));
+			System.out.println(pstmt);
+			pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 	protected static String makinaGuncelle(String id, String ad, String tip) {
 
-        Connection conn     = ConnectionManager.getConnection();
-        String result       = "0";
-        String updateQuery  = "update irfan.makina "
-                        + "set "
-                        + "ad = ? ,"
-                        + "makinatipid  = ? "
-                        + "where id = ?";
+	    conn              = ConnectionManager.getConnection();
+		String result     = "0";
+		String updateQuery= "update irfan.makina "
+						+ "set "
+						+ "ad = ? ,"
+						+ "makinatipid  = ? "
+						+ "where id = ?";
 
-        // connect to DB
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setString(1, ad);
-            pstmt.setInt(2, Integer.valueOf(tip));
-            pstmt.setInt(3, Integer.valueOf(id));
-            System.out.println(pstmt);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            result = e.getMessage();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-	
-	
+		// connect to DB
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setString(1, ad);
+			pstmt.setInt(2, Integer.valueOf(tip));
+			pstmt.setInt(3, Integer.valueOf(id));
+			System.out.println(pstmt);
+			pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+
 	protected static String irsaliyeBilesenGuncelle(int irsaliyeid, int irsaliyebilesenid, int mamulid, int gkrno, int miktar, String not) {
 
-        Connection conn = ConnectionManager.getConnection();
-        String retVal = "-1";
-        //String updateQuery = "update irfan.irsaliyebilesen " + "set "  + "mamulid = ? ,"+ "gkrno = ? ," + "miktar  = ? ," + "\"not\"  = ? " + "where id = ? and irsaliyeid = ? ";
-        
-        String updateQuery = "SELECT irsaliyebilesen_guncelle(?,?,?,?,?,?) "; 
-        
-        // connect to DB
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setInt(1, irsaliyeid);
-            pstmt.setInt(2, irsaliyebilesenid);
-            pstmt.setInt(3, mamulid);
-            pstmt.setInt(4, gkrno);
-            pstmt.setInt(5, miktar);
-            pstmt.setString(6, not);
-
-            System.out.println(pstmt);
-
-            rs = pstmt.executeQuery();
-            if(rs.next()) {
-                retVal = rs.getString(1);
-                rs.close();
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return retVal;
-    }
+		conn              = ConnectionManager.getConnection();
+		String retVal     = "-1";
+		String updateQuery= "SELECT irfan.irsaliyebilesen_guncelle(?,?,?,?,?,?) "; 
 	
+		// connect to DB
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setInt(1, irsaliyeid);
+			pstmt.setInt(2, irsaliyebilesenid);
+			pstmt.setInt(3, mamulid);
+			pstmt.setInt(4, gkrno);
+			pstmt.setInt(5, miktar);
+			pstmt.setString(6, not);
+
+			System.out.println(pstmt);
+
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				retVal = rs.getString(1);
+				rs.close();
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return retVal;
+	}
+
 	protected static String mamulGuncelle(String mamulid, String firmaid, String kod, String ad, String figur, String cevrimsuresi) {
 
-		Connection conn = ConnectionManager.getConnection();
-		String result = "0";
-		String updateQuery = "update irfan.mamul "
+		conn              = ConnectionManager.getConnection();
+		String result     = "0";
+		String updateQuery= "update irfan.mamul "
 						+ "set "
 						+ "firmaid  = ? ,"
 						+ "kod  = ? ,"
@@ -2647,9 +2737,9 @@ public class DAOFunctions {
 	}
 
 	public static int recordCount(String tablename, String filter) {
-		int result = 0;
-		Connection conn = ConnectionManager.getConnection();
-		String selectQuery = "select count(*) from irfan." + tablename  + filter;
+		int result        = 0;
+		conn              = ConnectionManager.getConnection();
+		String selectQuery= "select count(*) from irfan." + tablename  + filter;
 		//System.out.println(selectQuery);
 
 		// connect to DB
@@ -2678,11 +2768,11 @@ public class DAOFunctions {
 		}
 		return result;
 	}
-	
+
 	public static int recordAgg(String tablename, String aggfunc, String aggfield, String filter) {
-		int result = 0;
-		Connection conn = ConnectionManager.getConnection();
-		String selectQuery = "select "+ aggfunc +"(" + aggfield + ")"+" from irfan." + tablename  + filter;
+		int result        = 0;
+		conn              = ConnectionManager.getConnection();
+		String selectQuery= "select "+ aggfunc +"(" + aggfield + ")"+" from irfan." + tablename  + filter;
 		//System.out.println(selectQuery);
 
 		// connect to DB

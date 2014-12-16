@@ -9,7 +9,7 @@ public class Mamul {
     private Integer firmaid;
     private String  firmaad;
     private Integer cevrimsuresi;
-    private Integer agirlik;
+    private Float agirlik;
     private Integer figur;
     private Date    eklemetarihi;
     private String  hammadde;
@@ -22,7 +22,7 @@ public class Mamul {
     private String  yarimamulmamulbasi;
     
     public Mamul(Integer id, String ad, String kod, Integer firmaid, String firmaad, Integer cevrimsuresi,
-                    Integer agirlik, Integer figur, Date eklemetarihi, String hammadde, String hammaddegkrno, String hammaddemiktar,
+                 Float agirlik, Integer figur, Date eklemetarihi, String hammadde, String hammaddegkrno, String hammaddemiktar,
                     String hammaddemamulbasi, String yarimamul, String yarimamulgkrno, String yarimamulmiktar,
                     String yarimamulmamulbasi) {
         super();
@@ -149,11 +149,11 @@ public class Mamul {
         this.yarimamulmiktar = yarimamulmiktar;
     }
     
-    public Integer getAgirlik() {
+    public Float getAgirlik() {
         return agirlik;
     }
     
-    public void setAgirlik(Integer agirlik) {
+    public void setAgirlik(Float agirlik) {
         this.agirlik = agirlik;
     }
     

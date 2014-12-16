@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"	pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page import="crm.irfan.User, crm.irfan.entity.Genel"%>
+<%@ page import="crm.irfan.entity.Genel"%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,7 +26,7 @@
 	<![endif]-->
 </head>
 <body>
-	<%@ include file="logincheck.jsp" %> 
+	<%@ include file="logincheck.jsp" %>
 	<!-- 
 	<div class="container">
 		<div class="row">

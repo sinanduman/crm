@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.User, crm.irfan.UtilFunctions, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.Util,crm.irfan.entity.*,java.util.List" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -31,7 +31,7 @@
 <%@ include file="logincheck.jsp" %>
 
 <%
-	List<Irsaliye> irsaliye = (List<Irsaliye>) request.getAttribute("irsaliye");
+    List<Irsaliye> irsaliye = (List<Irsaliye>) request.getAttribute("irsaliye");
 	List<IrsaliyeBilesen> irsaliyebilesenonaylandi = (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesenonaylandi");
 	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
 	List<Birim> birim = (List<Birim>) request.getAttribute("birim");
@@ -45,21 +45,29 @@
 	<div class="row" style="font-size:12px;">
 		<div>
 			<table class="tableplan">
-				<% int sayac = 0; %>
-				<% for (Irsaliye i : irsaliye) { %>
-				<% if (sayac++ == 0) { %>
+				<%
+				    int sayac = 0;
+				%>
+				<%
+				    for (Irsaliye i : irsaliye) {
+				%>
+				<%
+				    if (sayac++ == 0) {
+				%>
 				<tr>
 					<td><label class="text-success">İrsaliye No</label></td>
 					<td><label class="text-success">Oluşturma Tarihi</label></td>
 					<td><label class="text-success">Gönderim Tarihi</label></td>
 					<td class="text-center"><label class="text-success">Aksiyon</label></td>
 				</tr>
-				<% } %>
+				<%
+				    }
+				%>
 				<form name="action_form<%=i.getId()%>" id="action_form<%=i.getId()%>">
 				<tr id="tr<%=i.getId()%>">
-					<td><%= i.getIrsaliyeno() %></td>
-					<td><%= UtilFunctions.getTarihTR(i.getOlusturmatarihi()) %></td>
-					<td><%= UtilFunctions.getTarihTR(i.getGonderimtarihi()) %></td>
+					<td><%=i.getIrsaliyeno()%></td>
+					<td><%=Util.getTarihTR(i.getOlusturmatarihi())%></td>
+					<td><%=Util.getTarihTR(i.getGonderimtarihi())%></td>
 					
 					<td class="text-center">
 						<div id="divirsaliye<%= i.getId() %>">

@@ -1,24 +1,20 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.MamulBilesen;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MamulServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static long token = 1L;
     
     public MamulServlet() {
         super();
@@ -52,6 +48,8 @@ public class MamulServlet extends HttpServlet {
         List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
         mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
         
+        token  = Util.getToken();
+        request.setAttribute("token", token);
         request.setAttribute("firma", firma);
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("yarimamul", yarimamul);
@@ -94,34 +92,39 @@ public class MamulServlet extends HttpServlet {
             out.print(message);
         }
         else {
-            System.out.println("currentTimeMillis: "+ System.currentTimeMillis());
-            int newMamulId = DAOFunctions.mamulEkle(
-                    new String(request.getParameter("mamulad").getBytes("UTF-8")),
-                    new String(request.getParameter("mamulkod").getBytes("UTF-8")),
-                    new String(request.getParameter("mamulcevrim").getBytes("UTF-8")),
-                    new String(request.getParameter("mamulfirma").getBytes("UTF-8")),
-                    new String(request.getParameter("mamulfigur").getBytes("UTF-8"))
-                    );
-    
-            /* if Error occured */
-            if(newMamulId == -1) {
-                message = "Hata Olustu!..";
+            /* Prevent ReSubmit */
+            if(Long.valueOf(request.getParameter("token"))==token) {
+                String newMamulId = DAOFunctions.mamulEkle(
+                        new String(request.getParameter("mamulad").getBytes("UTF-8")),
+                        new String(request.getParameter("mamulkod").getBytes("UTF-8")),
+                        new String(request.getParameter("mamulcevrim").getBytes("UTF-8")),
+                        new String(request.getParameter("mamulfirma").getBytes("UTF-8")),
+                        new String(request.getParameter("mamulfigur").getBytes("UTF-8"))
+                        );
+        
+                /* if Error occured */
+                if(!Util.isNumeric(newMamulId)) {
+                    message = newMamulId;
+                }
+                else {
+                    message = "0"; //Basarili
+                    int bilesenSayisi = Integer.valueOf(request.getParameter("bilesen_length"));
+                    for(int i=0; i< bilesenSayisi; i++) {
+                        String bilesenid= request.getParameter("bilesenid_" + i);
+                        String birimid  = request.getParameter("birimid_" + i);
+                        String miktar   = request.getParameter("miktar_" + i);
+                        //System.out.println("newMamulId: "+ newMamulId + ", bilesenid: "+ bilesenid);
+                        DAOFunctions.mamulBilesenEkle(
+                                Integer.valueOf(newMamulId),
+                                Integer.valueOf(bilesenid),
+                                Integer.valueOf(birimid),
+                                Float.valueOf(miktar)
+                        );
+                    }
+                }
             }
             else {
-                message = "0"; //Basarili
-            }
-            int bilesenSayisi = Integer.valueOf(request.getParameter("bilesen_length"));
-            for(int i=0; i< bilesenSayisi; i++) {
-                String bilesenid= request.getParameter("bilesenid_" + i);
-                String birimid  = request.getParameter("birimid_" + i);
-                String miktar   = request.getParameter("miktar_" + i);
-                //System.out.println("newMamulId: "+ newMamulId + ", bilesenid: "+ bilesenid);
-                DAOFunctions.mamulBilesenEkle(
-                        newMamulId,
-                        Integer.valueOf(bilesenid),
-                        Integer.valueOf(birimid),
-                        Integer.valueOf(miktar)
-                );
+                message="-1";
             }
                     
             List<Firma> firma = new ArrayList<Firma>();
@@ -147,6 +150,8 @@ public class MamulServlet extends HttpServlet {
             List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
             mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
             
+            token  = Util.getToken();
+            request.setAttribute("token", token);
             request.setAttribute("firma", firma);
             request.setAttribute("hammadde", hammadde);
             request.setAttribute("yarimamul", yarimamul);

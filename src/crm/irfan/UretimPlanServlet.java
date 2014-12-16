@@ -1,24 +1,15 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Calisan;
-import crm.irfan.entity.DurusSebep;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.HataSebep;
-import crm.irfan.entity.Makina;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.UretimDurum;
-import crm.irfan.entity.UretimPlan;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class UretimPlanServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -84,29 +75,28 @@ public class UretimPlanServlet extends HttpServlet {
         String mamullisteid = request.getParameter("mamullisteid")==null?"":request.getParameter("mamullisteid");
         String excelsql     = "";
         String message      = "";
-        String tarih        = UtilFunctions.getTarih(new Date());
-        String makinaid     = "";
+        String tarih        = (request.getParameter("tarih")==null || request.getParameter("tarih").equals("")) ? Util.getTarih(new Date()) : Util.date_tr_to_eng(request.getParameter("tarih"));
+        String makinaid     = (request.getParameter("makinaid")==null || request.getParameter("makinaid").equals("")) ? "" : request.getParameter("makinaid");
         String filter1      = " and tarih='" + tarih + "'";
         String filter2      = "";
         String filter0      = filter1 + filter2;
         
         if(mamullisteid!=null && mamullisteid.matches("[0-9]+")) {
             if(mamullisteid.equals("1")) {            
-                tarih   = (request.getParameter("tarih")==null || request.getParameter("tarih").equals(""))?"":request.getParameter("tarih");
-                makinaid= (request.getParameter("makinaid")==null || request.getParameter("makinaid").equals(""))?"":request.getParameter("makinaid");
-                
-                filter1 = " and tarih='" + UtilFunctions.date_tr_to_eng(tarih)+ "'";
+                filter1 = " and tarih='" + Util.date_tr_to_eng(tarih)+ "'";
                 if(!makinaid.equals("")) {
                     filter2  = " and makinaid=" + makinaid;
                 }                
                 filter0  =  filter1 + filter2;
             }
             else {
-                String hedefuretim  = request.getParameter("hedefuretim").toString();
+                String hedefuretim  = request.getParameter("hedefuretim");
+                String gercekuretim = request.getParameter("gercekuretim");
                 String fark         = request.getParameter("fark")==""?null:request.getParameter("fark");
                 String hataid       = request.getParameter("hatasebepid")==""?null:request.getParameter("hatasebepid");
                 String uretimplanid = request.getParameter("uretimplanid")==""?null:request.getParameter("uretimplanid");
                 String result = DAOFunctions.uretimPlanGuncelle(
+                                Integer.valueOf(gercekuretim),
                                 Integer.valueOf(hedefuretim),
                                 (fark==null)?null:Integer.valueOf(fark),
                                 (hataid==null)?null:Integer.valueOf(hataid),
@@ -114,7 +104,11 @@ public class UretimPlanServlet extends HttpServlet {
                                 );
                 message = result;
             }
-            excelsql = "SELECT * FROM uretimplantum WHERE 1=1 " + filter0;
+        }
+        
+        excelsql = "SELECT * FROM uretimplantum_plan WHERE 1=1 and tamamlandi=1 " + filter0;
+        if(Genel.LOGMOD==LogMod.DEBUG) {
+            System.out.println("planservlet: " + excelsql);
         }
        
         List<HataSebep> hatasebep = new ArrayList<HataSebep>();
@@ -143,7 +137,7 @@ public class UretimPlanServlet extends HttpServlet {
         int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
         
         List<UretimPlan> uretimplan = new ArrayList<UretimPlan>();
-        uretimplan  = DAOFunctions.uretimPlanListeGetir(UretimDurum.TAMAMLANMIS, page, filter0);
+        uretimplan  = DAOFunctions.uretimPlanListeGetir(UretimDurum.TAMAMLANMIS, page, filter0,"plan");
         
         request.setAttribute("hatasebep", hatasebep);
         request.setAttribute("durussebep", durussebep);

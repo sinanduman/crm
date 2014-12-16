@@ -6,18 +6,20 @@ public class User {
     private String  username;
     private String  password;
     private Integer admin;
+    private String  role;
     public User() {
     }
     
-    public User(String name, String surname, String username, String password, Integer admin) {
+    public User(String name, String surname, String username, String password, Integer admin, String role) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.password = password;
         this.admin = admin;
+        this.role = role;
     }
     
-    public Integer isAdmin() {
+    public Integer getAdmin() {
         return admin;
     }
     
@@ -59,6 +61,14 @@ public class User {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
     }
     
 }

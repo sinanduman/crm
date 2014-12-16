@@ -1,20 +1,14 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Calisan;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.Makina;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.UretimPlan;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UretimRaporServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -83,7 +77,7 @@ public class UretimRaporServlet extends HttpServlet {
                 filter4     = andYes + " firmaid = " + Integer.valueOf(firmaid);
             }
             if(bas_tarih!=null && bit_tarih!=null && !bas_tarih.equals("") && !bit_tarih.equals("") ) {
-                filter5     = andYes + " ( tarih BETWEEN '" + UtilFunctions.date_tr_to_eng(bas_tarih) + "' AND '" + UtilFunctions.date_tr_to_eng(bit_tarih) +"')";
+                filter5     = andYes + " ( tarih BETWEEN '" + Util.date_tr_to_eng(bas_tarih) + "' AND '" + Util.date_tr_to_eng(bit_tarih) +"')";
             }
             filter0 = filter1 + filter2 + filter3 + filter4 + filter5;
             // PAGING

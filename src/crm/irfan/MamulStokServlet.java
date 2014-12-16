@@ -1,19 +1,14 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.Stok;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MamulStokServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -76,19 +71,18 @@ public class MamulStokServlet extends HttpServlet {
         
         //Integer stoklisteid = Integer.valueOf(request.getParameter("stoklisteid"));
         String mamulid      = request.getParameter("mamulid");
-        Integer mamulekleid = Integer.valueOf(request.getParameter("mamulekleid"));
-        
-        String message = null;
-        List<Stok> stok = new ArrayList<Stok>();
+        String mamulekleid  = request.getParameter("mamulekleid");        
+        String message      = null;
+        List<Stok> stok     = new ArrayList<Stok>();
         
         int totalrecord = 0;
         int page        = 1;
         int noofpages   = 0;
         int sumagg      = 0;
         
-        if(mamulekleid==1) {
-            String result = ""; 
-            String iade =  request.getParameter("iade");
+        if(mamulekleid.equals("1")) {
+            String result   = ""; 
+            String iade     = request.getParameter("iade");
             if(iade==null) {
                 result = DAOFunctions.stokEkle(
                             request.getParameter("mamulid"),
@@ -104,13 +98,13 @@ public class MamulStokServlet extends HttpServlet {
                 result = DAOFunctions.stokDus(
                                 request.getParameter("mamulid"),
                                 request.getParameter("miktar"),
-                                null, /* gkrno*/
                                 request.getParameter("irsaliyeno"),
                                 request.getParameter("lot"),
+                                null, /* gkrno*/
                                 request.getParameter("not")
                     );
             }
-            message = (result=="0")?"Hata oluştu!..":"";
+            message = result.equals("0")?"Hata oluştu!..":"";
         }
         
         //if(stoklisteid!=null && stoklisteid==1) {

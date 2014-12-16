@@ -1,6 +1,7 @@
 var numpattern	= /^[0-9][0-9]*$/;
 var numpattern2	= /^[1-9][0-9]*$/; /* Sayilabilir miktar icin */
 var numpattern3	= /^[\-]?[1-9][0-9]*$/; /* Stok iade için miktar icin */
+var numpattern4	= /^(([1-9]*[0-9]([.][0-9]+))|([1-9][0-9]*))$/; /* Hammadde gramaj icin */
 function is_number(formval){
 	if($.trim(formval)==""){
 		return false;
@@ -12,6 +13,12 @@ function is_positive(formval){
 		return false;
 	}
 	return numpattern2.test(formval);
+}
+function is_ondalik(formval){
+	if($.trim(formval)==""){
+		return false;
+	}
+	return numpattern4.test(formval);
 }
 function is_iade(formval){
 	if($.trim(formval)==""){

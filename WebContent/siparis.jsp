@@ -25,7 +25,9 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.Bilesen, crm.irfan.entity.Genel, crm.irfan.entity.ResultTip" %>
+<%@ page import="crm.irfan.entity.Siparis" %>
+<%@ page import="java.util.List" %>
 
 <%@ include file="logincheck.jsp" %>
 

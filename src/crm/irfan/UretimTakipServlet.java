@@ -1,24 +1,15 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Calisan;
-import crm.irfan.entity.DurusSebep;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.HataSebep;
-import crm.irfan.entity.Makina;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.UretimDurum;
-import crm.irfan.entity.UretimPlan;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UretimTakipServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -88,7 +79,8 @@ public class UretimTakipServlet extends HttpServlet {
                                 new String(request.getParameter("hatasebepid").getBytes("UTF-8")),
                                 new String(request.getParameter("durussebepid").getBytes("UTF-8")),
                                 new String(request.getParameter("duruszaman").getBytes("UTF-8")),
-                                Integer.valueOf(uretimplanid)
+                                Integer.valueOf(uretimplanid),
+                                Integer.valueOf(request.getParameter("mamulizleno"))
                                 );
                 message = (result==-1) ? "Hata oluştu" : "";
             }
@@ -120,7 +112,7 @@ public class UretimTakipServlet extends HttpServlet {
             int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             
             List<UretimPlan> uretimplan = new ArrayList<UretimPlan>();
-            uretimplan  = DAOFunctions.uretimPlanListeGetir(UretimDurum.BEKLEYEN, page, "");
+            uretimplan  = DAOFunctions.uretimPlanListeGetir(UretimDurum.BEKLEYEN, page, "","takip");
             
             request.setAttribute("hatasebep", hatasebep);
             request.setAttribute("durussebep", durussebep);

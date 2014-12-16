@@ -26,12 +26,15 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.Genel, crm.irfan.entity.Makina, crm.irfan.entity.MakinaTip" %>
+<%@ page import="java.util.List" %>
 
 <%@ include file="logincheck.jsp" %>
 <%
 	List<Makina> makina = (List<Makina>) request.getAttribute("makina");
-	String message = (String) request.getAttribute("message");
+	String message		= (String) request.getAttribute("message");
+	String admin		= (String) session.getAttribute("admin");
+
 %>
 
 <div class="container">
@@ -64,12 +67,16 @@
 					</select>
 				</div>
 			</div>
+			<% 
+			if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group col-xs-8">
 				<label class="col-xs-3 control-label">&nbsp;</label>
 				<div>
 					<button type="submit" class="btn btn-danger">Ekle</button>
 				</div>
 			</div>
+			<% } %>
 		</form>
 	</div>
 	<!-- ALERT BOX -->
@@ -103,7 +110,11 @@
 					<td><label class="text-success">No</label></td>
 					<td><label class="text-success">Makina/Bant Adı</label></td>
 					<td><label class="text-success">Makina Tipi</label></td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td><label class="text-success">Aksiyon</label></td>
+					<% } %>
 				</tr>
 				<% } %>
 				<form name="action_form<%=m.getId()%>" id="action_form<%=m.getId()%>">
@@ -111,7 +122,7 @@
 					<td><%= m.getId() %></td>
 					<td><input type="text" class="form-control" value="<%= m.getMakinaad() %>" name="liste_makinaad" id="liste_makinaad" autocomplete="off"></td>
 					<td>
-					<select id="liste_makinatipid" name="liste_makinatipid">
+					<select class="form-control" id="liste_makinatipid" name="liste_makinatipid">
 						<%
 							for (MakinaTip mt : MakinaTip.values()) {
 								if (mt.value()  == m.getMakinatipid() ){
@@ -124,12 +135,16 @@
 						%>
 					</select>
 					</td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td>
 						<div id="div<%= m.getId() %>" class="text-center">
 							<a href="javascript:updateMakinaGo('makina',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a> 
 							<a href="javascript:deleteMakinaGo('makina',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
 						</div>
 					</td>
+					<% } %>
 				</tr>
 				</form>
 				<% } %>

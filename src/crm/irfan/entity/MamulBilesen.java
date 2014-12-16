@@ -13,11 +13,11 @@ public class MamulBilesen {
     private String  birimad;
     private Integer firmaid;
     private String  firmaad;
-    private Integer miktar;
+    private Float miktar;
     
     public MamulBilesen(Integer id, Integer mamulid, Integer bilesenid, String bilesenad, String bilesenkod,
                     Integer bilesentipid, String bilesentipad, Integer birimid, String birimad, Integer firmaid,
-                    String firmaad, Integer miktar) {
+                    String firmaad, Float miktar) {
         super();
         this.id = id;
         this.mamulid = mamulid;
@@ -121,11 +121,11 @@ public class MamulBilesen {
         this.firmaad = firmaad;
     }
     
-    public Integer getMiktar() {
+    public Float getMiktar() {
         return miktar;
     }
     
-    public void setMiktar(Integer miktar) {
+    public void setMiktar(Float miktar) {
         this.miktar = miktar;
     }
     

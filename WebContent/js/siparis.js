@@ -238,6 +238,9 @@ $("#uretimekle").click(function(){
 	if(document.uretimtakipform.mamulid.value==""){
 		message += "Mamül seçiniz!\n";
 	}
+	if(!is_positive(document.uretimtakipform.mamulizleno.value) ){
+		message += "Mamül İzleme No girilmeli!\n";
+	}
 	if(!is_positive(document.uretimtakipform.uretimadet.value)){
 		message += "Üretim miktarı seçiniz!\n";
 	}
@@ -388,7 +391,7 @@ function uretimtakipguncelle(sender,planid){
 	$(sender).css("background-color","darkkhaki");
 
 	$("#uretimekle").text("Güncelle");
-	$("#uretimekle").removeClass("btn btn-danger").addClass("btn btn-turkuaz");
+	$("#uretimekle").removeClass("btn btn-danger").addClass("btn btn-success");
 	$("#uretimiptal").css("display","");
 	
 	document.uretimtakipform.tarih.value		= plan[planid].tarihtr;	
@@ -405,6 +408,7 @@ function uretimtakipguncelle(sender,planid){
 	document.uretimtakipform.hatasebepid.value	= plan[planid].hataid;
 	document.uretimtakipform.durussebepid.value	= plan[planid].durusid;
 	document.uretimtakipform.duruszaman.value	= plan[planid].duruszaman;
+	document.uretimtakipform.mamulizleno.value	= plan[planid].izlemeno;
 	
 	if(plan[planid].hataid=="0"){
 		$("#hatasebepid option").each(function(index) {
@@ -440,8 +444,10 @@ function uretimplanguncelle(sender,planid){
 	$(sender).css("background-color","darkkhaki");
 
 	$("#hedefuretim").removeAttr("readonly");
+	$("#gercekuretim").removeAttr("readonly");
+	
 	$("#uretimplanguncelle").removeAttr("disabled");
-	$("#uretimplanguncelle").removeClass("btn btn-danger").addClass("btn btn-turkuaz");
+	$("#uretimplanguncelle").removeClass("btn btn-danger").addClass("btn btn-success");
 	
 	$("#uretimplaniptal").css("display","");
 	
@@ -453,6 +459,7 @@ function uretimplanguncelle(sender,planid){
 	document.uretimplanform.hedefuretim.value		= plan[planid].hedefuretim;
 	document.uretimplanform.hedefuretimhidden.value	= plan[planid].hedefuretim;
 	document.uretimplanform.gercekuretim.value		= plan[planid].uretimadet;
+	document.uretimplanform.gercekuretim_hidden.value= plan[planid].uretimadet;
 	document.uretimplanform.fark.value				= plan[planid].fark;
 	document.uretimplanform.sapma.value				= plan[planid].sapma;
 	
@@ -488,7 +495,7 @@ $("#uretimiptal").click(function(){
 	cleartrbackground();
 
 	$("#uretimekle").text("Ekle");
-	$("#uretimekle").removeClass("btn btn-turkuaz").addClass("btn btn-danger");
+	$("#uretimekle").removeClass("btn btn-success").addClass("btn btn-danger");
 
 	$("#uretimiptal").css("display","none");
 	$("#uretimplanid").val("0");
@@ -539,7 +546,8 @@ $("#uretimiptal").click(function(){
 	$("#bitsaat").val("00");
 	$("#bitdakika").val("00");
 
-	$("#mamulkod").val("");	
+	$("#mamulkod").val("");
+	$("#mamulizleno").val("");
 	changefun(document.uretimtakipform.mamulkod);
 	
 	$("#uretimadet").val("");
@@ -554,36 +562,94 @@ $("#uretimplaniptal").click(function(){
 	cleartrbackground();
 	
 	$("#hedefuretim").attr("readonly","readonly");
+	$("#gercekuretim").attr("readonly","readonly");
 	
-	$("#uretimplanguncelle").removeClass("btn btn-turkuaz").addClass("btn btn-danger");
+	$("#uretimplanguncelle").removeClass("btn btn-success").addClass("btn btn-danger");
 	$("#uretimplanguncelle").attr("disabled","disabled");
 	
 	$("#uretimplaniptal").css("display","none");
 	$("#uretimplanid").val("0");
 	
-	hedefuretim_change();
+	$("#hedefuretim").val("");
+	$("#hedefuretimhidden").val("");
+	$("#gercekuretim").val("");
+	$("#fark").val("");
+	$("#sapma").val("");
+	$("#hatasebepid").val("0");
+	
+	$("#mamulkod").val("");
+	$("#mamulizleno").val("");
+	changefun(document.uretimplanform.mamulkod);
+	
+	//hedefuretim_change();
 });
 
 
 $("#uretimplanguncelle").click(function(){
-	
-	//alert("gercekuretim: " + $("#gercekuretim").val()  + " hedefuretim: " + $("#hedefuretim").val()  +	"fark: " + $("#fark").val() );
-	
+	//console.log("gercekuretim: " + $("#gercekuretim").val()  + " hedefuretim: " + $("#hedefuretim").val()  +	"fark: " + $("#fark").val() );
 	if(!is_number($("#hedefuretim").val())){
 		alert("Hedeflenen üretim girilmeli!\n");
+	}
+	else if(!is_number($("#gercekuretim").val())){
+		alert("Gerçekleşen üretim girilmeli!\n");
 	}
 	else if($("#fark").val()!="" && !is_positive($("#hatasebepid").val())){
 		alert("Hedeflenen üretim, Gerçekleşen üretimden yüksek.\nAçıklama seçilmeli!\n");
 	}
-	else if ($("#fark").val()=="" && is_positive($("#hatasebepid").val())){
+	else if($("#fark").val()=="" && is_positive($("#hatasebepid").val())){
 		alert("Açıklama seçili!\n\Hedeflenen üretim, Gerçekleşen üretimden yüksek olmalı!\n");
 	}
 	else{
-		$("#uretimplanform").submit();
+		console.log("tetstststs");
+		if(parseInt($("#gercekuretim").val())!=parseInt($("#gercekuretim_hidden").val()) ){
+			if(!confirm("Gerçekleşen Üretim DEĞİŞTİ, Onaylıyor musun?")){
+				return false;
+			}
+		}
+		console.log("gercekuretim: " + parseInt($("#gercekuretim").val()));
+		console.log("gercekuretim_hidden: " + parseInt($("#gercekuretim_hidden").val()));
+		var uretimfark = (parseInt($("#gercekuretim").val()) - parseInt($("#gercekuretim_hidden").val()));
+		console.log(uretimfark);
+		/* Malzeme yeterli mi*/
+		$.ajax({
+			url: "uretimtakip",
+			type: "POST",
+			data: { 
+				uretimplanid:	0,
+				mamulid:		$("#mamulid").val(),
+				uretilenmiktar:	uretimfark,
+				hatalimiktar:	0,
+				islemid: 3
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
+			}
+		}).done(function( msg ) {
+			if(msg == "0"){
+				//console.log(1);
+				if($("#uretimplanid").val()=="0"){
+					//console.log(2);
+					if(confirm("Güncellemek istediğine emin misin?")){
+						document.uretimplanform.submit();
+					}
+				}
+				else{
+					//console.log(3);
+					document.uretimplanform.submit();
+				}
+			}
+			else{
+				//console.log(4);
+				alert( msg );
+			}
+		});
+		/* Malzeme yeterli mi*/
 	}
 });
 
-
+$("#gercekuretim").change(function(){
+	hedefuretim_change();
+});
 $("#hedefuretim").change(function(){
 	hedefuretim_change();
 });

@@ -1,6 +1,6 @@
-<%@ page import="java.util.Date"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="crm.irfan.User, crm.irfan.UtilFunctions, crm.irfan.entity.*, java.util.List"%>
+<%@ page import="crm.irfan.Util"%>
+<%@ page import="crm.irfan.entity.*"%>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!doctype html>
@@ -11,7 +11,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 	
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css">
@@ -32,24 +32,23 @@
 <body>
 	<%@ include file="logincheck.jsp" %>
 	<%
-		List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
-		List<Makina> makina		= (List<Makina>) request.getAttribute("makina");
-		List<Calisan> calisan	= (List<Calisan>) request.getAttribute("calisan");
-		List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
-		List<UretimPlan> stokrapor=(List<UretimPlan>) request.getAttribute("stokrapor");
-		String bilesenid		= (String) request.getAttribute("bilesenid");		
-		String makinaid			= (String) request.getAttribute("makinaid");
-		String calisanid		= (String) request.getAttribute("calisanid");
-		String firmaid			= (String) request.getAttribute("firmaid");
-		String bas_tarih		= (String) request.getAttribute("bas_tarih");
-		String bit_tarih		= (String) request.getAttribute("bit_tarih");
-		String excelsql			= (String) request.getAttribute("excelsql");
+	    List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
+			List<Makina> makina		= (List<Makina>) request.getAttribute("makina");
+			List<Calisan> calisan	= (List<Calisan>) request.getAttribute("calisan");
+			List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
+			List<UretimPlan> stokrapor=(List<UretimPlan>) request.getAttribute("stokrapor");
+			String bilesenid		= (String) request.getAttribute("bilesenid");		
+			String makinaid			= (String) request.getAttribute("makinaid");
+			String calisanid		= (String) request.getAttribute("calisanid");
+			String firmaid			= (String) request.getAttribute("firmaid");
+			String bas_tarih		= (String) request.getAttribute("bas_tarih");
+			String bit_tarih		= (String) request.getAttribute("bit_tarih");
+			String excelsql			= (String) request.getAttribute("excelsql");
 	%>
 	
 	<script>
 		var mamul = [
-		<%
-		String delimeter = "";
+		<%String delimeter = "";
 		for (Mamul m : mamul) {
 			out.println(delimeter 
 		+ " { id:" + m.getId()
@@ -90,15 +89,15 @@
 					<div>
 						<select	class="form-control small" id="makinaid" name="makinaid">
 							<%
-									out.println("<option value=''>...Tüm...</option>");
-								for (Makina m : makina) {
-									if(m.getId().toString().equals(makinaid)){
-										out.println("<option value='"+ m.getId() +"' selected>"+ m.getMakinaad() +"</option>");
-									}
-									else{
-										out.println("<option value='"+ m.getId() +"'>"+ m.getMakinaad() +"</option>");
-									}
-								}
+							    out.println("<option value=''>...Tüm...</option>");
+															for (Makina m : makina) {
+																if(m.getId().toString().equals(makinaid)){
+																	out.println("<option value='"+ m.getId() +"' selected>"+ m.getMakinaad() +"</option>");
+																}
+																else{
+																	out.println("<option value='"+ m.getId() +"'>"+ m.getMakinaad() +"</option>");
+																}
+															}
 							%>
 						</select>
 					</div>
@@ -109,15 +108,15 @@
 					<div>
 						<select	class="form-control small" id="calisanid" name="calisanid">
 							<%
-								out.println("<option value=''>...Tüm...</option>");
-								for (Calisan c : calisan) {
-								    if(c.getId().toString().equals(calisanid)){
-								        out.println("<option value='"+ c.getId() +"' selected>"+ c.getFullName() +"</option>");
-								    }
-								    else{
-								        out.println("<option value='"+ c.getId() +"'>"+ c.getFullName() +"</option>");
-								    }
-								}
+							    out.println("<option value=''>...Tüm...</option>");
+															for (Calisan c : calisan) {
+															    if(c.getId().toString().equals(calisanid)){
+															        out.println("<option value='"+ c.getId() +"' selected>"+ c.getFullName() +"</option>");
+															    }
+															    else{
+															        out.println("<option value='"+ c.getId() +"'>"+ c.getFullName() +"</option>");
+															    }
+															}
 							%>
 						</select>
 					</div>
@@ -128,15 +127,15 @@
 					<div>
 						<select	class="form-control small" id="firmaid" name="firmaid">
 							<%
-								out.println("<option value=''>...Tüm...</option>");
-								for (Firma f : firma) {
-								    if(f.getId().toString().equals(firmaid)){
-								        out.println("<option value='"+ f.getId() +"' selected>"+ f.getAd() +"</option>");
-								    }
-								    else{
-								        out.println("<option value='"+ f.getId() +"'>"+ f.getAd() +"</option>");
-								    }
-								}
+							    out.println("<option value=''>...Tüm...</option>");
+															for (Firma f : firma) {
+															    if(f.getId().toString().equals(firmaid)){
+															        out.println("<option value='"+ f.getId() +"' selected>"+ f.getAd() +"</option>");
+															    }
+															    else{
+															        out.println("<option value='"+ f.getId() +"'>"+ f.getAd() +"</option>");
+															    }
+															}
 							%>
 						</select>
 					</div>
@@ -172,26 +171,30 @@
 			</form>
 		</div>
 		<%
-			int sayac = 0;
+		    int sayac = 0;
 		%>
 		<%
-		if( stokrapor.size() > 0){
-		    String bilesenad =  "Mamül";
-		    %>
-		    <div class="row text-warning" style="text-align: center;margin-top:10px;">
-				<label class="text-danger roundedmini"><%= bilesenad %> Üretim Raporu</label>
-			</div>
-		    <% 
-		}
+		    if( stokrapor.size() > 0){
+				    String bilesenad =  "Mamül";
 		%>
+		    <div class="row text-warning" style="text-align: center;margin-top:10px;">
+				<label class="text-danger roundedmini"><%=bilesenad%> Üretim Raporu</label>
+			</div>
+		    <%
+		        }
+		    %>
 		<div class="row" style="font-size:12px;">
 			<table class="tableplan">
 				<script type="text/javascript" charset="utf-8">
 				var plan = {};
 				var plantemp = {};
 				</script>
-				<% for (UretimPlan u : stokrapor) { %>
-				<% if (sayac++ == 0) { %>
+				<%
+				    for (UretimPlan u : stokrapor) {
+				%>
+				<%
+				    if (sayac++ == 0) {
+				%>
 				<tr>
 					<th>Tarih</th>
 					<th>Başl.</th>
@@ -210,16 +213,18 @@
 					<th>Sapma</th>
 					<th>Açıklama</th>
 				</tr>
-				<% } %>
-				<tr id="tr<%= u.getId() %>">
-					<td nowrap><%= u.getTarihTRShort() %></td>
-					<td><%= u.getBasZaman() %></td>
-					<td><%= u.getBitZaman() %></td>
-					<td nowrap><%= u.getMakinaad() %></td>
-					<td><%= u.getCalisanShortName() %></td>
-					<td><%= u.getFirmaad() %></td>
-					<td><%= UtilFunctions.splitLine(u.getHammaddead(), ";", "<br>") %></td>
-					<td><%= UtilFunctions.splitLine(u.getHammaddeizlno(), ";", "<br>") %></td>
+				<%
+				    }
+				%>
+				<tr id="tr<%=u.getId()%>">
+					<td nowrap><%=u.getTarihTRShort()%></td>
+					<td><%=u.getBasZaman()%></td>
+					<td><%=u.getBitZaman()%></td>
+					<td nowrap><%=u.getMakinaad()%></td>
+					<td><%=u.getCalisanShortName()%></td>
+					<td><%=u.getFirmaad()%></td>
+					<td><%=Util.splitLine(u.getHammaddead(), ";", "<br>")%></td>
+					<td><%=Util.splitLine(u.getHammaddeizlno(), ";", "<br>")%></td>
 					<td><%= u.getMamulkod() %></td>
 					<td><%= u.getMamulad() %></td>
 					<td><%= (u.getMamulizlno()==0) ? "" : u.getMamulizlno() %></td>

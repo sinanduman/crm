@@ -4,7 +4,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -41,6 +40,9 @@ public class LoginServlet extends HttpServlet implements Serializable {
             if((User)request.getSession().getAttribute("user")==null) {
                 request.getSession().setAttribute("loggedin", (user!=null));
                 request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("admin", user.getAdmin().toString());
+                request.getSession().setAttribute("role", user.getRole());
+                request.getSession().setAttribute("message", "");
                 try {
                     request.getRequestDispatcher(successPage).forward(request, response);
                 }
@@ -54,6 +56,7 @@ public class LoginServlet extends HttpServlet implements Serializable {
         }
         else {
             try {
+                request.getSession().setAttribute("message", "Kullanıcı adı veya Şifre yanlış!");
                 request.getRequestDispatcher(errorPage).forward(request, response);
             }
             catch (ServletException e) {

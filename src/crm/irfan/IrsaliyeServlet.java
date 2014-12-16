@@ -1,23 +1,15 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Birim;
-import crm.irfan.entity.Firma;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.Irsaliye;
-import crm.irfan.entity.IrsaliyeBilesen;
-import crm.irfan.entity.IrsaliyeTip;
-import crm.irfan.entity.LogMod;
-import crm.irfan.entity.Stok;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IrsaliyeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -99,7 +91,7 @@ public class IrsaliyeServlet extends HttpServlet {
 									Integer.valueOf(mamulid),
 									Integer.valueOf(gkrno),
 									Integer.valueOf(miktar),								
-									irsaliyeno  + " İrsaliye No nedeniyle stoktan düşüş. " +not);
+									irsaliyeno  + " İrsaliye No. " +not);
 				}
 			}
 		}
@@ -114,13 +106,13 @@ public class IrsaliyeServlet extends HttpServlet {
 	        stok = DAOFunctions.stokMamulListeGetirTum(null);
 	        
 	        List<Irsaliye> irsaliye = new ArrayList<Irsaliye>();
-	        irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.OPEN, 0);
+	        irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null);
 	        
 	        List<IrsaliyeBilesen> irsaliyebilesenopen = new ArrayList<IrsaliyeBilesen>();
-	        irsaliyebilesenopen = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.OPEN, 0);
+	        irsaliyebilesenopen = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null);
 	        
 	        List<IrsaliyeBilesen> irsaliyebilesencompleted = new ArrayList<IrsaliyeBilesen>();
-	        irsaliyebilesencompleted = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.COMPLETED, 0);
+	        irsaliyebilesencompleted = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.COMPLETED, 0, null, null, null);
 	        
 	        request.setAttribute("birim", birim);
 	        request.setAttribute("firma", firma);

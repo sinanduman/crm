@@ -43,7 +43,7 @@
 			<img alt="İrfan Plastik" src="img/ip_logo_mini.png" class="img-rounded"/>
 
 			<h2 class="form-signin-heading">
-				<span class="color-red loginclass">Sisteme Giris</span>
+				<span class="color-red loginclass">Sisteme Giriş</span>
 			</h2>
 
 
@@ -68,9 +68,9 @@
 		</form>
 
 		<%
-			String message = (String) request.getSession().getAttribute("message");
-				String submit = (String) request.getParameter("submit");
-				if (message != null && message != "" && submit != null) {
+			String message	= (String) request.getSession().getAttribute("message");
+			String submit	= (String) request.getParameter("submit");
+			if (message != null && message != "" && submit != null) {
 		%>
 		<div class="form-signin text-center alert alert-danger"
 			style="margin-top: 10px;">

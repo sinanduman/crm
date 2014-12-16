@@ -26,13 +26,14 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.Firma, crm.irfan.entity.Genel, java.util.List" %>
 
 <%@ include file="logincheck.jsp" %>
 
 <%
-	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
-	String message = (String) request.getAttribute("message");
+	List<Firma> firma	= (List<Firma>) request.getAttribute("firma");
+	String message		= (String) request.getAttribute("message");
+	String admin		= (String) session.getAttribute("admin");
 %>
 
 <div class="container">
@@ -61,12 +62,16 @@
 					<input type="text" class="form-control big" name="firma_adres" id="firma_adres" placeholder="Firma Adresi" autocomplete="off">
 				</div>
 			</div>
+			<% 
+			if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group col-xs-8">
 				<label class="col-xs-3 control-label">&nbsp;</label>
 				<div>
 					<button type="submit" class="btn btn-danger">Ekle</button>
 				</div>
 			</div>
+			<% } %>
 		</form>
 	</div>
 	<!-- ALERT BOX -->
@@ -99,7 +104,11 @@
 					<td><label class="text-success">Firma Ad</label></td>
 					<td><label class="text-success">Telefon</label></td>
 					<td><label class="text-success">Adres</label></td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td><label class="text-success">Aksiyon</label></td>
+					<% } %>
 				</tr>
 				<% } %>
 				<form name="action_form<%=f.getId()%>" id="action_form<%=f.getId()%>">
@@ -107,12 +116,16 @@
 					<td><input type="text" class="form-control" value="<%= f.getAd() %>" name="liste_firmaad" id="liste_firmaad" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= f.getTelefon() %>" name="liste_firmatel" id="liste_firmatel" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= f.getAdres() %>" name="liste_firmaadres" id="liste_firmaadres" autocomplete="off"></td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td>
 						<div id="div<%= f.getId() %>" class="text-center">
 							<a href="javascript:updateFirmaGo('firma',<%=f.getId()%>,document.action_form<%=f.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a> 
 							<a href="javascript:deleteFirmaGo('firma',<%=f.getId()%>,document.action_form<%=f.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
 						</div>
 					</td>
+					<% } %>
 				</tr>
 				</form>
 				<% } %>

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*,java.util.List" %>
+<%@ page import="crm.irfan.entity.Calisan, crm.irfan.entity.Genel,java.util.List" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -31,13 +31,14 @@
 
 <%
 	List<Calisan> calisan = (List<Calisan>) request.getAttribute("calisan");
-	String message = (String) request.getAttribute("message");
+	String message	= (String) request.getAttribute("message");
+	String admin	= (String) session.getAttribute("admin");
 %>
 
 <div class="container">
 	<div class="row text-danger" style="text-align:center;">
 		<div class="col-xs-8">
-			<label class="text-danger rounded">Calısan Ekleme</label>
+			<label class="text-danger rounded">Çalışan Ekleme</label>
 		</div>
 	</div>
 	<div class="row">
@@ -60,12 +61,16 @@
 					<input type="text" class="form-control big" name="gorev" id="gorev" placeholder="Görevi" autocomplete="off">
 				</div>
 			</div>
+			<% 
+			if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group col-xs-8">
 				<label class="col-xs-3 control-label">&nbsp;</label>
 				<div>
 					<button type="submit" class="btn btn-danger">Ekle</button>
 				</div>
 			</div>
+			<% } %>
 		</form>
 	</div>
 	<!-- ALERT BOX -->
@@ -98,7 +103,11 @@
 					<td><label class="text-success">Adı</label></td>
 					<td><label class="text-success">Soyadı</label></td>
 					<td><label class="text-success">Görev</label></td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td><label class="text-success">Aksiyon</label></td>
+					<% } %>
 				</tr>
 				<% } %>
 				<form name="action_form<%=c.getId()%>" id="action_form<%=c.getId()%>">
@@ -106,12 +115,16 @@
 					<td><input type="text" class="form-control" value="<%= c.getAd() %>" name="liste_calisanad" id="liste_calisanad" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= c.getSoyad() %>" name="liste_calisansoyad" id="liste_calisansoyad" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= c.getGorev() %>" name="liste_calisangorev" id="liste_calisangorev" autocomplete="off"></td>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
 					<td>
 						<div id="div<%= c.getId() %>" class="text-center">
 							<a href="javascript:updateCalisanGo('calisan',<%=c.getId()%>,document.action_form<%=c.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a> 
 							<a href="javascript:deleteCalisanGo('calisan',<%=c.getId()%>,document.action_form<%=c.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
 						</div>
 					</td>
+					<% } %>
 				</tr>
 				</form>
 				<% } %>

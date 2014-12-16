@@ -1,10 +1,10 @@
 package crm.irfan.entity;
 
+import crm.irfan.Util;
+
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import crm.irfan.UtilFunctions;
 
 public class UretimPlan {
     private Integer id;
@@ -400,7 +400,7 @@ public class UretimPlan {
         if (planlananmiktar == null || planlananmiktar == 0) {
             return 0;
         }
-        return UtilFunctions.Round((planlananmiktar - uretilenmiktar)*100, planlananmiktar);
+        return Util.Round((planlananmiktar - uretilenmiktar)*100, planlananmiktar);
     }
     
 }

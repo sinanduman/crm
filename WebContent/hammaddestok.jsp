@@ -1,15 +1,15 @@
-<%@page import="crm.irfan.UtilFunctions"%>
+<%@page import="crm.irfan.Util"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -28,39 +28,38 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.Bilesen,crm.irfan.entity.BilesenTip,crm.irfan.entity.Genel" %>
+<%@ page import="crm.irfan.entity.Stok" %>
+<%@ page import="java.util.List" %>
 
 <%@ include file="logincheck.jsp" %>
 
 <%
-List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
+    List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
 List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 %>
 
 <script type="text/javascript">
-	function HammaddeEkleCtrl($scope) {
-		$scope.saveHammaddeStok = function(){
-			if(!is_positive(document.hammaddestokform.miktar.value)){
-				alert("Miktar NÜMERİK bir değer olmalıdır!");
-				return false;
-			}
-			else if(is_empty(document.hammaddestokform.irsaliyeno.value) ){
-				alert("İRSALİYE No boş olamaz!");
-				return false;
-			}
-			else if(is_empty(document.hammaddestokform.lot.value) ){
-				alert("LOT/Batch No boş olamaz!");
-				return false;
-			}
-			else{
-				document.hammaddestokform.submit();
-			}
+	function saveHammaddeStok(){
+		if(!is_positive(document.hammaddestokform.miktar.value)){
+			alert("Miktar NÜMERİK bir değer olmalıdır!");
+			return false;
+		}
+		else if(is_empty(document.hammaddestokform.irsaliyeno.value) ){
+			alert("İRSALİYE No boş olamaz!");
+			return false;
+		}
+		else if(is_empty(document.hammaddestokform.lot.value) ){
+			alert("LOT/Batch No boş olamaz!");
+			return false;
+		}
+		else{
+			document.hammaddestokform.submit();
 		}
 	}
 
 	var bilesen = [
-	<%
-	String delimeter = "";
+	<%String delimeter = "";
 	for (Bilesen b : hammadde) {
 		out.println(delimeter 
 	+ " { id:" + b.getId()
@@ -74,17 +73,16 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 		delimeter = ",";
 	}%>];
 	var bilesen2 = [
-	<%
-	delimeter = "";
+	<%delimeter = "";
 	for (Bilesen b : hammadde) {
-		out.println(delimeter + " { label:'" + b.getKod() +"',id:" + b.getId() + "}");
+		out.println(delimeter + " { label:'" + b.getKod() + " ["+b.getAd().replaceAll("'", "") +"]',id:" + b.getId() + "}");
 		delimeter = ",";
 	}%>];
 
 </script>
 
 <div class="container">
-	<div class="row" ng-controller="HammaddeEkleCtrl">
+	<div class="row">
 		<form class="form-horizontal" role="form" method="post" name="hammaddestokform" id="hammaddestokform" action="hammaddestok">
 		<div class="text-center">
 			<label class="text-danger rounded">Hammadde ve Yarı Mamül Stok Ekleme</label>
@@ -153,13 +151,20 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 		</div>
 		<div class="clearfix"></div>
 		<!-- orta -->
+		<%
+		    String admin = (String) session.getAttribute("admin");
+				if(admin!=null && admin.equals("1")){
+		%>
 		<div>
 			<div class="form-group">
 				<div class="text-center">
-					<button type="button" class="btn btn-danger" ng-click="saveHammaddeStok()" >Ekle</button>
+					<button type="button" class="btn btn-danger" onclick="saveHammaddeStok()">Ekle</button>
 				</div>
 			</div>
 		</div>
+		<%
+		    }
+		%>
 		</form>
 
 	</div>
@@ -169,12 +174,16 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 	</div>
 	
 	<%
-	int sayac = 0;
-	%>
+		    int sayac = 0;
+		%>
 	<div class="row" style="font-size:12px;">
 		<table class="tableplan">
-			<% for (Stok s : stok) { %>
-			<% if (sayac++ == 0) { %>
+			<%
+			    for (Stok s : stok) {
+			%>
+			<%
+			    if (sayac++ == 0) {
+			%>
 			<tr>
 				<th>Stok No</th>
 				<th>Malzeme Kodu</th>
@@ -186,37 +195,49 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 				<th>GKR. No</th>
 				<th>İrsaliye No</th>
 				<th>Lot/Batch No</th>
+				<th>Aksiyon</th>
 			</tr>
-			<% } %>
-			<tr id="tr<%= s.getId() %>">
-				<td><%= s.getId() %></td>
-				<td><%= s.getBilesenkod() %></td>
-				<td><%= s.getBilesenad() %></td>
-				<td><%= s.getBilesentipad() %></td>
+			<%
+			    }
+			%>
+			<tr id="tr<%=s.getId()%>">
+				<td><%=s.getId()%></td>
+				<td><%=s.getBilesenkod()%></td>
+				<td><%=s.getBilesenad()%></td>
+				<td><%=s.getBilesentipad()%></td>
 				<%
-				String smiktar = "";
-				Double dmkitar = 0.0;
-				Integer imiktar= 0;
-				if(s.getBilesentipid() == BilesenTip.HAMMADDE.value()){
-					if( (Integer.valueOf(s.getMiktar()) / 1000.0) > ( Integer.valueOf(s.getMiktar()) / 1000)){
-						dmkitar = (Integer.valueOf(s.getMiktar())) / 1000.0;
-						smiktar = dmkitar.toString() + " Kg.";
-					}
-					else{
-						imiktar = (Integer.valueOf(s.getMiktar()))/1000;
-						smiktar = imiktar.toString() + " Kg.";
-					}
-				}
-				else{
-					smiktar = s.getMiktar().toString() + " Ad.";
-				}
+				    String smiktar = "";
+								Double dmkitar = 0.0;
+								Integer imiktar= 0;
+								if(s.getBilesentipid() == BilesenTip.HAMMADDE.value()){
+									if( (Integer.valueOf(s.getMiktar()) / 1000.0) > ( Integer.valueOf(s.getMiktar()) / 1000)){
+										dmkitar = (Integer.valueOf(s.getMiktar())) / 1000.0;
+										smiktar = dmkitar.toString() + " Kg.";
+									}
+									else{
+										imiktar = (Integer.valueOf(s.getMiktar()))/1000;
+										smiktar = imiktar.toString() + " Kg.";
+									}
+								}
+								else{
+									smiktar = s.getMiktar().toString() + " Ad.";
+								}
 				%>
-				<td class="text-right"><%= smiktar  %></td>
-				<td class="text-right"><%= (s.getIslemyonu()==0) ? UtilFunctions.getTarihTR(s.getGiristarihi()) : UtilFunctions.getTarihTR(s.getCikistarihi())  %></td>
+				<td class="text-right"><%=smiktar%></td>
+				<td class="text-right"><%=(s.getIslemyonu()==0) ? Util.getTarihTR(s.getGiristarihi()) : Util.getTarihTR(s.getCikistarihi())%></td>
 				<td><%= (s.getIslemyonu()==0)?"<span class='text-success'>Giriş</span>":"<span class='text-danger'>Çıkış</span>" %></td>
 				<td><%= s.getGkrno() %></td>
 				<td><%= (s.getIrsaliyeno()==null) ? "" : s.getIrsaliyeno() %></td>
 				<td><%= (s.getLot()==null) ? "" : s.getLot() %></td>
+				<td class="text-center">
+				
+					<% 
+					if(admin!=null && admin.equals("1") && (s.getIslemyonu()==0)){
+					%>
+					<a href="javascript:deleteHammaddeStokGo('hammaddestok',<%=s.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+					<% } %>
+				
+				</td>
 			</tr>
 			<% } %>
 		</table>
@@ -229,13 +250,12 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 
 </div>
 
-<script src="js/angular.min.js"></script>
-<script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script	src="js/bootbox.js" type="text/javascript"></script>
 <script src="js/irfan.js" type="text/javascript"></script>
+<script src="js/hammaddestok.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(function() {
@@ -259,9 +279,12 @@ function changefun(elem){
 	var found = false;
 	if (elem != null){
 		for (i in bilesen) {
-			if(elem.value == bilesen[i].bilesenkod){
+			/* autocomplete alanina birden fazla alan ekler */
+			var b = elem.value.split("[");
+			if(b[0].trim() == bilesen[i].bilesenkod){
+				//console.log("elem: " + elem.value);
+				//console.log("bilesen: " + bilesen[i]);
 				found = true;
-				//alert("selam kelam");
 				$("#bilesenid").val(bilesen[i].bilesenid);
 				$("#bilesenad").val(bilesen[i].bilesenad);
 				$("#firmaid").val(bilesen[i].firmaid);

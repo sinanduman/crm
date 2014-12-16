@@ -31,7 +31,7 @@ mamulApp.controller('MamulCtrl',['$scope', function($scope){
 		return show;
 	};
 	$scope.saveBilesen = function() {
-		if(!is_positive(document.mamulform.miktar.value)){
+		if(!is_ondalik(document.mamulform.miktar.value)){
 			alert("Bileşen Miktarı NÜMERİK bir değer olmalı!");
 			return false;	
 		}

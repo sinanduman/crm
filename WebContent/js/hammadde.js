@@ -1,23 +1,22 @@
-function HammaddeEkleCtrl($scope) {
-	$scope.hammaddeEkle = function(){
-		var message	= "";
-		if($.trim($("#hamkod").val())==""){
-			message += "Malzeme Kodu giriniz!\n";
-		}
-		if($.trim($("#hamad").val())==""){
-			message += "Malzeme Adı giriniz!\n";
-		}
-		if($("#hamtip").val()!=$("#hambirim").val()){
-			message += "Malzeme Tipi ve Birimi uyuşmamaktadır!\n";
-		}
-		if(message!=""){
-			alert(message);
-			return false;
-		}
-		else{
-			if(confirm('Malzeme EKLEMEYİ onaylıyor musun?')){
-				document.hammadde_form.submit();
-			}
+function hammaddeEkle(){
+	var message	= "";
+	if($.trim($("#hamkod").val())==""){
+		message += "Malzeme Kodu giriniz!\n";
+	}
+	if($.trim($("#hamad").val())==""){
+		message += "Malzeme Adı giriniz!\n";
+	}
+	if($("#hamtip").val()!=$("#hambirim").val()){
+		message += "Malzeme Tipi ve Birimi uyuşmamaktadır!\n";
+	}
+	if(message!=""){
+		alert(message);
+		return false;
+	}
+	else{
+		if(confirm('Malzeme EKLEMEYİ onaylıyor musun?')){
+			$("#refresh").val("1");
+			document.hammadde_form.submit();
 		}
 	}
 }

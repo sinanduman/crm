@@ -1,20 +1,14 @@
 package crm.irfan;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import crm.irfan.entity.Bilesen;
-import crm.irfan.entity.BilesenTip;
-import crm.irfan.entity.Genel;
-import crm.irfan.entity.LogMod;
-import crm.irfan.entity.Mamul;
-import crm.irfan.entity.StokRapor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StokRaporServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -53,6 +47,7 @@ public class StokRaporServlet extends HttpServlet {
         
         
         List<StokRapor> stokrapor = new ArrayList<StokRapor>();
+        List<StokRapor> stokdetay = new ArrayList<StokRapor>();
         BilesenTip bilesentipenum = BilesenTip.MAMUL;
         if(raporgetirid!=null || page != null ) {
             String filter   = "";
@@ -76,7 +71,7 @@ public class StokRaporServlet extends HttpServlet {
                 }
             }
             if(bilesenid!=null && !bilesenid.equals("") ) {
-                filter1     = " AND b.id = " + Integer.valueOf(bilesenid);
+                filter1 = " AND b.id = " + Integer.valueOf(bilesenid);
             }
             filter = filter0 + filter1 ;
             // PAGING
@@ -86,15 +81,23 @@ public class StokRaporServlet extends HttpServlet {
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
             stokrapor   = DAOFunctions.stokBilesenRapor(tablename, filter, page0);
+            
+            /* Eger bir urunde detay isteniyorsa*/
+            if(Util.isNotEmptyOrNull(bilesenid)) {
+                stokdetay   = DAOFunctions.stokBilesenDetayRapor(tablename, filter, page0, Integer.valueOf(bilesenid));
+                totalrecord = DAOFunctions.recordAgg("stok", "COUNT", "*", " WHERE 1=1 " + "AND bilesenid = " + bilesenid );
+                noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+            }
             if(Genel.LOGMOD == LogMod.DEBUG) {
-                System.out.println("noofpages: "+ noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1 " + filter );
+                System.out.println("noofpages: " + noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1 " + filter );
+                System.out.println("bilesentip: " + bilesentipenum.id());
             }
             excelsql    = filter;
-        } 
-        System.out.println("bilesentip: " +bilesentipenum.id());
+        }         
         request.setAttribute("mamul", mamul);
         request.setAttribute("bilesen", bilesen);
         request.setAttribute("stokrapor", stokrapor);
+        request.setAttribute("stokdetay", stokdetay);
         request.setAttribute("bilesentip", bilesentipenum.id());
         request.setAttribute("bilesenid", bilesenid);  
         request.setAttribute("totalrecord", totalrecord);

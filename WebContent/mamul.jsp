@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.User, crm.irfan.entity.*, java.util.List" %>
+<%@ page import="crm.irfan.entity.*, java.util.List" %>
 <!doctype html>
 <html lang="en" ng-app="mamulApp">
 <head>
@@ -30,19 +30,26 @@
 <%@ include file="logincheck.jsp" %>
 
 <%
-	List<Firma> firma = (List<Firma>) request.getAttribute("firma");
-	List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
-	List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
-	List<Mamul> mamul = (List<Mamul>) request.getAttribute("mamul");
-	List<MamulBilesen> mamulbilesen = (List<MamulBilesen>) request.getAttribute("mamulbilesen");
-	String message = (String) request.getAttribute("message");
+	@SuppressWarnings("unchecked")
+	List<Firma> firma				= (List<Firma>) request.getAttribute("firma");
+	@SuppressWarnings("unchecked")
+	List<Bilesen> hammadde			= (List<Bilesen>) request.getAttribute("hammadde");
+	@SuppressWarnings("unchecked")
+	List<Bilesen> yarimamul			= (List<Bilesen>) request.getAttribute("yarimamul");
+	@SuppressWarnings("unchecked")
+	List<Mamul> mamul				= (List<Mamul>) request.getAttribute("mamul");
+	@SuppressWarnings("unchecked")
+	List<MamulBilesen> mamulbilesen	= (List<MamulBilesen>) request.getAttribute("mamulbilesen");
+	String message					= (String) request.getAttribute("message");
+	Long token						= (Long) request.getAttribute("token");
+	String admin					= (String) session.getAttribute("admin");
 %>
 
 <div class="container" ng-controller="MamulCtrl">
 	<div class="row text-danger" style="text-align:center;">
 		<label class="text-danger rounded col-xs-6">Mamül Tanımı</label>
 	</div>
-	<form class="form-horizontal" role="form" name="mamulform" id="mamulform" method="post" action="mamul">
+	<form class="form-horizontal" name="mamulform" id="mamulform" method="post" action="mamul">
 		<div class="row">
 			<div class="form-group col-xs-8">
 				<label for="mamulkod" class="col-xs-3 control-label text-baslik">Mamül Kodu: </label>
@@ -78,10 +85,11 @@
 				<label for="mamulfigur" class="col-xs-3 control-label text-baslik">Figür Adedi: </label>
 				<div>
 					<select class="form-control big" name="mamulfigur" id="mamulfigur">
-						<option value='<%= FigurTip.Goz4.value() %>'><%= FigurTip.Goz4.ad() %></option>
-						<option value='<%= FigurTip.Goz8.value() %>'><%= FigurTip.Goz8.ad() %></option>
-						<option value='<%= FigurTip.Goz12.value() %>'><%= FigurTip.Goz12.ad() %></option>
-						<option value='<%= FigurTip.Goz16.value() %>'><%= FigurTip.Goz16.ad() %></option>
+						<%
+						for( int i=1; i<=32; i++ ){
+						    out.println("<option value='"+i+"'>"+i +"</option>");
+						}
+						%>
 					</select>
 				</div>
 			</div>
@@ -108,7 +116,7 @@
 					<select class="form-control big" id="hammadde" name="hammadde">
 						<%
 							for (Bilesen h : hammadde) {
-							    out.println("<option value='"+ h.getId() + "'>" + h.getAd() + "</option>");
+							    out.println("<option value='"+ h.getId() + "'>" + h.getAd().replaceAll("\"", "") + " [" + h.getKod() + "]" + " - "+ h.getFirmaad() +  "</option>");
 							}
 						%>
 					</select>
@@ -120,7 +128,7 @@
 					<select class="form-control big" id="yarimamul" name="yarimamul">
 						<%
 							for (Bilesen y : yarimamul) {
-							    out.println("<option value='"+ y.getId() + "'>" + y.getAd() + "</option>");
+							    out.println("<option value='"+ y.getId() + "'>" + y.getAd().replaceAll("\"", "") + " [" + y.getKod() + "]" + " - "+ y.getFirmaad() + "</option>");
 							}
 						%>
 					</select>
@@ -183,17 +191,26 @@
 			</tr>
 			</table>
 		</div>
+		<% 
+		if(admin!=null && admin.equals("1")){
+		%>
 		<div class="row" sytle="margin-bottom:5px;">
 			<div class="col-xs-8">
 				<button type="button" class="btn btn-danger" ng-click="saveMamul()">Mamül Ekle</button>
 				<input type="hidden" id="bilesen_length" name="bilesen_length" ng-model="bilesen_length" value="{{bilesenler.length}}">
+				<input type="hidden" name="token" id="token" value="<%= token %>">
 			</div>
 		</div>
+		<% } %>
 	</form>
 	
 	<!-- ALERT BOX -->
-	<% 
-	if(message.equals("0")) {
+	<%
+	if(message.equals("-1")) {
+	    %>
+		<%
+	}
+	else if(message.equals("0")) {
 	    %>
 		<div class="row alert alert-success">
 			<strong>Başarılı</strong> olarak eklendi!
@@ -203,7 +220,7 @@
 	else if(!message.equals("") && message.length() >1){
 	    %>
 		<div class="row alert alert-danger">
-			<strong>Hata!</strong><%= message %>
+			<strong>Hata! </strong><%= message %>
 		</div>
 		<%
 	}
@@ -228,18 +245,18 @@
 				<form name="action_form<%=m.getId()%>" id="action_form<%=m.getId()%>">
 				<tr id="tr<%=m.getId()%>">
 					<td><input type="text" class="form-control" value="<%= m.getKod() %>" name="liste_kod" id="liste_kod"></td>
-					<td><input type="text" class="form-control" value="<%= m.getAd() %>" name="liste_ad" id="liste_ad"></td>
-					<td><input type="text" class="form-control" value="<%= m.getCevrimsuresi() %>" name="liste_cevrimsuresi" id="liste_cevrimsuresi" style="width:80px;"></td>
+					<td><input type="text" class="form-control" value="<%= m.getAd().replaceAll("\"", "") %>" name="liste_ad" id="liste_ad"></td>
+					<td><input type="text" class="form-control xs" value="<%= m.getCevrimsuresi() %>" name="liste_cevrimsuresi" id="liste_cevrimsuresi"></td>
 					<td>
 						<div>
-							<select class="small" name="liste_figurid" id="liste_figurid">
+							<select class="form-control xs" name="liste_figurid" id="liste_figurid">
 							<%
-								for (FigurTip ft : FigurTip.values()) {
-									if (ft.value() == m.getFigur() ){
-									    out.println("<option value='"+ ft.value() + "' selected>" + ft.ad() + "</option>");
+								for( int i=1; i<=32; i++ ){
+									if (i == m.getFigur() ){
+									    out.println("<option value='"+ i + "' selected>" + i + "</option>");
 									}
 									else{
-										out.println("<option value='"+ ft.value() + "'>" + ft.ad() + "</option>");
+										out.println("<option value='"+ i + "'>" + i + "</option>");
 									}
 								}
 							%>
@@ -247,7 +264,7 @@
 						</div>
 					</td>
 					<td>
-						<select id="liste_firmaid" name="liste_firmaid">
+						<select class="form-control" id="liste_firmaid" name="liste_firmaid">
 						<%
 							for (Firma f : firma) {
 								if (f.getId() == m.getFirmaid() ){
@@ -262,8 +279,12 @@
 					</td>
 					<td class="text-center">
 						<a href="javascript:hideshow('#tr_mam_detay<%= m.getId() %>');" title="İçerik"><span class="fa fa-chevron-down fa-lg text-success"></span></a>
+						<% 
+						if(admin!=null && admin.equals("1")){
+						%>
 						<a href="javascript:updateMamulGo('mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,1);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a>
 						<a href="javascript:deleteMamulGo('mamul',<%=m.getId()%>,document.action_form<%=m.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+						<% } %>
 					</td>
 				</tr>
 				<tr id="tr_mam_detay<%= m.getId() %>" style="display:none;">
@@ -271,7 +292,7 @@
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (MamulBilesen j : mamulbilesen) {%>
-							<% if ( j.getMamulid() == m.getId() ){ %>
+							<% if ( j.getMamulid().equals(m.getId()) ){ %>
 							<% if ( (sayacbilesen++ == 0) ){ %>
 							<tr>
 								<td><label class="text-danger">Sıra No</label></td>
@@ -288,7 +309,7 @@
 								<td><%= j.getBilesenkod() %></td>
 								<td><%= j.getBilesentipad() %></td>
 								<td><%= j.getBirimad() %></td>
-								<td><%= j.getMiktar() %></td>
+								<td><%= (Math.round(j.getMiktar()) == j.getMiktar()) ? Math.round(j.getMiktar()) +"" : j.getMiktar() %></td>
 							</tr>
 							<% } %><%-- if  j== m--%>
 							<% } %> <%-- mamulbilesen --%>

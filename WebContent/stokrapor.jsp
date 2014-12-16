@@ -1,6 +1,6 @@
-<%@ page import="java.util.Date"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="crm.irfan.User, crm.irfan.UtilFunctions, crm.irfan.entity.*, java.util.List"%>
+<%@ page import="crm.irfan.Util"%>
+<%@ page import="crm.irfan.entity.*"%>
+<%@ page import="java.util.Date,java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!doctype html>
@@ -11,7 +11,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="shortcut icon" href="img/favicon.ico">
-	<title><%= Genel.TITLE %></title>
+	<title><%=Genel.TITLE%></title>
 	
 	<!-- Custom styles for this template -->
 	<link rel="stylesheet" href="css/irfan.css">
@@ -32,20 +32,20 @@
 <body>
 	<%@ include file="logincheck.jsp" %>
 	<%
-		List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
-		List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
-		List<Bilesen> bilesen	= (List<Bilesen>) request.getAttribute("bilesen");
-		List<StokRapor> stokrapor=(List<StokRapor>) request.getAttribute("stokrapor");
-		String bilesentip		= (String) request.getAttribute("bilesentip");
-		String bilesenid		= (String) request.getAttribute("bilesenid");
-		String excelsql			= (String) request.getAttribute("excelsql");
-		String tablename		= (String) request.getAttribute("tablename");
+	    List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
+			List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
+			List<Bilesen> bilesen	= (List<Bilesen>) request.getAttribute("bilesen");
+			List<StokRapor> stokrapor=(List<StokRapor>) request.getAttribute("stokrapor");
+			List<StokRapor> stokdetay=(List<StokRapor>) request.getAttribute("stokdetay");
+			String bilesentip		= (String) request.getAttribute("bilesentip");
+			String bilesenid		= (String) request.getAttribute("bilesenid");
+			String excelsql			= (String) request.getAttribute("excelsql");
+			String tablename		= (String) request.getAttribute("tablename");
 	%>
 	
 	<script>
 		var mamul = [
-		<%
-		String delimeter = "";
+		<%String delimeter = "";
 		for (Mamul m : mamul) {
 			out.println(delimeter 
 		+ " { id:" + m.getId()
@@ -58,8 +58,7 @@
 		var mamuldef = mamul;
 		
 		var hammadde = [
-   		<%
-   		delimeter = "";
+   		<%delimeter = "";
    		for (Bilesen b : bilesen) {
    		 	if(b.getBilesentipid() == BilesenTip.YARIMAMUL.value() ){
 		        continue;
@@ -74,8 +73,7 @@
    		}%>];
 		
 		var yarimamul = [
-   		<%
-   		delimeter = "";
+   		<%delimeter = "";
    		for (Bilesen b : bilesen) {
    		    if(b.getBilesentipid() == BilesenTip.HAMMADDE.value() ){
    		        continue;
@@ -106,27 +104,27 @@
 				</div>
 				
 				<div class="form-group">
-					<label for="makinaid" class="text-baslik">Bileşen Tür</label>
+					<label for="makinaid" class="text-baslik">Ürün Tipi</label>
 					<div>
 						<select	class="form-control small" id="bilesentipid" name="bilesentipid">
 							<%
-								for (BilesenTip bt : BilesenTip.values()) {
-									if(bt.value().toString().equals(bilesentip)){
-										out.print("<option value='" + bt.value() + "' selected>" + bt.ad() + "</option>");
-									}
-									else{
-										if(bt.value()!=4){
-											out.print("<option value='" + bt.value() + "'>" + bt.ad() + "</option>");
-										}
-									}
-								}
+							    for (BilesenTip bt : BilesenTip.values()) {
+																if(bt.value().toString().equals(bilesentip)){
+																	out.print("<option value='" + bt.value() + "' selected>" + bt.ad() + "</option>");
+																}
+																else{
+																	if(bt.value()!=4){
+																		out.print("<option value='" + bt.value() + "'>" + bt.ad() + "</option>");
+																	}
+																}
+															}
 							%>
 						</select>
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<label for="mamulkod" class="text-baslik">Bileşen Kodu</label>
+					<label for="mamulkod" class="text-baslik">Ürün Kodu</label>
 					<div>
   						<input type="text" class="form-control small" name="mamulkod" id="mamulkod" autocomplete="off">
   						<input type="hidden" name="bilesenid" id="bilesenid">
@@ -134,7 +132,7 @@
 				</div>
 				
 				<div class="form-group">
-					<label for="mamulad" class="text-baslik">Bileşen Adı</label>
+					<label for="mamulad" class="text-baslik">Ürün Adı</label>
 					<div>
 						<input type="text" class="form-control small" name="mamulad" id="mamulad" readonly="readonly">
 					</div>
@@ -153,82 +151,97 @@
 			</form>
 		</div>
 		<%
-			int sayac = 0;
+		    int sayac = 0;
 		%>
 		<%
-		if(stokrapor.size()>0){
-		    String bilesenad = "";
-		    if(bilesentip.equals("1")){
-		        bilesenad= "Hammadde";
-		    }
-		    else if(bilesentip.equals("2")){
-		        bilesenad= "Yarımamül";
-		    }
-		    else{
-		        bilesenad= "Mamül";
-		    }
-		    %>
-		    <div class="row text-warning" style="text-align: center;margin-top:10px;">
-				<label class="text-danger roundedmini"><%= bilesenad %> Stok Raporu</label>
-			</div>
-		    <% 
-		}
+		    if(stokrapor.size()>0){
+				    String bilesenad = "";
+				    if(bilesentip.equals("1")){
+				        bilesenad= "Hammadde";
+				    }
+				    else if(bilesentip.equals("2")){
+				        bilesenad= "Yarımamül";
+				    }
+				    else{
+				        bilesenad= "Mamül";
+				    }
 		%>
+		    <div class="row text-warning" style="text-align: center;margin-top:10px;">
+				<label class="text-danger roundedmini"><%=bilesenad%> Stok Raporu</label>
+			</div>
+		    <%
+		        }
+		    %>
 		<div class="row" style="font-size:12px;">
-			<table class="tableplan">
+			<table class="tableplan" width="50%">
 				<script type="text/javascript" charset="utf-8">
 				var plan = {};
 				var plantemp = {};
 				</script>
-				<% for (StokRapor sr : stokrapor) { %>
+				<%
+				    if (stokdetay!=null && stokdetay.size()>0) {
+								    stokrapor = stokdetay;
+								}
+				%>
+				<%
+				    for (StokRapor sr : stokrapor) {
+				%>
 
-				<% if (sayac++ == 0) { %>
+				<%
+				    if (sayac++ == 0) {
+				%>
 				<tr>
-					<th width="25%">Bileşen Ad</th>
-					<th width="25%">Bileşen Kod</th>
-					<th width="25%">Miktar <%= sr.getBilesentipid()==BilesenTip.HAMMADDE.value()?"(Kg)":"(Adet)" %> </th>
-					<th width="25%">Firma</th>
+					<th width="20%">Bileşen Kod</th>
+					<th width="20%">Bileşen Ad</th>
+					<th width="20%">Firma</th>
+					<th width="20%">Tarih</th>
+					<th width="20%">Kalan Miktar <%=sr.getBilesentipid()==BilesenTip.HAMMADDE.value()?"(Kg)":"(Adet)"%> </th>
 				</tr>
-				<% } %>
-				<tr id="tr<%= sr.getId() %>">
+				<%
+				    }
+				%>
+				<tr id="tr<%=sr.getId()%>">
 					<%
-					String miktar = sr.getMiktar().toString();
-					if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
-					    miktar = Double.toString(Double.valueOf(sr.getMiktar().toString()) / Double.valueOf("1000.0"));
-					}
+					    String miktar = sr.getMiktar().toString();
+										if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
+										    miktar = Double.toString(Double.valueOf(sr.getMiktar().toString()) / Double.valueOf("1000.0"));
+										}
 					%>
-					<td nowrap><%= sr.getBilesenad() %></td>
-					<td><%= sr.getBilesenkod() %></td>
-					<td class="text-right"><%= ((sr.getMiktar()==0)?"<span class='text-danger'><strong>0</strong></span>":miktar) %></td>
-					<td><%= sr.getFirmaad() %></td>
+					<td><%=sr.getBilesenkod()%></td>
+					<td nowrap><%=sr.getBilesenad()%></td>
+					<td><%=sr.getFirmaad()%></td>
+					<td><%=sr.getTarih()%></td>
+					<td class="text-right"><%=((sr.getMiktar()==0)?"<span class='text-danger'><strong>0</strong></span>":miktar)%></td>
 				</tr>
-				<% } %>
+				<%
+				    }
+				%>
 			</table>
 			
 			<%--For displaying Previous link except for the 1st page --%>
 			<%--For displaying Page numbers.
 			The when condition does not display a link for the current page--%>
 			<%
-			String param1 = "&amp;bilesentipid="+ bilesentip;
-			String param2 = (bilesenid==null || bilesenid.equals(""))?"":"&amp;bilesenid="+ bilesenid;
+			    String param1 = "&amp;bilesentipid="+ bilesentip;
+						String param2 = (bilesenid==null || bilesenid.equals(""))?"":"&amp;bilesenid="+ bilesenid;
 			%>
 			<jsp:include page="paging.jsp">
 				<jsp:param value="noofpages" name="noofpages"/>
 				<jsp:param value="currentpage" name="currentpage"/>
 				<jsp:param value="stokrapor" name="pagename"/>
-				<jsp:param value="<%=param1 %>" name="param1"/>
-				<jsp:param value="<%=param2 %>" name="param2"/>
+				<jsp:param value="<%=param1%>" name="param1"/>
+				<jsp:param value="<%=param2%>" name="param2"/>
 			</jsp:include>
 		</div>
 		<%
-		if (sayac >0 ){
-			%>
+		    if (sayac >0 ){
+		%>
 				<div class="row text-right">
 					<div>
 						<form method="post" name="excelform" id="excelform" action="excelstok">
 							<button type="button" class="btn btn-danger" name="exceleaktar_stok" id="exceleaktar_stok">Excele Aktar</button>
 							<input type="hidden" value="0" name="excelegonder" id="excelegonder">
-							<input type="hidden" name="exceltarih" id="exceltarih" value="<%= UtilFunctions.getTarihTR(new Date()) %>">
+							<input type="hidden" name="exceltarih" id="exceltarih" value="<%=Util.getTarihTR(new Date())%>">
 							<input type="hidden" name="excelsql" id="excelsql" value="<%=excelsql%>">
 							<input type="hidden" name="tablename" id="tablename" value="<%=tablename%>">
 						</form>

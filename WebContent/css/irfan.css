@@ -1,3 +1,33 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(../fonts/OpenSans300Light.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(../fonts/OpenSans400Normal.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(../fonts/OpenSans600SemiBold.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url(../fonts/OpenSans700Bold.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'), url(../fonts/OpenSans800ExtraBold.woff) format('woff');
+}
 .updateHref, .okHref, .deleteHref, .icerikHref {
 	font-size: 11px;
 }
@@ -75,7 +105,7 @@
 	font-size: 12px;
 	background:goldenrod;
 	color: #f6f6f6;
-	border:2px solid khaki;
+	border: 2px solid khaki;
 }
 #pagination input[type=button].nolink {
 	padding: 4px 7px;
@@ -83,7 +113,7 @@
 	font-size: 12px;
 	background:darkkhaki;
 	color: #f6f6f6;
-	border:2px solid khaki;
+	border: 2px solid khaki;
 }
 #pagination input[type=button]:hover {
 	font-weight: normal;
@@ -146,10 +176,9 @@ label.text-baslik{
 	font-size: 12px;
 	color:green;
 	background-color: #E1DFBA;
-	padding: 2px;
 	margin-top: 2px;
 	border-bottom: 1px solid darkkhaki;
-	line-height: 2em !important;
+	line-height: 24px !important;
 }
 
 button[disabled], input[disabled], textarea[disabled],
@@ -181,26 +210,30 @@ div.size12px{
 	font-size:12px;
 }
 .rounded{
-	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
-	font-weight:300 !important;
+	/*font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;*/
+	font-family: "Open Sans", "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-weight: 600 !important;
 	font-size:1.3em;	
 }
 
 .roundedmini{
-	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
-	font-weight:300 !important;
+	/*font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;*/
+	font-family: "Open Sans", "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-weight: 600 !important;
 	font-size:1.1em;	
 }
 
 .loginclass{
-	font-family: "Arial Rounded MT Bold", "lucida grande", tahoma, verdana, arial, sans-serif;
-	/* font-family:"lucida grande", tahoma, verdana, arial, sans-serif; */ 
-	font-size: 1em;
-	font-weight:300;
+	font-family: "Open Sans", "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: 300;
 }
 .color-chocolate {
 	color: chocolate;
 }
 .color-red {
 	color: #E21E27;
+}
+.color-green {
+	color: #5FB300;
 }

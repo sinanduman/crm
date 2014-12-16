@@ -42,7 +42,8 @@ public class DAO {
                                 rs.getString("surname"),
                                 rs.getString("username"),
                                 rs.getString("password"),
-                                rs.getInt("admin")
+                                rs.getInt("admin"),
+                                rs.getString("role")
                                 );
             }
         }
@@ -77,10 +78,7 @@ public class DAO {
     }
     
     public static boolean loginResult(User user) {
-        if (user!=null) {
-            return true;
-        }
-        return false;
+        return (user!=null);
     }
     
     public static String md5Dao(String temp) {
