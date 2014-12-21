@@ -181,8 +181,8 @@ label.text-baslik{
 	line-height: 24px !important;
 }
 
-button[disabled], input[disabled], textarea[disabled],
-button[readonly], input[readonly], textarea[readonly] {
+button[disabled], input[disabled], textarea[disabled], select[disabled],
+button[readonly], input[readonly], textarea[readonly], select[readonly] {
 	cursor: default;
 	background-color: #eee;
 }
@@ -236,4 +236,9 @@ div.size12px{
 }
 .color-green {
 	color: #5FB300;
+}
+
+td.text-right-stok {
+	text-align: right;
+	padding-right:40px !important;
 }

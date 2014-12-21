@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="crm.irfan.Util,crm.irfan.entity.*,java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat,java.util.Date"%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -41,13 +42,17 @@
 %>
 
 <%
-    int acikirsaliyeid=0;
-String acikirsaliyeno="";
-for(IrsaliyeBilesen ib: irsaliyebilesenopen){
-    acikirsaliyeid = ib.getIrsaliyeid();
-    acikirsaliyeno = ib.getIrsaliyeno();
-    break;
-}
+    int acikirsaliyeid			= 0;
+	int acikirsaliyefirmaid		= 0;
+	String acikirsaliyeno		= "";
+	String acikirsaliyeotarihi	= (String) (new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+	for(IrsaliyeBilesen ib: irsaliyebilesenopen){
+    	acikirsaliyeid		= ib.getIrsaliyeid();
+    	acikirsaliyefirmaid = ib.getIrsaliyefirmaid();
+    	acikirsaliyeno		= ib.getIrsaliyeno();
+    	acikirsaliyeotarihi = (String) (new SimpleDateFormat("dd-MM-yyyy").format(ib.getOlusturmatarihi()));
+    	break;
+	}
 %>
 
 <script>
@@ -80,37 +85,45 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 		<label class="text-danger rounded">Ürün Sevkiyatı</label>
 	</div>
 	<div class="row" >
-		<form class="form-inline" role="form" name="irsaliyeform" id="irsaliyeform" method="post" action="irsaliye">
+		<form class="form-inline" name="irsaliyeform" id="irsaliyeform" method="post" action="irsaliye">
+			<%
+				String disabled="";
+				String readonly="";
+			    if(!acikirsaliyeno.equals("")){
+			        disabled="disabled='disabled'";
+			        readonly="readonly='readonly'";
+			    }
+			%>
 			<div class="form-group">
 				<label for="tarih" class="text-baslik">Tarih</label>
 				<div>
-					<input type="text" class="form-control xm" name="tarih" id="tarih" placeholder="Tarih">
+					<input type="text" class="form-control xm" name="tarih" id="tarih" placeholder="Tarih" <%=disabled%> <%=readonly%>>
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label for="irsaliyeno" class="text-baslik">İrsaliye No</label>
 				<div>
-					<%
-					    if(acikirsaliyeno.equals("")){
-					%>
-						<input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" placeholder="İrsaliye No" autocomplete="off">
-						<%
-						    }
-											else{
-						%>
-					    <input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno%>" readonly="readonly">
-					    <%
-					        }
-					    %>
+					<input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno%>" <%=readonly%> placeholder="İrsaliye No" autocomplete="off">
 				</div>
 			</div>
 			
 			<div class="form-group">
-				<label for="firmaad" class="text-baslik">Firma</label>
+				<label for="firmaad" class="text-baslik">Müşteri</label>
 				<div>
-					<input type="text" class="form-control small" name="firmaad" id="firmaad" readonly="readonly">
-					<input type="hidden" class="form-control small" name="firmaid" id="firmaid">
+					<select class="form-control big" name="firmaid" id="firmaid" <%=disabled%> <%=readonly%>>
+					<%
+						out.println("<option value='0'>... Müşteri Seçiniz ...</option>");
+						for (Firma f : firma) {							    
+						    if(acikirsaliyefirmaid == f.getId()){
+						        out.println("<option value='"+ f.getId() + "' selected>" + f.getAd() + "</option>");
+						    }
+						    else{
+						        out.println("<option value='"+ f.getId() + "'>" + f.getAd() + "</option>");
+						    }
+						}
+					%>
+					</select>
 				</div>
 			</div>
 			
@@ -132,9 +145,17 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			</div>
 			
 			<div class="form-group">
+				<label for="mamulad" class="text-baslik">Firma Adı</label>
+				<div>
+					<input type="text" class="form-control small" name="bilesenfirmaad" id="bilesenfirmaad" readonly="readonly">
+					<input type="hidden" class="form-control small" name="bilesenfirmaid" id="bilesenfirmaid">
+				</div>
+			</div>
+			
+			<div class="form-group">
 				<label for="gkrno" class="text-baslik">İzl.No / Toplam Ad.</label>
 				<div>
-					<select class="form-control small" name="gkrno" id="gkrno" readonly="readonly"></select>
+					<select class="form-control small" name="gkrno" id="gkrno" <%=readonly%>></select>
 					<input type="hidden" name="stokid" id="stokid">
 					<input type="hidden" name="miktarbox" id="miktarbox">
 				</div>
@@ -148,7 +169,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			</div>
 			
 			<div class="form-group">
-				<label for="not" class="control-label text-baslik">Açıklama: </label>
+				<label for="not" class="control-label text-baslik">Açıklama</label>
 				<div>
 					<input type="text" class="form-control normal" name="not" id="not" autocomplete="off">
 				</div>
@@ -215,7 +236,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			<tr>
 				<th>Tarih</th>
 				<th>İrsaliye No</th>
-				<th>Müşteri</th>
+				<th>Firma</th>
 				<th>Ürün Kodu</th>
 				<th>Ürün Adı</th>
 				<th>İzleme No</th>
@@ -297,6 +318,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 					<td><label class="text-success">İrsaliye No</label></td>
 					<td><label class="text-success">Oluşturma Tarihi</label></td>
 					<td><label class="text-success">Gönderim Tarihi</label></td>
+					<td><label class="text-success">Müşteri</label></td>
 					<td class="text-center"><label class="text-success">Aksiyon</label></td>
 				</tr>
 				<%
@@ -307,6 +329,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 					<td><%=i.getIrsaliyeno()%></td>
 					<td><%=Util.getTarihTR(i.getOlusturmatarihi())%></td>
 					<td><%=Util.getTarihTR(i.getGonderimtarihi())%></td>
+					<td><%=(i.getFirmaad()==null)?"":i.getFirmaad() %></td>
 					<td class="text-center">
 						<div id="divirsaliye<%= i.getId() %>">
 							<a href="javascript:hideshow('#tr_irs_detay<%= i.getId() %>');" title="İçerik"><span class="fa fa-chevron-down fa-lg text-success"></span></a>
@@ -321,7 +344,7 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 					</td>
 				</tr>
 				<tr id="tr_irs_detay<%= i.getId() %>" style="display:none;">
-					<td colspan="4">
+					<td colspan="5">
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (IrsaliyeBilesen j : irsaliyebilesencompleted) {%>
@@ -365,12 +388,13 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 	<script src="js/irfan.js" type="text/javascript"></script>
 	<script src="js/irsaliye.js" type="text/javascript"></script>
 	<script>
+	var today	= '<%= acikirsaliyeotarihi.equals("")?"today":acikirsaliyeotarihi %>';
 	$(function() {
 		$('#tarih').datepicker({
 			inline: true,
 			format : 'dd-mm-yy',
 			firstDay:1,
-		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","today");
+		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate",today);
 	});
 	$("#mamulkod" ).autocomplete({
 		source		: mamul2,
@@ -393,10 +417,14 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			for (i in mamul) {
 				if(elem.value == mamul[i].mamulkod){
 					found = true;
-					document.irsaliyeform.mamulad.value	= mamul[i].mamulad;
-					document.irsaliyeform.mamulid.value	= mamul[i].mamulid;
-					document.irsaliyeform.firmaad.value	= mamul[i].firmaad;
-					// console.log(mamul[i].gkrno);
+					document.irsaliyeform.mamulad.value			= mamul[i].mamulad;
+					document.irsaliyeform.mamulid.value			= mamul[i].mamulid;
+					document.irsaliyeform.bilesenfirmaid.value	= mamul[i].firmaid;
+					document.irsaliyeform.bilesenfirmaad.value	= mamul[i].firmaad;
+					if($("#firmaid").val()==0){
+						document.irsaliyeform.firmaid.value		= mamul[i].firmaid;
+					};
+					//console.log(mamul[i].gkrno);
 					var gkrno  = mamul[i].gkrno.split(";");
 					var miktar = mamul[i].miktar.split(";");
 					var stokid = mamul[i].stokid.split(";");
@@ -411,11 +439,12 @@ for(IrsaliyeBilesen ib: irsaliyebilesenopen){
 			}
 		}	
 		if(!found){
-			document.irsaliyeform.mamulad.value	= "";
-			document.irsaliyeform.mamulid.value	= "";
-			document.irsaliyeform.firmaad.value	= "";
-			document.irsaliyeform.miktar.value	= "";
-			document.irsaliyeform.not.value		= "";
+			document.irsaliyeform.mamulad.value			= "";
+			document.irsaliyeform.mamulid.value			= "";
+			document.irsaliyeform.bilesenfirmaad.value	= "";
+			document.irsaliyeform.bilesenfirmaid.value	= "";
+			document.irsaliyeform.miktar.value			= "";
+			document.irsaliyeform.not.value				= "";
 			$("#gkrno option").remove();
 			$('#stokid').val("");
 			$('#miktarbox').val("");

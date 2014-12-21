@@ -239,6 +239,17 @@
   
   <servlet>
     <description></description>
+    <display-name>GkrListeServlet</display-name>
+    <servlet-name>GkrListeServlet</servlet-name>
+    <servlet-class>crm.irfan.GkrListeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GkrListeServlet</servlet-name>
+    <url-pattern>/gkrliste</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
     <display-name>UretimRaporServlet</display-name>
     <servlet-name>UretimRaporServlet</servlet-name>
     <servlet-class>crm.irfan.UretimRaporServlet</servlet-class>

@@ -1,5 +1,8 @@
 $("#irsaliyeekle").click(function(){
 	var message="";
+	if($("#firmaid").val()==0){
+		message += "Müşteri adı giriniz!\n";
+	}
 	if($("#mamulid").val()==""){
 		message += "Mamül kodu giriniz!\n";
 	}
@@ -87,8 +90,8 @@ function irsaliyepaketguncelle(sender,bilesenid){
 	$("#irsaliyeiptal").css("display","");
 	
 	document.irsaliyeform.tarih.value				= paket[bilesenid].tarihtr;
-	document.irsaliyeform.firmaid.value				= paket[bilesenid].firmaid;
-	document.irsaliyeform.firmaad.value				= paket[bilesenid].firmaad;
+	document.irsaliyeform.bilesenfirmaid.value		= paket[bilesenid].firmaid;
+	document.irsaliyeform.bilesenfirmaad.value		= paket[bilesenid].firmaad;
 	document.irsaliyeform.mamulkod.value			= paket[bilesenid].mamulkod;
 	document.irsaliyeform.mamulad.value				= paket[bilesenid].mamulad;
 	document.irsaliyeform.mamulid.value				= paket[bilesenid].mamulid;

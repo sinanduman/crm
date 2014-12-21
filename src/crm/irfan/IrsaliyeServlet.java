@@ -69,7 +69,9 @@ public class IrsaliyeServlet extends HttpServlet {
 					/* 0:Insert */
 					if (0 == irsaliyeid) {
 						String irsaliyeno = request.getParameter("irsaliyeno");
-						int newIrsaliyeId = DAOFunctions.irsaliyeEkle(irsaliyeno);
+						String tarih      = request.getParameter("tarih");
+						String firmaid    = request.getParameter("firmaid");
+						int newIrsaliyeId = DAOFunctions.irsaliyeEkle(irsaliyeno, tarih, firmaid);
 						
 						/* if Error occured */
 						if (newIrsaliyeId == -1) {

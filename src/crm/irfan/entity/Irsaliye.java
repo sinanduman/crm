@@ -7,13 +7,18 @@ public class Irsaliye {
     private String    irsaliyeno;
     private Timestamp olusturmatarihi;
     private Timestamp gonderimtarihi;
+    private Integer   firmaid;
+    private String    firmaad;
     
-    public Irsaliye(Integer id, String irsaliyeno, Timestamp olusturmatarihi, Timestamp gonderimtarihi) {
+    public Irsaliye(Integer id, String irsaliyeno, Timestamp olusturmatarihi, Timestamp gonderimtarihi,
+                    Integer firmaid, String firmaad) {
         super();
         this.id = id;
         this.irsaliyeno = irsaliyeno;
         this.olusturmatarihi = olusturmatarihi;
         this.gonderimtarihi = gonderimtarihi;
+        this.firmaid = firmaid;
+        this.firmaad = firmaad;
     }
     
     public Integer getId() {
@@ -46,6 +51,22 @@ public class Irsaliye {
     
     public void setGonderimtarihi(Timestamp gonderimtarihi) {
         this.gonderimtarihi = gonderimtarihi;
+    }
+    
+    public Integer getFirmaid() {
+        return firmaid;
+    }
+    
+    public void setFirmaid(Integer firmaid) {
+        this.firmaid = firmaid;
+    }
+    
+    public String getFirmaad() {
+        return firmaad;
+    }
+    
+    public void setFirmaad(String firmaad) {
+        this.firmaad = firmaad;
     }
     
 }

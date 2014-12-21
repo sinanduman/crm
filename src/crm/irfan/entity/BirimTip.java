@@ -1,7 +1,7 @@
 package crm.irfan.entity;
 
 public enum BirimTip {
-    GRAM(1,"Gram"), ADET(2,"Adet"), KILOGRAM(3,"KG");
+    GRAM(1,"Gram"), ADET(2,"Adet"), KILOGRAM(3,"Kg");
     private Integer value;
     private String ad;
     

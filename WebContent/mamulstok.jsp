@@ -164,9 +164,9 @@ String excelsql		= (String) request.getAttribute("excelsql");
 			<div class="clearfix"></div>
 			
 			<%
-						    String admin = (String) session.getAttribute("admin");
-									if(admin!=null && admin.equals("1")){
-						%>
+			    String admin = (String) session.getAttribute("admin");
+				if(admin!=null && admin.equals("1")){
+			%>
 			<div class="form-group" style="margin-top:5px;">
 				<div>
 					<button type="button" class="btn btn-danger" id="mamulstokekle" name="mamulstokekle">Ekle</button>
@@ -196,24 +196,28 @@ String excelsql		= (String) request.getAttribute("excelsql");
 				<th><label class="text-danger"><%=Util.getTarihTR(new java.util.Date())%> </label></th>
 			</tr>
 			<tr>
+				<%
+				String sumaggTip = BirimTip.ADET.ad();
+				%>
 				<th>Ürün Tanımı</th>
 				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenad()%></label></th>
 				<th>Envanter Miktarı</th>
-				<th><label class="text-danger"><%=sumagg%></label><input type="hidden" id="sumagg" name="sumagg" value="<%=sumagg%>"></th>
+				<th><label class="text-danger"><%=sumagg%></label> <%=sumaggTip %><input type="hidden" id="sumagg" name="sumagg" value="<%=sumagg%>"></th>
 			</tr>
 			<tr>
-				<td width="20%"><label class="text-sevk">TARİH</label></td>
-				<td width="15%"><label class="text-sevk">GİREN</label></td>
-				<td width="15%"><label class="text-sevk">ÇIKAN</label></td>
-				<td width="20%"><label class="text-sevk">KALAN</label></td>
-				<td width="30%"><label class="text-sevk">AÇIKLAMA</label></td>
+				<td width="15%"><label class="text-sevk">TARİH</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">GİREN</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">ÇIKAN</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">KALAN</label></td>
+				<td width="31%"><label class="text-sevk">AÇIKLAMA</label></td>
 			</tr>
 			<%
 			    }
 			%>
 			<%
-			    String giren= "";
+			    		String giren= "";
 						String cikan= "";
+						String kalan= "";
 						String not	= "";
 						int sayac	= 0;
 						for (Stok s : stok) {
@@ -221,17 +225,18 @@ String excelsql		= (String) request.getAttribute("excelsql");
 						    not = (s.getNot()==null)?"":s.getNot();
 							if(s.getIslemyonu()==1){
 								giren = "";
-								cikan = s.getMiktar();
+								cikan = s.getMiktar().toString();
 							}
 							else{
-								giren = s.getMiktar();
+								giren = s.getMiktar().toString();
 								cikan = "";
 							}
+							kalan = s.getKalan().toString();
 							out.println("<tr>");
 							out.println("<td>"+ Util.getTarihTR((s.getIslemyonu()==1)?s.getCikistarihi():s.getGiristarihi()) +"</td>");
-							out.println("<td class='text-right'>"+ giren +"</td>");
-							out.println("<td class='text-right'>"+ cikan +"</td>");
-							out.println("<td class='text-right'>"+ s.getKalan() +"</td>");
+							out.println("<td class='text-right-stok'>"+ giren +"</td>");
+							out.println("<td class='text-right-stok'>"+ cikan +"</td>");
+							out.println("<td class='text-right-stok'>"+ kalan +"</td>");
 							out.println("<td>"+ not +"</td>");
 							out.println("</tr>");
 						}

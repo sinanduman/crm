@@ -511,7 +511,7 @@ public class DAOFunctions {
 								rs.getString("birimad"),
 								rs.getInt("firmaid"),
 								rs.getString("firmaad"),
-								rs.getString("miktar"),
+								rs.getInt("miktar"),
 								null, // Stok: Kalan
 								rs.getString("gkrno"), 
 								rs.getString("irsaliyeno"), 
@@ -596,7 +596,7 @@ public class DAOFunctions {
 								rs.getString("birimad"),
 								rs.getInt("firmaid"),
 								rs.getString("firmaad"),
-								rs.getString("miktar"),
+								rs.getInt("miktar"),
 								rs.getInt("kalan"), 
 								rs.getString("gkrno"), 
 								rs.getString("irsaliyeno"), 
@@ -635,7 +635,7 @@ public class DAOFunctions {
 	
 		String pageFilter   = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-		String searchQuery = "SELECT b.*, null as stokid, s.miktar, s.tarih, f.ad firmaad, bt.ad bilesentipad FROM "
+		String searchQuery = "SELECT b.*, null::INTEGER as stokid, -1::INTEGER as islemyonu, s.miktar, s.tarih, f.ad firmaad, bt.ad bilesentipad FROM "
 						+ tablename 
 						+ " LEFT JOIN (SELECT bilesenid, "
 						+ " MAX(CASE WHEN islemyonu = 0 THEN giristarihi ELSE cikistarihi END) tarih, "
@@ -658,6 +658,7 @@ public class DAOFunctions {
 				temp.add(new StokRapor(
 								rs.getInt("id"),
 								rs.getInt("stokid"),
+								rs.getInt("islemyonu"),
 								rs.getString("ad"),
 								rs.getString("kod"),
 								rs.getInt("bilesentipid"),
@@ -665,6 +666,7 @@ public class DAOFunctions {
 								rs.getInt("firmaid"),
 								rs.getString("firmaad"),
 								rs.getInt("miktar"),
+								null, // kalan
 								rs.getTimestamp("tarih")
 								));
 			}
@@ -686,13 +688,16 @@ public class DAOFunctions {
 	}
 	
 	protected static List<StokRapor> stokBilesenDetayRapor(String tablename, String filter, int offset, int bilesenid) {
-        List<StokRapor> temp = new ArrayList<StokRapor>();
-        conn = ConnectionManager.getConnection();
+        List<StokRapor> temp= new ArrayList<StokRapor>();
+        conn                = ConnectionManager.getConnection();
     
         String pageFilter   = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 
-        String searchQuery = "SELECT b.*, s.id stokid, s.miktar,f.ad firmaad,bt.ad bilesentipad, "
-                        + "s.islemyonu, case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END as tarih FROM "
+        String searchQuery = "SELECT b.*, s.id stokid, s.islemyonu, s.miktar,f.ad firmaad,bt.ad bilesentipad, "
+                        + "s.islemyonu, case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END as tarih, "
+                        + "sum(CASE s.islemyonu WHEN 1 THEN (-1) * s.miktar ELSE 1 * s.miktar END) OVER "
+                        + "(PARTITION BY s.bilesenid ORDER BY s.id) kalan "
+                        + "FROM "
                         + tablename 
                         + " LEFT JOIN stok s on s.bilesenid=b.id "
                         + " JOIN firma f ON f.id=b.firmaid "
@@ -712,6 +717,7 @@ public class DAOFunctions {
                 temp.add(new StokRapor(
                                 rs.getInt("id"),
                                 rs.getInt("stokid"),
+                                rs.getInt("islemyonu"),
                                 rs.getString("ad"),
                                 rs.getString("kod"),
                                 rs.getInt("bilesentipid"),
@@ -719,6 +725,7 @@ public class DAOFunctions {
                                 rs.getInt("firmaid"),
                                 rs.getString("firmaad"),
                                 rs.getInt("miktar"),
+                                rs.getInt("kalan"),
                                 rs.getTimestamp("tarih")
                                 ));
             }
@@ -1850,8 +1857,8 @@ public class DAOFunctions {
 
 	protected static String stokEkle(String bilesenid, String miktar, String irsaliyeno,
 										 String lot, String gkrno, String tarih, String not) {
-		String retVal	 = "0";
-		conn   = ConnectionManager.getConnection();
+	    conn          = ConnectionManager.getConnection();
+		String retVal = "0";
 
 		String insertQuery= "SELECT irfan.stok_ekle(?,?,?,?,?,?,?,?) ";
 	
@@ -1919,7 +1926,7 @@ public class DAOFunctions {
 								) {
 		String retVal="-1";
 		conn = ConnectionManager.getConnection();
-		String updateQuery  = "SELECT irfan.stok_mamul_dus(?,?,?,?,?,?,?) ";
+		String updateQuery  = "SELECT irfan.stok_dus(?,?,?,?,?,?,?) ";
 
 		PreparedStatement pstmt = null;
 		try {
@@ -1956,10 +1963,9 @@ public class DAOFunctions {
 		return retVal;
 	}
 
-	protected static int irsaliyeEkle(String irsaliyeno) {
-		conn = ConnectionManager.getConnection();
-
-		String insertQuery = "insert into irfan.irsaliye (olusturmatarihi,irsaliyeno) values (now(),?) ";
+	protected static int irsaliyeEkle(String irsaliyeno, String tarih, String firmaid) {
+		conn              = ConnectionManager.getConnection();
+		String insertQuery= "insert into irfan.irsaliye (irsaliyeno, olusturmatarihi, firmaid) values (?,?,?) ";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1967,8 +1973,12 @@ public class DAOFunctions {
 		try {
 			pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, irsaliyeno);
+			pstmt.setTimestamp(2, Util.date_tr_to_timestamp(tarih));
+			pstmt.setInt(3, Integer.valueOf(firmaid));
+			
+			System.out.println(pstmt);
+			
 			pstmt.executeUpdate();
-
 			rs = pstmt.getGeneratedKeys();
 			if (rs.next()) {
 				newIrsaliyeId = rs.getInt(1);
@@ -2094,19 +2104,19 @@ public class DAOFunctions {
 		String irsaliyeFilter = (irsaliyeid==null)?"":" and id = " + Integer.valueOf(irsaliyeid) + " ";
 		String tarihFilter    = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
 		String firmaFilter    = (firmaid==null)?"":""
-		                            + " and id IN ("
+		                            + " and i.id IN ("
                     		        + "   select irsaliyeid from irfan.irsaliyebilesen ib "
                     		        + "   join irfan.mamul m on m.id = ib.mamulid "
                     		        + "   join irfan.firma f on f.id = m.firmaid "
                     		        + "   WHERE f.id= " + Integer.valueOf(firmaid)
                     		        + ")";
 
-		String searchQuery = "select * from irfan.irsaliye "
-						+ "where kapatildi=1 and onaylandi = ? "
+		String searchQuery = "select i.*, f.ad firmaad from irfan.irsaliye i left join firma f on f.id=i.firmaid "
+						+ "where i.kapatildi=1 and i.onaylandi = ? "
 						+ firmaFilter
 						+ irsaliyeFilter
 						+ tarihFilter
-						+ "order by id DESC "
+						+ "order by i.id DESC "
 						+ pageFilter;
 		
 		PreparedStatement pstmt = null;
@@ -2127,7 +2137,9 @@ public class DAOFunctions {
 								rs.getInt("id"), 
 								rs.getString("irsaliyeno"), 
 								rs.getTimestamp("olusturmatarihi"), 
-								rs.getTimestamp("gonderimtarihi")
+								rs.getTimestamp("gonderimtarihi"),
+								rs.getInt("firmaid"),
+								rs.getString("firmaad")
 								)
 				);
 			}
@@ -2156,7 +2168,7 @@ public class DAOFunctions {
 		String firmaFilter    = (firmaid==null)?"":" and f.id = " + Integer.valueOf(firmaid) + " ";
 		
 		/* acik olan irsaliye bilsenlerini getirir */
-		String searchQuery = "select ib.*, i.olusturmatarihi, i.gonderimtarihi, i.irsaliyeno, "
+		String searchQuery = "select ib.*, i.olusturmatarihi, i.gonderimtarihi, i.irsaliyeno, i.firmaid irsaliyefirmaid, "
 						+ "m.ad mamulad, m.kod mamulkod, f.id firmaid, f.ad firmaad "
 						+ "from irfan.irsaliyebilesen ib "
 						+ "join irfan.irsaliye i on i.id=ib.irsaliyeid "
@@ -2196,7 +2208,8 @@ public class DAOFunctions {
 								rs.getInt("miktar"),
 								rs.getTimestamp("olusturmatarihi"), 
 								rs.getTimestamp("gonderimtarihi"),
-								rs.getString("not")
+								rs.getString("not"),
+								rs.getInt("irsaliyefirmaid")
 								)
 				);
 			}
@@ -2655,7 +2668,7 @@ public class DAOFunctions {
 
 		conn              = ConnectionManager.getConnection();
 		String retVal     = "-1";
-		String updateQuery= "SELECT irfan.irsaliyebilesen_guncelle(?,?,?,?,?,?) "; 
+		String updateQuery= "SELECT irfan.irsaliyebilesen_guncelle(?,?,?,?,?,?,?) ";
 	
 		// connect to DB
 		PreparedStatement pstmt = null;

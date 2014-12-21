@@ -2,11 +2,11 @@ package crm.irfan.entity;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class StokRapor {
     private Integer   id;
     private Integer   stokid;
+    private Integer   islemyonu;
     private String    bilesenad;
     private String    bilesenkod;
     private Integer   bilesentipid;
@@ -14,13 +14,16 @@ public class StokRapor {
     private Integer   firmaid;
     private String    firmaad;
     private Integer   miktar;
+    private Integer   kalan;
     private Timestamp tarih;
     
-    public StokRapor(Integer id, Integer stokid, String bilesenad, String bilesenkod, Integer bilesentipid,
-                    String bilesentipad, Integer firmaid, String firmaad, Integer miktar, Timestamp tarih) {
+    public StokRapor(Integer id, Integer stokid, Integer islemyonu, String bilesenad, String bilesenkod,
+                    Integer bilesentipid, String bilesentipad, Integer firmaid, String firmaad, Integer miktar,
+                    Integer kalan, Timestamp tarih) {
         super();
         this.id = id;
         this.stokid = stokid;
+        this.islemyonu = islemyonu;
         this.bilesenad = bilesenad;
         this.bilesenkod = bilesenkod;
         this.bilesentipid = bilesentipid;
@@ -28,6 +31,7 @@ public class StokRapor {
         this.firmaid = firmaid;
         this.firmaad = firmaad;
         this.miktar = miktar;
+        this.kalan = kalan;
         this.tarih = tarih;
     }
     
@@ -47,6 +51,14 @@ public class StokRapor {
         this.stokid = stokid;
     }
     
+    public Integer getIslemyonu() {
+        return islemyonu;
+    }
+
+    public void setIslemyonu(Integer islemyonu) {
+        this.islemyonu = islemyonu;
+    }
+
     public String getBilesenad() {
         return bilesenad;
     }
@@ -101,6 +113,14 @@ public class StokRapor {
     
     public void setMiktar(Integer miktar) {
         this.miktar = miktar;
+    }
+    
+    public Integer getKalan() {
+        return kalan;
+    }
+    
+    public void setKalan(Integer kalan) {
+        this.kalan = kalan;
     }
     
     public String getTarih() {

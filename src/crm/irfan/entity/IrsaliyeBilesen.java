@@ -17,10 +17,11 @@ public class IrsaliyeBilesen {
     private Timestamp olusturmatarihi;
     private Timestamp gonderimtarihi;
     private String    not;
+    private Integer   irsaliyefirmaid;
     
     public IrsaliyeBilesen(Integer id, Integer irsaliyeid, String irsaliyeno, Integer firmaid, String firmaad,
                     Integer mamulid, String mamulad, String mamulkod, Integer gkrno, Integer stokid, Integer miktar,
-                    Timestamp olusturmatarihi, Timestamp gonderimtarihi, String not) {
+                    Timestamp olusturmatarihi, Timestamp gonderimtarihi, String not, Integer irsaliyefirmaid) {
         super();
         this.id = id;
         this.irsaliyeid = irsaliyeid;
@@ -36,6 +37,7 @@ public class IrsaliyeBilesen {
         this.olusturmatarihi = olusturmatarihi;
         this.gonderimtarihi = gonderimtarihi;
         this.not = not;
+        this.irsaliyefirmaid = irsaliyefirmaid;
     }
     
     public Integer getId() {
@@ -148,6 +150,14 @@ public class IrsaliyeBilesen {
     
     public void setNot(String not) {
         this.not = not;
+    }
+
+    public Integer getIrsaliyefirmaid() {
+        return irsaliyefirmaid;
+    }
+
+    public void setIrsaliyefirmaid(Integer irsaliyefirmaid) {
+        this.irsaliyefirmaid = irsaliyefirmaid;
     }
     
 }

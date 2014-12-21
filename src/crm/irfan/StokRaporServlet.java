@@ -70,10 +70,10 @@ public class StokRaporServlet extends HttpServlet {
                     bilesentipenum = BilesenTip.MAMUL;
                 }
             }
-            if(bilesenid!=null && !bilesenid.equals("") ) {
+            if(Util.isNotEmptyOrNull(bilesenid)) {
                 filter1 = " AND b.id = " + Integer.valueOf(bilesenid);
             }
-            filter = filter0 + filter1 ;
+            filter      = filter0 + filter1 ;
             // PAGING
             totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1 " + filter );
             if(request.getParameter("page") != null)

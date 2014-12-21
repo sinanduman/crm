@@ -80,10 +80,6 @@ User user = (User) request.getSession().getAttribute("user");
 					<a href="hammadde">
 						<span class="fa fa-dot-circle-o text-warning"></span> Hammadde ve Yarı Mamül</a>
 				</li>
-				<!-- li>
-					<a href="yarimamul">
-						<span class="fa fa-dot-circle-o text-warning"></span> Yarı Mamül</a>
-				</li-->
 				<li>
 					<a href="mamul">
 						<span class="fa fa-dot-circle-o text-warning"></span> Mamül</a>
@@ -114,6 +110,10 @@ User user = (User) request.getSession().getAttribute("user");
 				<li>
 					<a href="stokrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Stok</a>
+				</li>
+				<li>
+					<a href="gkrliste">
+						<span class="fa fa-dot-circle-o text-danger"></span> GKR Listesi</a>
 				</li>
 				<li>
 					<a href="uretimrapor">

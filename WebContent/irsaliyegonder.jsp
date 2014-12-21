@@ -58,6 +58,7 @@
 					<td><label class="text-success">İrsaliye No</label></td>
 					<td><label class="text-success">Oluşturma Tarihi</label></td>
 					<td><label class="text-success">Gönderim Tarihi</label></td>
+					<td><label class="text-success">Müşteri</label></td>
 					<td class="text-center"><label class="text-success">Aksiyon</label></td>
 				</tr>
 				<%
@@ -68,6 +69,7 @@
 					<td><%=i.getIrsaliyeno()%></td>
 					<td><%=Util.getTarihTR(i.getOlusturmatarihi())%></td>
 					<td><%=Util.getTarihTR(i.getGonderimtarihi())%></td>
+					<td><%= (i.getFirmaad()==null)?"":i.getFirmaad() %></td>
 					
 					<td class="text-center">
 						<div id="divirsaliye<%= i.getId() %>">
@@ -76,7 +78,7 @@
 					</td>
 				</tr>
 				<tr id="tr_irs_detay<%= i.getId() %>" style="display:none;">
-					<td colspan="4">
+					<td colspan="5">
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (IrsaliyeBilesen j : irsaliyebilesenonaylandi) {%>

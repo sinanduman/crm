@@ -1,4 +1,6 @@
 <%@page import="crm.irfan.Util"%>
+<%@page import="crm.irfan.entity.*"%>
+<%@page import="java.util.Date, java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
@@ -15,7 +17,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/irfan.css">
+	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 	<link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
@@ -28,36 +30,24 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="crm.irfan.entity.Bilesen,crm.irfan.entity.BilesenTip,crm.irfan.entity.Genel" %>
-<%@ page import="crm.irfan.entity.Stok" %>
-<%@ page import="java.util.List" %>
-
 <%@ include file="logincheck.jsp" %>
 
 <%
-    List<Bilesen> hammadde = (List<Bilesen>) request.getAttribute("hammadde");
-List<Stok> stok = (List<Stok>) request.getAttribute("stok");
+    List<Bilesen> hammadde	= (List<Bilesen>) request.getAttribute("hammadde");
+	List<Stok> stok 		= (List<Stok>) request.getAttribute("stok");
+
+	List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
+	List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
+	
+	Integer totalrecord		= (Integer) request.getAttribute("totalrecord");
+	Integer sumagg			= (Integer) request.getAttribute("sumagg");
+	Integer currentpage		= (Integer) request.getAttribute("currentpage");
+	Integer noofpages		= (Integer) request.getAttribute("noofpages");
+	String bilesenid		= (String) request.getAttribute("bilesenid");
+	String excelsql			= (String) request.getAttribute("excelsql");
 %>
 
 <script type="text/javascript">
-	function saveHammaddeStok(){
-		if(!is_positive(document.hammaddestokform.miktar.value)){
-			alert("Miktar NÜMERİK bir değer olmalıdır!");
-			return false;
-		}
-		else if(is_empty(document.hammaddestokform.irsaliyeno.value) ){
-			alert("İRSALİYE No boş olamaz!");
-			return false;
-		}
-		else if(is_empty(document.hammaddestokform.lot.value) ){
-			alert("LOT/Batch No boş olamaz!");
-			return false;
-		}
-		else{
-			document.hammaddestokform.submit();
-		}
-	}
-
 	var bilesen = [
 	<%String delimeter = "";
 	for (Bilesen b : hammadde) {
@@ -83,171 +73,232 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 
 <div class="container">
 	<div class="row">
-		<form class="form-horizontal" role="form" method="post" name="hammaddestokform" id="hammaddestokform" action="hammaddestok">
-		<div class="text-center">
-			<label class="text-danger rounded">Hammadde ve Yarı Mamül Stok Ekleme</label>
+		<div class="text-warning text-center">
+			<label class="text-danger rounded">Hammadde / Yarımamül Stok Ekleme</label>
 		</div>
-		<!-- sol -->
-		<div class="col-xs-6">
+	</div>	
+
+	<div class="row">
+		<form class="form-inline" method="post" method="post" name="hammaddestokform" id="hammaddestokform" action="hammaddestok">
+		<div class="col-xs-5">
 			<div class="form-group">
-				<label for="bilesenid" class="col-xs-4 control-label text-baslik">Malzeme Kodu: </label>
+				<label for="mamulkod" class="text-baslik">Malzeme Kodu: </label>
 				<div>
-					<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" autocomplete="off">
+					<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" placeholder="Malzeme Kodu" autocomplete="off">
 					<input type="hidden" name="bilesenid" id="bilesenid">
 				</div>
 			</div>
 			
 			<div class="form-group">
-				<label for="bilesenad" class="col-xs-4 control-label text-baslik">Malzeme Adı: </label>
+				<label for="stokliste" class="text-success bgsaydam">&nbsp;&nbsp;</label>
 				<div>
- 					<input type="text" class="form-control big" name="bilesenad" id="bilesenad" readonly="readonly">
+					<button type="button" class="btn btn-danger" name="stokliste" id="stokliste" disabled="disabled">Stok Kartı Getir</button>
+					<input type="hidden" name="stoklisteid" id="stoklisteid" value="0">
 				</div>
 			</div>
+			<div class="clearfix"></div>
 			
 			<div class="form-group">
-				<label for="firmaad" class="col-xs-4 control-label text-baslik">Tedarikçi Adı: </label>
+				<label for="mamulad" class="text-baslik">Malzeme Adı: </label>
 				<div>
- 					<input type="text" class="form-control big" name="firmaad" id="firmaad" readonly="readonly">
- 					<input type="hidden" name="firmaid" id="firmaid">
+					<input type="text" class="form-control big" name="bilesenad" id="bilesenad" placeholder="Malzeme Adı" readonly="readonly">
 				</div>
 			</div>
+			<div class="clearfix"></div>
+			
+			<div class="form-group">
+				<label for="mamulad" class="text-baslik">Tedarikçi Adı: </label>
+				<div>
+					<input type="text" class="form-control big" name="firmaad" id="firmaad" placeholder="Tedarikçi Adı" readonly="readonly">
+					<input type="hidden" name="firmaid" id="firmaid">
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			
+			<div class="form-group">
+				<label for="miktar" class="text-baslik">Miktarı: </label>
+				<div>
+					<input type="text" class="form-control normal" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
+					<input type="hidden" id="malzemebirimad" name="malzemebirimad" class="birim" value="Kg.">
+				</div>
+			</div>
+			<%
+			    if(stok!=null && !stok.isEmpty() && (sumagg > 0)){
+			%>
+			<div class="form-group">
+				<label for="miktar" class="text-baslik">Stoktan Düş: </label>
+				<div>
+			     	<input type="checkbox" id="iade" name="iade" value="1"><span class="text-danger"></span>
+			  	</div>
+			</div>
+			<%
+			    }
+			%>
+			<div class="clearfix"></div>
 
 			<div class="form-group">
-				<label for="tarih" class="col-xs-4 control-label text-baslik">Tarih</label>
+				<label for="irsaliyeno" class="text-baslik">İrsaliye No: </label>
 				<div>
-					<input type="text" class="form-control big" name="tarih" id="tarih" placeholder="Tarih">
+					<input type="text" class="form-control big" name="irsaliyeno" id="irsaliyeno" placeholder="İrsaliye No"  autocomplete="off">
 				</div>
 			</div>
-			
-		</div>
-		
-		<!-- sag -->
-		<div class="col-xs-6">
-			<div class="form-group">
-				<label for="miktar" class="col-xs-4 control-label text-baslik">Miktarı: </label>
-				<div>
-					<input type="text" class="form-control big" style="display:inline-block;" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
-					<!-- <span id="malzemebirimad" class="birim">Kg.</span> -->
-				</div>
-			</div>
+			<div class="clearfix"></div>
 			
 			<div class="form-group">
-				<label for="miktar" class="col-xs-4 control-label text-baslik">Birim: </label>
-				<input type="text" class="form-control big" name="birimid_select" id="birimid_select"  value="Adet" readonly="readonly">
-				<input type="hidden" name="birimid" id="birimid" value="2">
-			</div>
-			<div class="form-group">
-				<label for="irsaliyeno" class="col-xs-4 control-label text-baslik">İrsaliye No: </label>
-				<div>
-					<input type="text" class="form-control big" name="irsaliyeno" id="irsaliyeno" placeholder="İrsaliye No" autocomplete="off">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="lot" class="col-xs-4 control-label text-baslik">LOT/Batch No: </label>
+				<label for="lot" class="control-label text-baslik">LOT/Batch No: </label>
 				<div>
 					<input type="text" class="form-control big" name="lot" id="lot" placeholder="LOT/Batch No" autocomplete="off">
 				</div>
 			</div>
-		</div>
-		<div class="clearfix"></div>
-		<!-- orta -->
-		<%
-		    String admin = (String) session.getAttribute("admin");
-				if(admin!=null && admin.equals("1")){
-		%>
-		<div>
+			<div class="clearfix"></div>
+			
 			<div class="form-group">
-				<div class="text-center">
-					<button type="button" class="btn btn-danger" onclick="saveHammaddeStok()">Ekle</button>
+				<label for="tarih" class="control-label text-baslik">Tarih</label>
+				<div>
+					<input type="text" class="form-control big" name="tarih" id="tarih" placeholder="Tarih">
 				</div>
 			</div>
-		</div>
-		<%
-		    }
-		%>
-		</form>
-
-	</div>
-
-	<div class="row text-center">
-		<label class="text-danger roundedmini">Malzeme Stok Hareketleri</label>
-	</div>
-	
-	<%
-		    int sayac = 0;
-		%>
-	<div class="row" style="font-size:12px;">
-		<table class="tableplan">
+			<div class="clearfix"></div>
+			
+			<div class="form-group">
+				<label for="not" class="control-label text-baslik">Not: </label>
+				<div>
+					<textarea name="not" id="not" name="not" rows="3" class="form-control big" placeholder="Not"></textarea>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			
 			<%
-			    for (Stok s : stok) {
+			    String admin = (String) session.getAttribute("admin");
+				if(admin!=null && admin.equals("1")){
 			%>
+			<div class="form-group" style="margin-top:5px;">
+				<div>
+					<button type="button" class="btn btn-danger" id="hammaddestokekle" name="hammaddestokekle">Ekle</button>
+					<input type="hidden" name="bilesenekleid" id="bilesenekleid" value="0">
+				</div>
+			</div>
+			<div class="clearfix"></div>
 			<%
-			    if (sayac++ == 0) {
+			    }
+			%>
+			
+		</div>
+		</form>
+		<div class="col-xs-7" style="font-size:12px;">
+			<table class="tableplan">
+			<tr>
+				<th class="text-center"><img alt="İrfan Plastik" src="img/ip_logo_mini.png" class="img-rounded"/></th>
+				<th colspan="5" class="text-center" style="vertical-align:middle;">HAMMADDE / YARIMAMÜL STOK TAKİP KARTI</th>
+			</tr>
+			<%
+				if(stok!=null && !stok.isEmpty()){
 			%>
 			<tr>
-				<th>Stok No</th>
-				<th>Malzeme Kodu</th>
-				<th>Malzeme Adı</th>
-				<th>Tipi</th>
-				<th>Miktarı</th>
-				<th>Hareket Tarihi</th>
-				<th>Hareket Tipi</th>
-				<th>GKR. No</th>
-				<th>İrsaliye No</th>
-				<th>Lot/Batch No</th>
-				<th>Aksiyon</th>
+				<th>Ürün Kodu</th>
+				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenkod()%> </label></th>
+				<th>Envanter Tarihi</th>
+				<th><label class="text-danger"><%=Util.getTarihTR(new java.util.Date())%> </label></th>
+			</tr>
+			<tr>
+				<%
+				String sumaggStr = sumagg.toString();
+				String sumaggTip = BirimTip.ADET.ad();
+				if(stok.get(0).getBilesentipid()==1){
+				    Double s	= (Double.valueOf(sumagg) / Double.parseDouble("1000.0"));
+				    sumaggStr	= s.toString();
+				    sumaggTip	= BirimTip.KILOGRAM.ad();
+				}
+				%>
+				<th>Ürün Tanımı</th>
+				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenad()%></label></th>
+				<th>Envanter Miktarı</th>
+				<th><label class="text-danger"><%=sumaggStr%></label> <%=sumaggTip %><input type="hidden" id="sumagg" name="sumagg" value="<%=sumaggStr%>"></th>
+			</tr>
+			<tr>
+				<td width="15%"><label class="text-sevk">TARİH</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">GİREN</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">ÇIKAN</label></td>
+				<td width="18%" class='text-center'><label class="text-sevk">KALAN</label></td>
+				<td width="31%"><label class="text-sevk">AÇIKLAMA</label></td>
 			</tr>
 			<%
 			    }
 			%>
-			<tr id="tr<%=s.getId()%>">
-				<td><%=s.getId()%></td>
-				<td><%=s.getBilesenkod()%></td>
-				<td><%=s.getBilesenad()%></td>
-				<td><%=s.getBilesentipad()%></td>
+			<%
+	    		String giren= "";
+				String cikan= "";
+				String kalan= "";
+				String not	= "";
+				int sayac	= 0;
+				for (Stok s : stok) {
+				    sayac++;
+				    not = (s.getNot()==null)? "İzl.No:" + s.getGkrno() : s.getNot() + " - İzl.No:" + s.getGkrno();
+					if(s.getIslemyonu()==1){
+						giren = "";
+						cikan = s.getMiktar().toString();
+					}
+					else{
+						giren = s.getMiktar().toString();
+						cikan = "";
+					}
+					kalan = s.getKalan().toString();
+					
+					/* Hammadde */
+					if(s.getBilesentipid()==1){							    
+					    if(!giren.equals("")){
+					        Double g= (Double.valueOf(giren) / Double.parseDouble("1000.0"));
+						    giren	= g.toString();
+					    }
+					    if(!cikan.equals("")){
+					        Double c= (Double.valueOf(cikan) / Double.parseDouble("1000.0"));
+						    cikan	= c.toString();
+					    }
+					    if(!kalan.equals("")){
+					        Double k= (Double.valueOf(kalan) / Double.parseDouble("1000.0"));
+						    kalan	= k.toString();
+					    }
+					}
+					out.println("<tr>");
+					out.println("<td>"+ Util.getTarihTR((s.getIslemyonu()==1)?s.getCikistarihi():s.getGiristarihi()) +"</td>");
+					out.println("<td class='text-right-stok'>"+ giren +"</td>");
+					out.println("<td class='text-right-stok'>"+ cikan +"</td>");
+					out.println("<td class='text-right-stok'>"+ kalan +"</td>");
+					out.println("<td>"+ not + "</td>");
+					out.println("</tr>");
+				}
+			%>
+			</table>
+			<!-- paging -->
+			<%
+			    String param1 = "&amp;bilesenid="+ bilesenid;
+				String param2 = "&amp;stoklisteid=1";
+			%>
+			<jsp:include page="paging.jsp" flush="true" >
+				<jsp:param value="noofpages" name="noofpages"/>
+				<jsp:param value="currentpage" name="currentpage"/>
+				<jsp:param value="hammaddestok" name="pagename"/>
+				<jsp:param value="<%=param1%>" name="param1"/>
+				<jsp:param value="<%=param2%>" name="param2"/>
+			</jsp:include>
+			<%
+			    if (sayac >0 ){
+			%>
+					<div class="text-right">
+						<div>
+							<form method="post" name="excelform" id="excelform" action="excelmamulstok">
+								<button type="button" class="btn btn-danger" name="exceleaktar_mamul" id="exceleaktar_mamul">Excele Aktar</button>
+								<input type="hidden" value="0" name="excelegonder" id="excelegonder">
+								<input type="hidden" name="exceltarih" id="exceltarih" value="<%=Util.getTarihTR(new Date())%>">
+								<input type="hidden" name="excelsql" id="excelsql" value="<%=excelsql%>">
+							</form>
+						</div>
+					</div>
 				<%
-				    String smiktar = "";
-								Double dmkitar = 0.0;
-								Integer imiktar= 0;
-								if(s.getBilesentipid() == BilesenTip.HAMMADDE.value()){
-									if( (Integer.valueOf(s.getMiktar()) / 1000.0) > ( Integer.valueOf(s.getMiktar()) / 1000)){
-										dmkitar = (Integer.valueOf(s.getMiktar())) / 1000.0;
-										smiktar = dmkitar.toString() + " Kg.";
-									}
-									else{
-										imiktar = (Integer.valueOf(s.getMiktar()))/1000;
-										smiktar = imiktar.toString() + " Kg.";
-									}
-								}
-								else{
-									smiktar = s.getMiktar().toString() + " Ad.";
-								}
-				%>
-				<td class="text-right"><%=smiktar%></td>
-				<td class="text-right"><%=(s.getIslemyonu()==0) ? Util.getTarihTR(s.getGiristarihi()) : Util.getTarihTR(s.getCikistarihi())%></td>
-				<td><%= (s.getIslemyonu()==0)?"<span class='text-success'>Giriş</span>":"<span class='text-danger'>Çıkış</span>" %></td>
-				<td><%= s.getGkrno() %></td>
-				<td><%= (s.getIrsaliyeno()==null) ? "" : s.getIrsaliyeno() %></td>
-				<td><%= (s.getLot()==null) ? "" : s.getLot() %></td>
-				<td class="text-center">
-				
-					<% 
-					if(admin!=null && admin.equals("1") && (s.getIslemyonu()==0)){
-					%>
-					<a href="javascript:deleteHammaddeStokGo('hammaddestok',<%=s.getId()%>,3);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
-					<% } %>
-				
-				</td>
-			</tr>
-			<% } %>
-		</table>
-		<jsp:include page="paging.jsp" flush="true" >
-			<jsp:param value="noofpages" name="noofpages"/>
-			<jsp:param value="currentpage" name="currentpage"/>
-			<jsp:param value="hammaddestok" name="pagename"/>
-		</jsp:include>
+			}
+			%>
+		</div>
 	</div>
-
 </div>
 
 <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
@@ -255,8 +306,7 @@ List<Stok> stok = (List<Stok>) request.getAttribute("stok");
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script	src="js/bootbox.js" type="text/javascript"></script>
 <script src="js/irfan.js" type="text/javascript"></script>
-<script src="js/hammaddestok.js" type="text/javascript"></script>
-
+<script src="js/hammaddestok.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {
 	$('#tarih').datepicker({
@@ -287,17 +337,17 @@ function changefun(elem){
 				found = true;
 				$("#bilesenid").val(bilesen[i].bilesenid);
 				$("#bilesenad").val(bilesen[i].bilesenad);
+				$("#bilesenkod").val(bilesen[i].bilesenkod);
 				$("#firmaid").val(bilesen[i].firmaid);
 				$("#firmaad").val(bilesen[i].firmaad);
+				$("#stokliste").removeAttr("disabled");
 				$("#bilesentipid").val(bilesen[i].bilesentipid);
 				if(bilesen[i].bilesentipid==<%= BilesenTip.HAMMADDE.value() %> ){
-					$("#malzemebirimad").text("Kg.");
-					$("#birimid_select").val("KG"); // KG
+					$("#malzemebirimad").val("Kg.");
 					$("#birimid").val(3); // KG
 				}
 				else{
-					$("#malzemebirimad").text("Adet");
-					$("#birimid_select").val("Adet"); // Adet
+					$("#malzemebirimad").val("Adet");
 					$("#birimid").val(2); // Adet
 				}
 			}
@@ -309,6 +359,59 @@ function changefun(elem){
 		$("#firmaid").val("");
 		$("#firmaad").val("");
 		$("#bilesentipid").val("");
+		$("#malzemebirimad").val("");
+		$("#stokliste").attr("disabled","disabled");
+	}
+}
+</script>
+
+
+<script type="text/javascript">
+$("#stokliste").click(function() {
+	$("#stoklisteid").val("1");
+	$("#hammaddestokform").submit();
+});
+
+$(function() {
+	<%
+	if(bilesenid!=null){
+	%>
+		$("#bilesenid").val("<%=bilesenid%>");
+		//console.log("mamulid frist: " + $("#mamulid").val());
+		findbilesenkod($("#bilesenid").val());
+		$("#bilesenkod").change(function() {
+			changefun(this);
+		});
+	<%
+	}
+	%>
+});
+
+function findbilesenkod(elemval){
+	//console.log("bilesenid : " + elemval);
+	if (elemval != null){
+		for (i in bilesen) {
+			if(elemval == bilesen[i].bilesenid){
+				//console.log("elem: " + elemval);
+				//console.log("bilesen: " + bilesen[i]);
+				found = true;
+				$("#bilesenid").val(bilesen[i].bilesenid);
+				$("#bilesenad").val(bilesen[i].bilesenad);
+				$("#bilesenkod").val(bilesen[i].bilesenkod);
+				$("#firmaid").val(bilesen[i].firmaid);
+				$("#firmaad").val(bilesen[i].firmaad);
+				$("#stokliste").removeAttr("disabled");
+				$("#bilesentipid").val(bilesen[i].bilesentipid);
+				if(bilesen[i].bilesentipid==<%= BilesenTip.HAMMADDE.value() %> ){
+					$("#malzemebirimad").val("Kg.");
+					$("#birimid").val(3); // KG
+				}
+				else{
+					$("#malzemebirimad").val("Adet");
+					$("#birimid").val(2); // Adet
+				}
+			}
+		}
 	}
 }
 </script>

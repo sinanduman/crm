@@ -33,14 +33,14 @@
 	<%@ include file="logincheck.jsp" %>
 	<%
 	    List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
-			List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
-			List<Bilesen> bilesen	= (List<Bilesen>) request.getAttribute("bilesen");
-			List<StokRapor> stokrapor=(List<StokRapor>) request.getAttribute("stokrapor");
-			List<StokRapor> stokdetay=(List<StokRapor>) request.getAttribute("stokdetay");
-			String bilesentip		= (String) request.getAttribute("bilesentip");
-			String bilesenid		= (String) request.getAttribute("bilesenid");
-			String excelsql			= (String) request.getAttribute("excelsql");
-			String tablename		= (String) request.getAttribute("tablename");
+		List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
+		List<Bilesen> bilesen	= (List<Bilesen>) request.getAttribute("bilesen");
+		List<StokRapor> stokrapor=(List<StokRapor>) request.getAttribute("stokrapor");
+		List<StokRapor> stokdetay=(List<StokRapor>) request.getAttribute("stokdetay");
+		String bilesentip		= (String) request.getAttribute("bilesentip");
+		String bilesenid		= (String) request.getAttribute("bilesenid");
+		String excelsql			= (String) request.getAttribute("excelsql");
+		String tablename		= (String) request.getAttribute("tablename");
 	%>
 	
 	<script>
@@ -52,7 +52,7 @@
 		+ ",bilesenid:" + m.getId() 
 		+ ",bilesenad:'" + m.getAd().replaceAll("'", "") + "'"
 		+ ",bilesenkod:'" + m.getKod() + "'"
-		+ ",label:'" + m.getKod() + "'" + "}");
+		+ ",label:'" + m.getKod() + " ["+ m.getAd().replaceAll("'", "") + "]'" + "}");
 			delimeter = ",";
 		}%>];
 		var mamuldef = mamul;
@@ -68,7 +68,7 @@
    		+ ",bilesenid:" + b.getId() 
    		+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
    		+ ",bilesenkod:'" + b.getKod() + "'"
-   		+ ",label:'" + b.getKod() + "'" + "}");
+   		+ ",label:'" + b.getKod() + " ["+ b.getAd().replaceAll("'", "") + "]'" + "}");
    			delimeter = ",";
    		}%>];
 		
@@ -83,7 +83,7 @@
    		+ ",bilesenid:" + b.getId() 
    		+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
    		+ ",bilesenkod:'" + b.getKod() + "'"
-   		+ ",label:'" + b.getKod() + "'" + "}");
+   		+ ",label:'" + b.getKod() + " ["+ b.getAd().replaceAll("'", "") + "]'" + "}");
    			delimeter = ",";
    		}%>];
 
@@ -109,15 +109,15 @@
 						<select	class="form-control small" id="bilesentipid" name="bilesentipid">
 							<%
 							    for (BilesenTip bt : BilesenTip.values()) {
-																if(bt.value().toString().equals(bilesentip)){
-																	out.print("<option value='" + bt.value() + "' selected>" + bt.ad() + "</option>");
-																}
-																else{
-																	if(bt.value()!=4){
-																		out.print("<option value='" + bt.value() + "'>" + bt.ad() + "</option>");
-																	}
-																}
-															}
+									if(bt.value().toString().equals(bilesentip)){
+										out.print("<option value='" + bt.value() + "' selected>" + bt.ad() + "</option>");
+									}
+									else{
+										if(bt.value()!=4){
+											out.print("<option value='" + bt.value() + "'>" + bt.ad() + "</option>");
+										}
+									}
+								}
 							%>
 						</select>
 					</div>
@@ -126,7 +126,7 @@
 				<div class="form-group">
 					<label for="mamulkod" class="text-baslik">Ürün Kodu</label>
 					<div>
-  						<input type="text" class="form-control small" name="mamulkod" id="mamulkod" autocomplete="off">
+  						<input type="text" class="form-control big" name="mamulkod" id="mamulkod" autocomplete="off">
   						<input type="hidden" name="bilesenid" id="bilesenid">
 					</div>
 				</div>
@@ -134,7 +134,7 @@
 				<div class="form-group">
 					<label for="mamulad" class="text-baslik">Ürün Adı</label>
 					<div>
-						<input type="text" class="form-control small" name="mamulad" id="mamulad" readonly="readonly">
+						<input type="text" class="form-control normal" name="mamulad" id="mamulad" readonly="readonly">
 					</div>
 				</div>
 				
@@ -155,23 +155,23 @@
 		%>
 		<%
 		    if(stokrapor.size()>0){
-				    String bilesenad = "";
-				    if(bilesentip.equals("1")){
-				        bilesenad= "Hammadde";
-				    }
-				    else if(bilesentip.equals("2")){
-				        bilesenad= "Yarımamül";
-				    }
-				    else{
-				        bilesenad= "Mamül";
-				    }
+			    String bilesenad = "";
+			    if(bilesentip.equals("1")){
+			        bilesenad= "Hammadde";
+			    }
+			    else if(bilesentip.equals("2")){
+			        bilesenad= "Yarımamül";
+			    }
+			    else{
+			        bilesenad= "Mamül";
+			    }
 		%>
 		    <div class="row text-warning" style="text-align: center;margin-top:10px;">
 				<label class="text-danger roundedmini"><%=bilesenad%> Stok Raporu</label>
 			</div>
-		    <%
-		        }
-		    %>
+	    <%
+	        }
+	    %>
 		<div class="row" style="font-size:12px;">
 			<table class="tableplan" width="50%">
 				<script type="text/javascript" charset="utf-8">
@@ -180,8 +180,8 @@
 				</script>
 				<%
 				    if (stokdetay!=null && stokdetay.size()>0) {
-								    stokrapor = stokdetay;
-								}
+					    stokrapor = stokdetay;
+					}
 				%>
 				<%
 				    for (StokRapor sr : stokrapor) {
@@ -189,13 +189,22 @@
 
 				<%
 				    if (sayac++ == 0) {
+				        int colsize	= 20;
+				        String birim= (sr.getBilesentipid()==BilesenTip.HAMMADDE.value())?"(Kg)":"(Adet)";
 				%>
 				<tr>
 					<th width="20%">Bileşen Kod</th>
 					<th width="20%">Bileşen Ad</th>
 					<th width="20%">Firma</th>
 					<th width="20%">Tarih</th>
-					<th width="20%">Kalan Miktar <%=sr.getBilesentipid()==BilesenTip.HAMMADDE.value()?"(Kg)":"(Adet)"%> </th>
+					<%
+					if(stokdetay.size()>0){
+					%>
+						<th width="<%= colsize-10 %>%">Değişim</th>
+					<%
+					}
+					%>
+					<th width="<%= colsize %>%" nowrap>Kalan Miktar <%=birim%></th>
 				</tr>
 				<%
 				    }
@@ -203,15 +212,42 @@
 				<tr id="tr<%=sr.getId()%>">
 					<%
 					    String miktar = sr.getMiktar().toString();
-										if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
-										    miktar = Double.toString(Double.valueOf(sr.getMiktar().toString()) / Double.valueOf("1000.0"));
-										}
+						if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
+						    miktar = Double.toString(Double.valueOf(sr.getMiktar().toString()) / Double.valueOf("1000.0"));
+						}
 					%>
 					<td><%=sr.getBilesenkod()%></td>
 					<td nowrap><%=sr.getBilesenad()%></td>
 					<td><%=sr.getFirmaad()%></td>
-					<td><%=sr.getTarih()%></td>
-					<td class="text-right"><%=((sr.getMiktar()==0)?"<span class='text-danger'><strong>0</strong></span>":miktar)%></td>
+					<td><%=sr.getTarih()%></td>					
+					<td class="text-right-stok">
+						
+						<%
+						if(sr.getIslemyonu() == -1){
+						    if(miktar.equals("0")){
+						        out.print( "<span class='text-danger'><strong>"+ miktar +"</strong></span>" );
+						    }
+						    else{
+						    	out.print( miktar );
+						    }
+						}
+						else{
+						    if(sr.getIslemyonu()==0){
+							    out.print("<span class='text-info'><strong>+ "+ miktar +"</strong></span>");
+							}
+							else{
+							    out.print("<span class='text-danger'><strong>- "+ miktar +"</strong></span>");
+							}
+						}
+						%>
+					</td>
+					<%
+					if(stokdetay.size()>0){
+					%>
+					<td class="text-right-stok"><%=sr.getKalan()%></td>
+					<%
+					}
+					%>
 				</tr>
 				<%
 				    }
@@ -223,7 +259,7 @@
 			The when condition does not display a link for the current page--%>
 			<%
 			    String param1 = "&amp;bilesentipid="+ bilesentip;
-						String param2 = (bilesenid==null || bilesenid.equals(""))?"":"&amp;bilesenid="+ bilesenid;
+				String param2 = (bilesenid==null || bilesenid.equals(""))?"":"&amp;bilesenid="+ bilesenid;
 			%>
 			<jsp:include page="paging.jsp">
 				<jsp:param value="noofpages" name="noofpages"/>
@@ -293,7 +329,8 @@
 		var found = false;
 		if (elem != null){
 			for (i in mamul) {
-				if(elem.value == mamul[i].bilesenkod){
+				var b = elem.value.split("[");
+				if(b[0].trim() == mamul[i].bilesenkod){
 					found = true;
 					document.raporform.mamulad.value	= mamul[i].bilesenad;
 					document.raporform.bilesenid.value	= mamul[i].bilesenid;

@@ -33,6 +33,9 @@ public class Util {
             retVal  = retVal + newLine + word;
             newLine = newLineChar;
         }
+        if(retVal.equals("-1")) {
+            retVal = "-";
+        }
         return retVal;
     }
     
@@ -90,6 +93,7 @@ public class Util {
     }
     
     public static Timestamp date_tr_to_timestamp(String dateinfo) {
+        
         Timestamp returnValue = null;
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); 
         Date date = new Date();
