@@ -23,7 +23,7 @@ public class HammaddeStokServlet extends HttpServlet {
         
         List<Bilesen> hammadde = new ArrayList<Bilesen>();
         //hammadde = DAOFunctions.bilesenListeGetirTum( BilesenTip.HAMMADDE, 0 );
-        hammadde = DAOFunctions.bilesenListeGetirTum( null, 0 );
+        hammadde = DAOFunctions.bilesenListeGetirTum(null, 0, null);
                 
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
@@ -47,7 +47,7 @@ public class HammaddeStokServlet extends HttpServlet {
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
             
-            stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,0,page);
+            stok        = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL, Integer.valueOf(bilesenid), page, null);
             
         }
         
@@ -83,13 +83,13 @@ public class HammaddeStokServlet extends HttpServlet {
             String iade     = request.getParameter("iade");
             if(iade==null) {
                 result = DAOFunctions.stokEkle(
-                            request.getParameter("bilesenid"),
-                            request.getParameter("miktar"),
-                            request.getParameter("irsaliyeno"),
-                            request.getParameter("lot"),
-                            null, /* gkrno*/
-                            request.getParameter("tarih"),
-                            request.getParameter("not")
+                                request.getParameter("bilesenid"),
+                                request.getParameter("miktar"),
+                                request.getParameter("irsaliyeno"),
+                                request.getParameter("lot"),
+                                null, /* gkrno*/
+                                request.getParameter("tarih"),
+                                request.getParameter("not")
                 );
             }
             else {
@@ -99,6 +99,7 @@ public class HammaddeStokServlet extends HttpServlet {
                                 request.getParameter("irsaliyeno"),
                                 request.getParameter("lot"),
                                 null, /* gkrno*/
+                                request.getParameter("tarih"),
                                 request.getParameter("not")
                     );
             }
@@ -112,10 +113,10 @@ public class HammaddeStokServlet extends HttpServlet {
             page = Integer.parseInt(request.getParameter("page"));        
         noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
         // PAGING
-        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,Integer.valueOf(bilesenid),page);
+        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL, Integer.valueOf(bilesenid), page, null);
         
         List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum( null, 0 );
+        hammadde = DAOFunctions.bilesenListeGetirTum(null, 0, null);
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);

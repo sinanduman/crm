@@ -16,7 +16,8 @@ function hammaddeEkle(){
 	else{
 		if(confirm('Malzeme EKLEMEYİ onaylıyor musun?')){
 			$("#refresh").val("1");
-			document.hammadde_form.submit();
+			//document.hammadde_form.submit();
+			$("#hammadde_form").submit();
 		}
 	}
 }

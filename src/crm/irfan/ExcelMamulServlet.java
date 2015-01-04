@@ -42,7 +42,7 @@ public class ExcelMamulServlet extends HttpServlet {
             
             int sumagg      = DAOFunctions.recordAgg("stokmiktar", "sum", "miktar", " where bilesenid= " +  Integer.valueOf(excelsql));
             List<Stok> stok = new ArrayList<Stok>();            
-            stok   = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(excelsql), 0);
+            stok   = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(excelsql), 0, null);
             
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet();

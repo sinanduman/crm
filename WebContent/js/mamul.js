@@ -244,6 +244,7 @@ function deleteMamulGo(url,id,action_form,islem){
 		}).done(function( msg ) {
 			if(is_number( msg )){
 				$("#tr"+id).css("display","none");
+				$("#tr_mam_detay"+id).css("display","none");				
 				alert( f_kod + " Kodlu " + f_ad +" Mamül bilgisi başarıyla SİLİNDİ" );
 			}
 			else{

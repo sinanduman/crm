@@ -39,11 +39,40 @@
 	@SuppressWarnings("unchecked")
 	List<Mamul> mamul				= (List<Mamul>) request.getAttribute("mamul");
 	@SuppressWarnings("unchecked")
+	List<Mamul> mamultum			= (List<Mamul>) request.getAttribute("mamultum");
+	@SuppressWarnings("unchecked")
 	List<MamulBilesen> mamulbilesen	= (List<MamulBilesen>) request.getAttribute("mamulbilesen");
 	String message					= (String) request.getAttribute("message");
 	Long token						= (Long) request.getAttribute("token");
 	String admin					= (String) session.getAttribute("admin");
 %>
+
+<script>
+	var mamul = [
+	<%String delimeter = "";
+	for (Mamul m : mamultum) {
+		out.println(delimeter 
+	+ " { id:" + m.getId()
+	+ ",mamulid:" + m.getId() 
+	+ ",mamulad:'" + m.getAd().replaceAll("'", "") + "'"
+	+ ",mamulkod:'" + m.getKod() + "'"
+	+ ",hammadde:'" + m.getHammadde().replaceAll("'", "") + "'"
+	+ ",hammaddegkrno:'" + m.getHammaddegkrno() + "'"
+	+ ",yarimamul:'" + m.getYarimamul().replaceAll("'", "") + "'"
+	+ ",yarimamulgkrno:'" + m.getYarimamulgkrno() + "'"
+	+ ",firmaid:" + m.getFirmaid() 
+	+ ",firmaad:'" + m.getFirmaad().replaceAll("'", "") + "'"
+	+ ",cevrimsure:" + m.getCevrimsuresi() + "}");
+		delimeter = ",";
+	}%>];
+	var mamul2 = [
+	<%delimeter = "";
+	for (Mamul m : mamultum) {
+		out.println(delimeter + " { label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
+		delimeter = ",";
+	}%>];
+
+</script>
 
 <div class="container" ng-controller="MamulCtrl">
 	<div class="row text-danger" style="text-align:center;">
@@ -195,11 +224,23 @@
 		if(admin!=null && admin.equals("1")){
 		%>
 		<div class="row" sytle="margin-bottom:5px;">
-			<div class="col-xs-8">
+			<div class="col-xs-5">
 				<button type="button" class="btn btn-danger" ng-click="saveMamul()">Mamül Ekle</button>
 				<input type="hidden" id="bilesen_length" name="bilesen_length" ng-model="bilesen_length" value="{{bilesenler.length}}">
 				<input type="hidden" name="token" id="token" value="<%= token %>">
 			</div>
+			
+			
+			<div class="col-xs-4 text-right">
+				<input type="text" class="form-control big" name="mamulkodara" id="mamulkodara" placeholder="Mamül Kodu" autocomplete="off">
+				<input type="hidden" name="mamulidara" id="mamulidara">
+			</div>
+				
+			<div class="col-xs-2">
+				<button type="button" class="btn btn-danger" name="stokliste" id="stokliste" disabled="disabled">Mamül Getir</button>
+				<input type="hidden" name="stoklisteid" id="stoklisteid" value="0">
+			</div>
+			
 		</div>
 		<% } %>
 	</form>
@@ -332,8 +373,56 @@
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/jquery-1.10.2.min.js"></script>
+<script	src="js/jquery-ui.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/irfan.js"></script>
 <script src="js/mamul.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	$('#tarih').datepicker({
+		inline: true,
+		format : 'dd-mm-yy',
+		firstDay:1,
+	}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","today");
+});
+$("#mamulkodara" ).autocomplete({
+	source		: mamul2,
+	minLength	: 1,
+	select		: function(event, ui){
+		changefun(ui.item);
+	}
+});
+$("#mamulkodara").change(function() {
+	changefun(this);
+});
+
+$("#stokliste").click(function() {
+	console.log("selam: ");
+	$("#stoklisteid").val("1");
+	$("#mamulform").submit();
+});
+
+function changefun(elem){
+	console.log("fun: " + elem);
+	console.log("fun val: " + elem.value);	
+	var found = false;
+	if (elem != null){
+		for (i in mamul) {
+			var b = elem.value.split("[");
+			if(b[0].trim() == mamul[i].mamulkod){
+				found = true;
+				$("#mamulidara").val(mamul[i].mamulid);
+				$("#stokliste").removeAttr("disabled");
+			}
+		}
+	}
+	if(!found){
+		$("#mamulidara").val("");
+		$("#stokliste").attr("disabled","disabled");
+	}
+}
+</script>
+
 </body>
 </html>

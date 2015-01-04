@@ -32,7 +32,7 @@ public class IrsaliyeServlet extends HttpServlet {
 		
 		if(request.getParameter("islemid")!=null) {
 			Integer islemid = Integer.valueOf(request.getParameter("islemid"));
-			/* with ajax */
+			/* with ajax */			
 			if (islemid == 3) {
 			    ajaxInAction  = true;
 				String result = DAOFunctions.IrsaliyeSil(request.getParameter("irsaliyeid"));
@@ -46,6 +46,12 @@ public class IrsaliyeServlet extends HttpServlet {
 				PrintWriter out = response.getWriter();
 				out.print(result);
 			}
+			else if (islemid == 5) {
+                ajaxInAction  = true;
+                Integer result  = DAOFunctions.IrsaliyeBilesenSil(request.getParameter("irsaliyebilesenid"));
+                PrintWriter out = response.getWriter();
+                out.print(result);
+            }
 			else {
 			    if(Genel.LOGMOD == LogMod.DEBUG) {
 			        System.out.println("islemid :" + islemid);
@@ -111,10 +117,10 @@ public class IrsaliyeServlet extends HttpServlet {
 	        irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null);
 	        
 	        List<IrsaliyeBilesen> irsaliyebilesenopen = new ArrayList<IrsaliyeBilesen>();
-	        irsaliyebilesenopen = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null);
+	        irsaliyebilesenopen = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null,0);
 	        
 	        List<IrsaliyeBilesen> irsaliyebilesencompleted = new ArrayList<IrsaliyeBilesen>();
-	        irsaliyebilesencompleted = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.COMPLETED, 0, null, null, null);
+	        irsaliyebilesencompleted = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.COMPLETED, 0, null, null, null,0);
 	        
 	        request.setAttribute("birim", birim);
 	        request.setAttribute("firma", firma);

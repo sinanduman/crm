@@ -34,8 +34,14 @@
 <%@ include file="logincheck.jsp" %>
 
 <%
+	@SuppressWarnings("unchecked")
     List<Bilesen> hammadde	= (List<Bilesen>) request.getAttribute("hammadde");
+	@SuppressWarnings("unchecked")
 	List<Stok> stok 		= (List<Stok>) request.getAttribute("stok");
+	Integer totalrecord		= (Integer) request.getAttribute("totalrecord");
+	Integer currentpage		= (Integer) request.getAttribute("currentpage");
+	Integer noofpages		= (Integer) request.getAttribute("noofpages");
+	Integer bilesenid		= (Integer) request.getAttribute("bilesenid");
 %>
 
 <script type="text/javascript">
@@ -64,12 +70,41 @@
 </script>
 
 <div class="container">
-	<div class="row">
-		<div class="text-center">
-			<label class="text-danger rounded">Giriş Kontrol Rapor Listesi</label>
-		</div>
+	<div class="row text-warning text-center">
+		<label class="text-danger rounded">Giriş Kontrol Rapor Listesi</label>
 	</div>
 	
+	<div class="row">
+		<form class="form-inline" name="gkrlisteform" id="gkrlisteform" method="post" action="gkrliste">
+			
+			<div class="form-group">
+				<label for="mamulkod" class="text-baslik">Malzeme Kodu</label>
+				<div>
+ 						<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" autocomplete="off">
+ 						<input type="hidden" name="bilesenid" id="bilesenid">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="bilesenad" class="text-baslik">Malzeme Adı</label>
+				<div>
+					<input type="text" class="form-control normal" name="bilesenad" id="bilesenad" readonly="readonly">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="mamulkod" class="text-success bgsaydam">&nbsp;&nbsp;</label>
+				<div>
+					<button type="button" class="btn btn-danger" name="raporgetir" id="raporgetir">Rapor Getir</button>
+					<input type="hidden" name="raporgetirid" id="raporgetirid" value="0">
+				</div>
+			</div>
+			
+			<div class="clearfix"></div>
+
+		</form>
+	</div>
+		
 	<%
 		int sayac = 0;
 	%>
@@ -87,7 +122,6 @@
 				<th>Bileşen Kod</th>
 				<th>Bileşen Ad</th>
 				<th>Miktar</th>
-				<th>Hareket Tipi</th>
 				<th>GKR. No</th>
 				<th>İrsaliye No</th>
 				<th>Lot/Batch No</th>
@@ -120,7 +154,6 @@
 					}
 				%>
 				<td class="text-right"><%=smiktar%></td>
-				<td><%= (s.getIslemyonu()==0)?"<span class='text-success'>Giriş</span>":"<span class='text-danger'>Çıkış</span>" %></td>
 				<td><%= s.getGkrno() %></td>
 				<td><%= (s.getIrsaliyeno()==null) ? "" : s.getIrsaliyeno() %></td>
 				<td><%= (s.getLot()==null) ? "" : s.getLot() %></td>
@@ -135,10 +168,15 @@
 			</tr>
 			<% } %>
 		</table>
+		<%
+		    String param1 = "&amp;bilesenid="+ bilesenid;
+		%>
 		<jsp:include page="paging.jsp" flush="true" >
 			<jsp:param value="noofpages" name="noofpages"/>
 			<jsp:param value="currentpage" name="currentpage"/>
+			<jsp:param value="currentpage" name="currentpage"/>
 			<jsp:param value="hammaddestok" name="pagename"/>
+			<jsp:param value="<%=param1%>" name="param1"/>
 		</jsp:include>
 	</div>
 
@@ -149,16 +187,9 @@
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script	src="js/bootbox.js" type="text/javascript"></script>
 <script src="js/irfan.js" type="text/javascript"></script>
-<script src="js/hammaddestok.js" type="text/javascript"></script>
+<script src="js/gkrliste.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
 
 <script type="text/javascript">
-$(function() {
-	$('#tarih').datepicker({
-		inline: true,
-		format: 'dd-mm-yy',
-		firstDay:1,
-	}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","today");
-});
 $("#bilesenkod" ).autocomplete({
 	source		: bilesen2,
 	minLength	: 1,

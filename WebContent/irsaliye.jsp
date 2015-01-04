@@ -205,11 +205,7 @@
 			</script>
 			<%
 			    int syc = 0;
-			%>
-			<%
 			    String not = "";
-			%>
-			<%
 			    for (IrsaliyeBilesen ib : irsaliyebilesenopen) {
 			%>
 			<script type="text/javascript" charset="utf-8">
@@ -269,7 +265,10 @@
 				    if(admin!=null && admin.equals("1")){
 				%>
 				<td class="text-center">
-					<div class="text-center" id="div<%=ib.getId()%>"><a href="javascript:irsaliyepaketguncelle('#tr<%=ib.getId()%>',<%=ib.getId()%>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a></div>
+					<div id="div<%=ib.getId()%>">
+						<a href="javascript:irsaliyepaketguncelle('#tr<%=ib.getId()%>',<%=ib.getId()%>);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a>
+						<a href="javascript:irsaliyebilesensil('#tr<%=ib.getId()%>',<%=ib.getGkrno()%>,<%=ib.getMiktar()%>,<%=ib.getId()%>);" title="Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+					</div>
 				</td>
 				<%
 				    }
@@ -283,9 +282,7 @@
 	</div>
 	
 	<%
-		    if (syc>0){
-		%>
-	<%
+		if (syc>0){
 	    if(admin!=null && admin.equals("1")){
 	%>
 	<div class="row size12px">
@@ -297,8 +294,6 @@
 	</div>
 	<%
 	    }
-	%>
-	<%
 	    }
 	%>
 
@@ -386,7 +381,7 @@
 	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="js/irfan.js" type="text/javascript"></script>
-	<script src="js/irsaliye.js" type="text/javascript"></script>
+	<script src="js/irsaliye.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
 	var today	= '<%= acikirsaliyeotarihi.equals("")?"today":acikirsaliyeotarihi %>';
 	$(function() {

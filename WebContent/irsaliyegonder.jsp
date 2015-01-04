@@ -82,7 +82,7 @@
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (IrsaliyeBilesen j : irsaliyebilesenonaylandi) {%>
-							<% if ( j.getIrsaliyeid() == i.getId() ){ %>
+							<% if ( j.getIrsaliyeid().intValue() == i.getId().intValue() ){ %>
 							<% if ( (sayacbilesen++ == 0) ){ %>
 							<tr>
 								<td><label class="text-danger">Sıra No</label></td>

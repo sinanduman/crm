@@ -91,11 +91,11 @@
 
 
 	<div class="container">
-		<div class="row text-warning" style="text-align: center;">
+		<div class="row text-warning text-center">
 			<label class="text-danger rounded">Stok Raporu</label>
 		</div>
 		<div class="row">
-			<form class="form-inline" role="form" name="raporform" id="raporform" method="post" action="stokrapor">
+			<form class="form-inline" name="raporform" id="raporform" method="post" action="stokrapor">
 				<div class="form-group" style="display:none;">
 					<label for="tarih" class="text-baslik">Tarih</label>
 					<div>
@@ -104,7 +104,7 @@
 				</div>
 				
 				<div class="form-group">
-					<label for="makinaid" class="text-baslik">Ürün Tipi</label>
+					<label for="bilesentipid" class="text-baslik">Ürün Tipi</label>
 					<div>
 						<select	class="form-control small" id="bilesentipid" name="bilesentipid">
 							<%

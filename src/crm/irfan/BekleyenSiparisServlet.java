@@ -21,7 +21,7 @@ public class BekleyenSiparisServlet extends HttpServlet {
 						 HttpServletResponse response) throws ServletException, IOException {
 		
 		List<Bilesen> bilesen = new ArrayList<Bilesen>();
-		bilesen = DAOFunctions.bilesenListeGetirTum( BilesenTip.MAMUL,0 );
+		bilesen = DAOFunctions.bilesenListeGetirTum( BilesenTip.MAMUL,0 , null);
 						
 		List<Siparis> siparis = new ArrayList<Siparis>();
 		siparis = DAOFunctions.siparisListeGetir(SiparisTip.BEKLEYEN);
@@ -40,7 +40,7 @@ public class BekleyenSiparisServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		
 		List<Bilesen> bilesen = new ArrayList<Bilesen>();
-        bilesen = DAOFunctions.bilesenListeGetirTum( BilesenTip.MAMUL,0 );
+        bilesen = DAOFunctions.bilesenListeGetirTum( BilesenTip.MAMUL,0, null );
 
 		List<Siparis> siparis = new ArrayList<Siparis>();
 		siparis = DAOFunctions.siparisEkle (

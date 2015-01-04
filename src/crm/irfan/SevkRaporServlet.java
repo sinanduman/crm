@@ -1,16 +1,20 @@
 package crm.irfan;
 
-import crm.irfan.entity.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
+import crm.irfan.entity.Irsaliye;
+import crm.irfan.entity.IrsaliyeBilesen;
+import crm.irfan.entity.IrsaliyeTip;
+import crm.irfan.entity.LogMod;
 
 public class SevkRaporServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -46,7 +50,6 @@ public class SevkRaporServlet extends HttpServlet {
         int noofpages   = 0;
         int page0       = 1;
         
-        List<UretimPlan> stokrapor = new ArrayList<UretimPlan>();
         List<Irsaliye> irsaliyejson = new ArrayList<Irsaliye>();
         irsaliyejson = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, 0, null, null, null);
         
@@ -89,7 +92,7 @@ public class SevkRaporServlet extends HttpServlet {
             // PAGING
             
             irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, page0, irsaliyeid, firmaid, tarih);
-            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih);
+            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih, page0);
 
             //stokrapor   = DAOFunctions.uretimBilesenRapor(irsaliyeid, page0, filter0);
             

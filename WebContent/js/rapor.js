@@ -1,4 +1,3 @@
-
 $("#raporgetir").click(function(){
 	$("#raporgetirid").val("1");
 	$("#raporform").submit();

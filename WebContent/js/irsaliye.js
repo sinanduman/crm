@@ -219,3 +219,36 @@ function okGoIrsaliyePaket(url,id,irsaliyeno,islem){
 		});
 	}
 }
+
+function irsaliyebilesensil(sender, gkrno, miktar, siraid){
+	var f_irsaliyesiraid= siraid;
+	var f_miktar		= miktar;
+	var f_gkrno			= gkrno;
+	var f_islem			= 5;
+	var f_alert			= f_gkrno + " İzleme No'lu " + f_miktar + " Adet İrsaliye Maddesi";
+	if (confirm(f_alert + "ni SİLMEK istediğinden" +"\n\n" + "Emin misin?")) {
+		$.ajax({
+			url: "irsaliye",
+			type: "POST",
+			data: { 
+				irsaliyebilesenid:	f_irsaliyesiraid, 
+				islemid:			f_islem
+			},
+			beforeSend: function ( xhr ) {
+			},
+			success: function(data, textStatus, xhr) {
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
+			}
+		}).done(function( msg ) {
+			if( msg != "-1"){
+				$(sender).css("display","none");
+				alert(f_alert + " Başarıyla SİLİNDİ" );
+			}
+			else{
+				alert( msg );
+			}
+		});
+	}; 
+}

@@ -40,10 +40,10 @@ public class StokRaporServlet extends HttpServlet {
         int page0       = 1;
         
         List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(0);
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
         
         List<Bilesen> bilesen = new ArrayList<Bilesen>();
-        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,0);
+        bilesen = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL, 0, null);
         
         
         List<StokRapor> stokrapor = new ArrayList<StokRapor>();

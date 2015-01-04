@@ -77,19 +77,18 @@ public class UretimPlanServlet extends HttpServlet {
         String message      = "";
         String tarih        = (request.getParameter("tarih")==null || request.getParameter("tarih").equals("")) ? Util.getTarih(new Date()) : Util.date_tr_to_eng(request.getParameter("tarih"));
         String makinaid     = (request.getParameter("makinaid")==null || request.getParameter("makinaid").equals("")) ? "" : request.getParameter("makinaid");
-        String filter1      = " and tarih='" + tarih + "'";
+        String filter1      = "";
         String filter2      = "";
-        String filter0      = filter1 + filter2;
+        String filter0      = "";
+        
+        filter1     = " and tarih='" + Util.date_tr_to_eng(tarih)+ "'";
+        if(!makinaid.equals("")) {
+            filter2 = " and makinaid=" + makinaid;
+        }                
+        filter0     = filter1 + filter2;
         
         if(mamullisteid!=null && mamullisteid.matches("[0-9]+")) {
-            if(mamullisteid.equals("1")) {            
-                filter1 = " and tarih='" + Util.date_tr_to_eng(tarih)+ "'";
-                if(!makinaid.equals("")) {
-                    filter2  = " and makinaid=" + makinaid;
-                }                
-                filter0  =  filter1 + filter2;
-            }
-            else {
+            if(!mamullisteid.equals("1")) {                
                 String hedefuretim  = request.getParameter("hedefuretim");
                 String gercekuretim = request.getParameter("gercekuretim");
                 String fark         = request.getParameter("fark")==""?null:request.getParameter("fark");
@@ -127,7 +126,7 @@ public class UretimPlanServlet extends HttpServlet {
         firma = DAOFunctions.firmaListeGetirTum(0);
         
         List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(0);
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
         
         int totalrecord = DAOFunctions.recordCount("uretimplantum"," where tamamlandi=1 " + filter0);
         int page = 1;

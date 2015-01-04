@@ -82,7 +82,7 @@
 		<form class="form-inline" method="post" method="post" name="hammaddestokform" id="hammaddestokform" action="hammaddestok">
 		<div class="col-xs-5">
 			<div class="form-group">
-				<label for="mamulkod" class="text-baslik">Malzeme Kodu: </label>
+				<label for="bilesenkod" class="text-baslik">Malzeme Kodu: </label>
 				<div>
 					<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" placeholder="Malzeme Kodu" autocomplete="off">
 					<input type="hidden" name="bilesenid" id="bilesenid">
@@ -115,8 +115,24 @@
 			</div>
 			<div class="clearfix"></div>
 			
+			<%!
+			String sumaggStr = "";
+			String sumaggTip = "";
+			%>
+			<%
+			sumaggTip 		= BirimTip.ADET.ad();
+			sumaggStr		= sumagg.toString();
+			if(stok!=null && !stok.isEmpty()){
+				if(stok.get(0).getBilesentipid()==1){
+				    Double s	= (Double.valueOf(sumagg) / Double.parseDouble("1000.0"));
+				    sumaggStr	= s.toString();
+				    sumaggTip	= BirimTip.KILOGRAM.ad();
+				}
+			}
+			%>
+			
 			<div class="form-group">
-				<label for="miktar" class="text-baslik">Miktarı: </label>
+				<label for="miktar" class="text-baslik">Miktarı (<span class="text-danger"><%=sumaggTip %></span>):</label> 
 				<div>
 					<input type="text" class="form-control normal" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
 					<input type="hidden" id="malzemebirimad" name="malzemebirimad" class="birim" value="Kg.">
@@ -195,22 +211,13 @@
 				if(stok!=null && !stok.isEmpty()){
 			%>
 			<tr>
-				<th>Ürün Kodu</th>
+				<th>Malzeme Kodu</th>
 				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenkod()%> </label></th>
 				<th>Envanter Tarihi</th>
 				<th><label class="text-danger"><%=Util.getTarihTR(new java.util.Date())%> </label></th>
 			</tr>
-			<tr>
-				<%
-				String sumaggStr = sumagg.toString();
-				String sumaggTip = BirimTip.ADET.ad();
-				if(stok.get(0).getBilesentipid()==1){
-				    Double s	= (Double.valueOf(sumagg) / Double.parseDouble("1000.0"));
-				    sumaggStr	= s.toString();
-				    sumaggTip	= BirimTip.KILOGRAM.ad();
-				}
-				%>
-				<th>Ürün Tanımı</th>
+			<tr>				
+				<th>Malzeme Adı</th>
 				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenad()%></label></th>
 				<th>Envanter Miktarı</th>
 				<th><label class="text-danger"><%=sumaggStr%></label> <%=sumaggTip %><input type="hidden" id="sumagg" name="sumagg" value="<%=sumaggStr%>"></th>
@@ -233,7 +240,8 @@
 				int sayac	= 0;
 				for (Stok s : stok) {
 				    sayac++;
-				    not = (s.getNot()==null)? "İzl.No:" + s.getGkrno() : s.getNot() + " - İzl.No:" + s.getGkrno();
+				    not = (!Util.isNotEmptyOrNull(s.getNot()))? "İzl.No:" + s.getGkrno() : s.getNot() + " - İzl.No:" + s.getGkrno();
+				    not = not + (!Util.isNotEmptyOrNull(s.getMamulkod())?"":" - " + s.getMamulkod());
 					if(s.getIslemyonu()==1){
 						giren = "";
 						cikan = s.getMiktar().toString();
@@ -264,7 +272,7 @@
 					out.println("<td class='text-right-stok'>"+ giren +"</td>");
 					out.println("<td class='text-right-stok'>"+ cikan +"</td>");
 					out.println("<td class='text-right-stok'>"+ kalan +"</td>");
-					out.println("<td>"+ not + "</td>");
+					out.println("<td>"+ not +"</td>");
 					out.println("</tr>");
 				}
 			%>
@@ -282,7 +290,7 @@
 				<jsp:param value="<%=param2%>" name="param2"/>
 			</jsp:include>
 			<%
-			    if (sayac >0 ){
+			    if (sayac <0 ){
 			%>
 					<div class="text-right">
 						<div>

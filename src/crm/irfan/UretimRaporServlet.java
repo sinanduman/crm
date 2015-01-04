@@ -52,7 +52,7 @@ public class UretimRaporServlet extends HttpServlet {
         int page0       = 1;
         
         List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(0);
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
                 
         List<UretimPlan> stokrapor = new ArrayList<UretimPlan>();
         if(raporgetirid!=null || page != null ) {

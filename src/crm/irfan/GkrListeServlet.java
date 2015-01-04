@@ -2,7 +2,9 @@ package crm.irfan;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -83,23 +85,37 @@ public class GkrListeServlet extends HttpServlet {
             request.getRequestDispatcher("hammaddestok.jsp").forward(request, response);
         }
         */
+        
+        String filter0  = "";
+        int totalrecord = 0;
+        int page        = 1;
+        int noofpages   = 0;
+        int bilesenid   = 0;
+        
+        if(Util.isNotEmptyOrNull(request.getParameter("bilesenid"))) {
+            bilesenid   = Integer.parseInt(request.getParameter("bilesenid"));
+        }
+
         List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        //hammadde = DAOFunctions.bilesenListeGetirTum( BilesenTip.HAMMADDE, 0 );
-        hammadde = DAOFunctions.bilesenListeGetirTum( null, 0 );
+        hammadde = DAOFunctions.bilesenListeGetirTum( BilesenTip.HAMMADDEYARIMAMUL, 0, null );
                 
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
         
+        Map<String,Integer> param = new HashMap<String, Integer>();
+        param.put("islemyonu", Genel.IslemYonuGiris);
+        param.put("rowperpage", Genel.ROWPERLONGPAGE);
+        
         // PAGING
-        int totalrecord = DAOFunctions.recordCount("stokbilesen"," where bilesentipid IN (1,2) ");
-        int page = 1;
+        filter0     = (bilesenid==0)?"":" and bilesenid="+bilesenid;
+        totalrecord = DAOFunctions.recordCount("stokbilesen"," where bilesentipid IN (1,2) and islemyonu=" + Genel.IslemYonuGiris + filter0);
         if(request.getParameter("page") != null)
-            page = Integer.parseInt(request.getParameter("page"));        
-        int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+            page    = Integer.parseInt(request.getParameter("page"));        
+        noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERLONGPAGE);
         // PAGING
         
         List<Stok> stok = new ArrayList<Stok>();
-        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL,0,page);
+        stok = DAOFunctions.stokListeGetirTum(BilesenTip.HAMMADDEYARIMAMUL, bilesenid, page, param);
         
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("firma", firma);
@@ -107,6 +123,7 @@ public class GkrListeServlet extends HttpServlet {
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page);
         request.setAttribute("noofpages", noofpages);
+        request.setAttribute("bilesenid", bilesenid);
         request.getRequestDispatcher("gkrliste.jsp").forward(request, response);
         
     }

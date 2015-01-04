@@ -1,16 +1,21 @@
 package crm.irfan;
 
-import crm.irfan.entity.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import crm.irfan.entity.Bilesen;
+import crm.irfan.entity.BilesenTip;
+import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
+import crm.irfan.entity.Mamul;
+import crm.irfan.entity.MamulBilesen;
 
 public class MamulServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -24,29 +29,35 @@ public class MamulServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String message  = "";
+        Integer mamulid = null;
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
         
         List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE,0);
+        hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE, 0, null);
         
         List<Bilesen> yarimamul = new ArrayList<Bilesen>();
-        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL,0);
+        yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL, 0, null);
         
         // PAGING
-        int totalrecord = DAOFunctions.recordAgg("mamultum", "COUNT", "*", "");        
+        int totalrecord = DAOFunctions.recordAgg("mamultum", "COUNT", "*", ((mamulid==null)?"":" where id=" + mamulid));        
         int page = 1;
         if(request.getParameter("page") != null)
             page = Integer.parseInt(request.getParameter("page"));        
         int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
         // PAGING
         
-        List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(page);
+        if(request.getParameter("mamulidara") != null)
+            mamulid = Integer.parseInt(request.getParameter("mamulidara")); 
+        
+        List<Mamul> mamul   = new ArrayList<Mamul>();
+        List<Mamul> mamultum= new ArrayList<Mamul>();
+        mamul   = DAOFunctions.mamulListeGetir(mamulid, page);
+        mamultum= DAOFunctions.mamulListeGetir(null, 0);
         
         List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
-        mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
+        mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum(mamulid);
         
         token  = Util.getToken();
         request.setAttribute("token", token);
@@ -54,6 +65,7 @@ public class MamulServlet extends HttpServlet {
         request.setAttribute("hammadde", hammadde);
         request.setAttribute("yarimamul", yarimamul);
         request.setAttribute("mamul", mamul);
+        request.setAttribute("mamultum", mamultum);
         request.setAttribute("message", message);
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page);
@@ -72,7 +84,9 @@ public class MamulServlet extends HttpServlet {
         
         String islemid  = request.getParameter("islemid");
         String message  = "";
-        if(islemid != null && islemid != "" ) {
+        Integer mamulid = null;
+        
+        if(Util.isNotEmptyOrNull(islemid)) {
             switch (Integer.valueOf(islemid)) {
                 case 1:
                     message = DAOFunctions.mamulGuncelle(
@@ -92,8 +106,12 @@ public class MamulServlet extends HttpServlet {
             out.print(message);
         }
         else {
+            if(Util.isNotEmptyOrNull(request.getParameter("stoklisteid")) && 
+                            Integer.valueOf(request.getParameter("stoklisteid"))==1 ) {
+                mamulid = Integer.valueOf(request.getParameter("mamulidara"));
+            }
             /* Prevent ReSubmit */
-            if(Long.valueOf(request.getParameter("token"))==token) {
+            else if(Long.valueOf(request.getParameter("token"))==token) {
                 String newMamulId = DAOFunctions.mamulEkle(
                         new String(request.getParameter("mamulad").getBytes("UTF-8")),
                         new String(request.getParameter("mamulkod").getBytes("UTF-8")),
@@ -131,24 +149,26 @@ public class MamulServlet extends HttpServlet {
             firma = DAOFunctions.firmaListeGetirTum(0);
             
             List<Bilesen> hammadde = new ArrayList<Bilesen>();
-            hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE, 0);
+            hammadde = DAOFunctions.bilesenListeGetirTum(BilesenTip.HAMMADDE, 0, null);
             
             List<Bilesen> yarimamul = new ArrayList<Bilesen>();
-            yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL, 0);
+            yarimamul = DAOFunctions.bilesenListeGetirTum(BilesenTip.YARIMAMUL, 0, null);
             
             // PAGING
-            int totalrecord = DAOFunctions.recordAgg("mamultum", "COUNT", "*", "");
+            int totalrecord = DAOFunctions.recordAgg("mamultum", "COUNT", "*", ((mamulid==null)?"":" where id=" + mamulid));
             int page = 1;
             if(request.getParameter("page") != null)
                 page = Integer.parseInt(request.getParameter("page"));        
             int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
             
-            List<Mamul> mamul = new ArrayList<Mamul>();
-            mamul = DAOFunctions.mamulListeGetir(page);
+            List<Mamul> mamul   = new ArrayList<Mamul>();
+            List<Mamul> mamultum= new ArrayList<Mamul>();
+            mamul   = DAOFunctions.mamulListeGetir(mamulid, page);
+            mamultum= DAOFunctions.mamulListeGetir(null, 0);
             
             List<MamulBilesen> mamulbilesen = new ArrayList<MamulBilesen>();
-            mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum();
+            mamulbilesen = DAOFunctions.mamulBilesenListeGetirTum(mamulid);
             
             token  = Util.getToken();
             request.setAttribute("token", token);
@@ -156,6 +176,7 @@ public class MamulServlet extends HttpServlet {
             request.setAttribute("hammadde", hammadde);
             request.setAttribute("yarimamul", yarimamul);
             request.setAttribute("mamul", mamul);
+            request.setAttribute("mamultum", mamultum);
             request.setAttribute("message", message);
             request.setAttribute("totalrecord", totalrecord);
             request.setAttribute("currentpage", page);

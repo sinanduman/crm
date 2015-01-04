@@ -342,8 +342,8 @@
 					<td><%= u.getMamulkod() %></td>
 					<td><%= u.getMamulad() %></td>
 					<td><%= (u.getMamulizlno()==0) ? "" : u.getMamulizlno() %></td>
-					<td class="text-right"><%= (u.getPlanlananmiktar()==0) ? "" : u.getPlanlananmiktar() + " Ad." %></td>
-					<td class="text-right"><%= u.getUretilenmiktar() + " Ad." %></td>
+					<td class="text-right nowrap"><%= (u.getPlanlananmiktar()==0) ? "" : u.getPlanlananmiktar() + " Ad." %></td>
+					<td class="text-right nowrap"><%= u.getUretilenmiktar() + " Ad." %></td>
 					<td class="text-right" nowrap><%= (u.getFark()==0) ? "" : u.getFark() + " Ad." %></td>
 					<td class="text-right"><%= (u.getSapma()==0) ? "" : "% " + u.getSapma() %></td>					
 					<td><%= u.getHataad() %></td>

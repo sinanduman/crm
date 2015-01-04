@@ -13,7 +13,7 @@ public class Stok {
     private String    birimad;
     private Integer   firmaid;
     private String    firmaad;
-    private Integer    miktar;
+    private Integer   miktar;
     private Integer   kalan;
     private String    gkrno;
     private String    irsaliyeno;
@@ -25,12 +25,13 @@ public class Stok {
     private String    gkrnostr;
     private String    stokidstr;
     private Integer   islemyonu;
+    private String    mamulkod;
     
     public Stok(Integer id, Integer bilesenid, String bilesenad, String bilesenkod, Integer bilesentipid,
                     String bilesentipad, Integer birimid, String birimad, Integer firmaid, String firmaad,
                     Integer miktar, Integer kalan, String gkrno, String irsaliyeno, String lot, Timestamp giristarihi,
                     Timestamp cikistarihi, String not, String miktarstr, String gkrnostr, String stokidstr,
-                    Integer islemyonu) {
+                    Integer islemyonu, String mamulkod) {
         super();
         this.id = id;
         this.bilesenid = bilesenid;
@@ -54,6 +55,7 @@ public class Stok {
         this.gkrnostr = gkrnostr;
         this.stokidstr = stokidstr;
         this.islemyonu = islemyonu;
+        this.mamulkod = mamulkod;
     }
     
     public Integer getId() {
@@ -230,6 +232,14 @@ public class Stok {
     
     public void setIslemyonu(Integer islemyonu) {
         this.islemyonu = islemyonu;
+    }
+    
+    public String getMamulkod() {
+        return mamulkod;
+    }
+    
+    public void setMamulkod(String mamulkod) {
+        this.mamulkod = mamulkod;
     }
     
 }

@@ -102,7 +102,7 @@ public class UretimTakipServlet extends HttpServlet {
             firma = DAOFunctions.firmaListeGetirTum(0);
             
             List<Mamul> mamul = new ArrayList<Mamul>();
-            mamul = DAOFunctions.mamulListeGetir(0);
+            mamul = DAOFunctions.mamulListeGetir(null, 0);
             
             int totalrecord = DAOFunctions.recordCount("uretimplan"," where tamamlandi=0 ");
             int page = 1;

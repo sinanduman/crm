@@ -66,7 +66,8 @@
 		var mamul2 = [
 		<%delimeter = "";
 		for (Mamul m : mamul) {
-			out.println(delimeter + " { label:'" + m.getKod() + "'" + ",id:" + m.getId() + "}");
+			// out.println(delimeter + " { label:'" + m.getKod() + "'" + ",id:" + m.getId() + "}");
+			out.println(delimeter + " { value:'"+ m.getKod() + "', label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
 			delimeter = ",";
 		}%>];
 
@@ -433,7 +434,8 @@
 			//console.log(ui.item.id);
 			//console.log(ui.item.value);
 			//console.log(event);
-			changefun(ui.item);
+			changefun(ui.item);	
+			$(this).val(ui.item.value);
 		}
 	});
 	$("#mamulkod").change(function() {
@@ -446,6 +448,7 @@
 			$("#hammadde option").remove();
 			$("#yarimamul option").remove();
 			for (i in mamul) {
+				// var b = elem.value.split("[");
 				if(elem.value == mamul[i].mamulkod){
 					found = true;
 					var ham_name_ar			= mamul[i].hammadde.split(";");

@@ -20,7 +20,7 @@ public class MamulStokServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(0);
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
@@ -44,7 +44,7 @@ public class MamulStokServlet extends HttpServlet {
                 page    = Integer.parseInt(request.getParameter("page"));            
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
-            stok        = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(mamulid), page);
+            stok        = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(mamulid), page, null);
             
             System.out.println(totalrecord);
             System.out.println(noofpages);
@@ -85,13 +85,13 @@ public class MamulStokServlet extends HttpServlet {
             String iade     = request.getParameter("iade");
             if(iade==null) {
                 result = DAOFunctions.stokEkle(
-                            request.getParameter("mamulid"),
-                            request.getParameter("miktar"),
-                            request.getParameter("irsaliyeno"),
-                            request.getParameter("lot"),
-                            null, /* gkrno*/
-                            request.getParameter("tarih"),
-                            request.getParameter("not")
+                                request.getParameter("mamulid"),
+                                request.getParameter("miktar"),
+                                request.getParameter("irsaliyeno"),
+                                request.getParameter("lot"),
+                                null, /* gkrno*/
+                                request.getParameter("tarih"),
+                                request.getParameter("not")
                 );
             }
             else {
@@ -99,8 +99,9 @@ public class MamulStokServlet extends HttpServlet {
                                 request.getParameter("mamulid"),
                                 request.getParameter("miktar"),
                                 request.getParameter("irsaliyeno"),
-                                request.getParameter("lot"),
+                                request.getParameter("lot"),                                
                                 null, /* gkrno*/
+                                request.getParameter("tarih"),
                                 request.getParameter("not")
                     );
             }
@@ -114,11 +115,11 @@ public class MamulStokServlet extends HttpServlet {
         if(request.getParameter("page") != null)
             page    = Integer.parseInt(request.getParameter("page"));
         noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
-        stok        = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(mamulid), page);
+        stok        = DAOFunctions.stokListeGetirTum(BilesenTip.MAMUL, Integer.valueOf(mamulid), page, null);
         //}
         
         List<Mamul> mamul = new ArrayList<Mamul>();
-        mamul = DAOFunctions.mamulListeGetir(0);
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
 
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);

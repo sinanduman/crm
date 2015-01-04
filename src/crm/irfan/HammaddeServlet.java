@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -23,10 +24,11 @@ public class HammaddeServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
-
         
-        String message = "";        
-        List<Firma> firma = new ArrayList<Firma>();
+        String message      = "";
+        String bilesenid    = request.getParameter("bilesenidara");
+        String stoklisteid  = request.getParameter("stoklisteid");
+        List<Firma> firma   = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
         
         
@@ -37,17 +39,22 @@ public class HammaddeServlet extends HttpServlet {
         
         int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
         
-        List<Bilesen> hammadde = new ArrayList<Bilesen>();
-        hammadde = DAOFunctions.bilesenListeGetirTum(null,page);
+        List<Bilesen> hammadde      = new ArrayList<Bilesen>();
+        List<Bilesen> hammaddetum   = new ArrayList<Bilesen>();
+        hammadde    = DAOFunctions.bilesenListeGetirTum(null, page, (Util.isNotEmptyOrNull(bilesenid))? Integer.valueOf(bilesenid): null );
+        hammaddetum = DAOFunctions.bilesenListeGetirTum(null, 0, null);
         
         token  = Util.getToken();
         request.setAttribute("token", token);
         request.setAttribute("firma", firma);
         request.setAttribute("hammadde", hammadde);
+        request.setAttribute("hammaddetum", hammaddetum);
         request.setAttribute("message", message);
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page);
-        request.setAttribute("noofpages", noofpages);
+        request.setAttribute("noofpages", noofpages);        
+        request.setAttribute("bilesenid", bilesenid);
+        request.setAttribute("stoklisteid", stoklisteid);        
         request.getRequestDispatcher("hammadde.jsp").forward(request, response);
     }
 
@@ -58,8 +65,10 @@ public class HammaddeServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         
-        String islemid = request.getParameter("islemid");
-        String message = "0";
+        String islemid      = request.getParameter("islemid");
+        String bilesenid    = null;
+        String stoklisteid  = null;
+        String message      = "-1";
         if(islemid != null && islemid != "" ) {
             
             Integer result = 0;
@@ -82,15 +91,12 @@ public class HammaddeServlet extends HttpServlet {
         }
         else {
             /* Prevent Resubmit */
-            int totalrecord = DAOFunctions.recordCount("bilesen"," ");
-            int page = 1;
-            if(request.getParameter("page") != null)
-                page = Integer.parseInt(request.getParameter("page"));
-            
-            int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
-            
-            /* Prevent ReSubmit */
-            if(Long.valueOf(request.getParameter("token"))==token) {
+            if(Util.isNotEmptyOrNull(request.getParameter("stoklisteid")) && 
+                            Integer.valueOf(request.getParameter("stoklisteid"))==1 ) {
+                bilesenid   = request.getParameter("bilesenidara");
+                stoklisteid = request.getParameter("stoklisteid");
+            }
+            else if(Long.valueOf(request.getParameter("token"))==token) {
                 message = DAOFunctions.hammaddeEkle(
                         new String(request.getParameter("hamkod").getBytes("UTF-8")),
                         new String(request.getParameter("hamad").getBytes("UTF-8")),
@@ -103,8 +109,19 @@ public class HammaddeServlet extends HttpServlet {
                 message="-1";
             }
             
-            List<Bilesen> hammadde = new ArrayList<Bilesen>();
-            hammadde = DAOFunctions.bilesenListeGetirTum(null,page);
+            /* PAGING */
+            int totalrecord = DAOFunctions.recordAgg("bilesen", "COUNT", "*", ((bilesenid==null)?"":" where id=" + bilesenid));
+            int page = 1;
+            if(request.getParameter("page") != null)
+                page = Integer.parseInt(request.getParameter("page"));            
+            int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
+            /* PAGING */
+            
+                        
+            List<Bilesen> hammadde      = new ArrayList<Bilesen>();
+            List<Bilesen> hammaddetum   = new ArrayList<Bilesen>();
+            hammadde = DAOFunctions.bilesenListeGetirTum(null, page, (Util.isNotEmptyOrNull(bilesenid))? Integer.valueOf(bilesenid): null );
+            hammaddetum = DAOFunctions.bilesenListeGetirTum(null, 0, null);
     
             List<Firma> firma = new ArrayList<Firma>();
             firma = DAOFunctions.firmaListeGetirTum(0);
@@ -113,10 +130,13 @@ public class HammaddeServlet extends HttpServlet {
             request.setAttribute("token", token);
             request.setAttribute("firma", firma);
             request.setAttribute("hammadde", hammadde);
+            request.setAttribute("hammaddetum", hammaddetum);
             request.setAttribute("totalrecord", totalrecord);
             request.setAttribute("currentpage", page);
             request.setAttribute("noofpages", noofpages);
             request.setAttribute("message", message);
+            request.setAttribute("bilesenid", bilesenid);
+            request.setAttribute("stoklisteid", stoklisteid);
             request.getRequestDispatcher("hammadde.jsp").forward(request, response);
         }
     }

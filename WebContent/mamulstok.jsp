@@ -1,6 +1,7 @@
-<%@page import="crm.irfan.Util"%>
-<%@page import="crm.irfan.entity.*"%>
-<%@page import="java.util.Date"%>
+<%@ page import="crm.irfan.Util" %>
+<%@ page import="crm.irfan.entity.*" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
@@ -30,24 +31,22 @@
 	<![endif]-->
 </head>
 <body>
-<%@ page import="java.util.List" %>
-
 <%@ include file="logincheck.jsp" %>
 
 <%
     @SuppressWarnings("unchecked")
-List<Mamul> mamul	= (List<Mamul>) request.getAttribute("mamul");
-@SuppressWarnings("unchecked")
-List<Firma> firma	= (List<Firma>) request.getAttribute("firma");
-@SuppressWarnings("unchecked")
-List<Stok> stok		= (List<Stok>) request.getAttribute("stok");
+	List<Mamul> mamul	= (List<Mamul>) request.getAttribute("mamul");
+	@SuppressWarnings("unchecked")
+	List<Firma> firma	= (List<Firma>) request.getAttribute("firma");
+	@SuppressWarnings("unchecked")
+	List<Stok> stok		= (List<Stok>) request.getAttribute("stok");
 
-Integer totalrecord	= (Integer) request.getAttribute("totalrecord");
-Integer sumagg		= (Integer) request.getAttribute("sumagg");
-Integer currentpage	= (Integer) request.getAttribute("currentpage");
-Integer noofpages	= (Integer) request.getAttribute("noofpages");
-String mamulid		= (String) request.getAttribute("mamulid");
-String excelsql		= (String) request.getAttribute("excelsql");
+	Integer totalrecord	= (Integer) request.getAttribute("totalrecord");
+	Integer sumagg		= (Integer) request.getAttribute("sumagg");
+	Integer currentpage	= (Integer) request.getAttribute("currentpage");
+	Integer noofpages	= (Integer) request.getAttribute("noofpages");
+	String mamulid		= (String) request.getAttribute("mamulid");
+	String excelsql		= (String) request.getAttribute("excelsql");
 %>
 
 <script>
@@ -71,7 +70,7 @@ String excelsql		= (String) request.getAttribute("excelsql");
 	var mamul2 = [
 	<%delimeter = "";
 	for (Mamul m : mamul) {
-		out.println(delimeter + " { label:'" + m.getKod() + "'" + ",id:" + m.getId() + "}");
+		out.println(delimeter + " { label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
 		delimeter = ",";
 	}%>];
 
@@ -110,9 +109,11 @@ String excelsql		= (String) request.getAttribute("excelsql");
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			
+			<%!
+			String sumaggTip = BirimTip.ADET.ad();
+			%>
 			<div class="form-group">
-				<label for="miktar" class="text-baslik">Miktarı: </label>
+				<label for="miktar" class="text-baslik">Miktarı (<span class="text-danger"><%=sumaggTip %></span>):</label>
 				<div>
 					<input type="text" class="form-control normal" name="miktar" id="miktar" placeholder="Miktar (<%=BirimTip.ADET.ad()%>)" autocomplete="off">
 				</div>
@@ -196,9 +197,6 @@ String excelsql		= (String) request.getAttribute("excelsql");
 				<th><label class="text-danger"><%=Util.getTarihTR(new java.util.Date())%> </label></th>
 			</tr>
 			<tr>
-				<%
-				String sumaggTip = BirimTip.ADET.ad();
-				%>
 				<th>Ürün Tanımı</th>
 				<th colspan="2" class="text-center"><label class="text-danger"><%=stok.get(0).getBilesenad()%></label></th>
 				<th>Envanter Miktarı</th>
@@ -245,7 +243,7 @@ String excelsql		= (String) request.getAttribute("excelsql");
 			<!-- paging -->
 			<%
 			    String param1 = "&amp;mamulid="+ mamulid;
-						String param2 = "&amp;stoklisteid=1";
+				String param2 = "&amp;stoklisteid=1";
 			%>
 			<jsp:include page="paging.jsp" flush="true" >
 				<jsp:param value="noofpages" name="noofpages"/>
@@ -255,7 +253,7 @@ String excelsql		= (String) request.getAttribute("excelsql");
 				<jsp:param value="<%=param2%>" name="param2"/>
 			</jsp:include>
 			<%
-			    if (sayac >0 ){
+			    if (sayac < 0 ){
 			%>
 					<div class="text-right">
 						<div>
@@ -310,7 +308,8 @@ function changefun(elem){
 	var found = false;
 	if (elem != null){
 		for (i in mamul) {
-			if(elem.value == mamul[i].mamulkod){
+			var b = elem.value.split("[");
+			if(b[0].trim() == mamul[i].mamulkod){
 				found = true;
 				//alert("selam kelam");
 				$("#mamulid").val(mamul[i].mamulid);

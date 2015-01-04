@@ -37,7 +37,7 @@ public class IrsaliyeGonderServlet extends HttpServlet {
         irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, page, null, null, null);
         
         List<IrsaliyeBilesen> irsaliyebilesenonaylandi = new ArrayList<IrsaliyeBilesen>();
-        irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI , 1, null, null, null);
+        irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, null, null, null, page);
         
         request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);
@@ -75,7 +75,7 @@ public class IrsaliyeGonderServlet extends HttpServlet {
         irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, page, null, null, null);
         
         List<IrsaliyeBilesen> irsaliyebilesenonaylandi = new ArrayList<IrsaliyeBilesen>();
-        irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, null, null, null);
+        irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, null, null, null, page);
         
         request.setAttribute("birim", birim);
         request.setAttribute("firma", firma);
