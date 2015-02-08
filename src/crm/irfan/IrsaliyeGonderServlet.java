@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class IrsaliyeGonderServlet extends HttpServlet {
         firma = DAOFunctions.firmaListeGetirTum(0);
         
         // PAGING
-        int totalrecord = DAOFunctions.recordCount("irsaliye"," where onaylandi=1 ");
+        int totalrecord = DAOFunctions.recordAgg("irsaliye", "COUNT", "*", " WHERE onaylandi=1" );
         int page = 1;
         if(request.getParameter("page") != null)
             page = Integer.parseInt(request.getParameter("page"));        

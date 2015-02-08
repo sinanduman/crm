@@ -88,18 +88,14 @@ public class IrsaliyeServlet extends HttpServlet {
 						}
 					}
 					String mamulid     = request.getParameter("mamulid");
-					String gkrno       = request.getParameter("gkrno");
 					String miktar      = request.getParameter("miktar");
 					String not         = request.getParameter("not");
-					String irsaliyeno  = request.getParameter("irsaliyeno");
 					
 					message = DAOFunctions.irsaliyeBilesenEkle(
 									irsaliyeid,
-									irsaliyeno,
 									Integer.valueOf(mamulid),
-									Integer.valueOf(gkrno),
 									Integer.valueOf(miktar),								
-									irsaliyeno  + " İrsaliye No. " +not);
+									not);
 				}
 			}
 		}

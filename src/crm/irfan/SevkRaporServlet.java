@@ -57,14 +57,14 @@ public class SevkRaporServlet extends HttpServlet {
         List<IrsaliyeBilesen> irsaliyebilesenonaylandi = new ArrayList<IrsaliyeBilesen>();
         
         if(raporgetirid!=null || page != null ) {
-            String tablename        = "uretimplanexcel";
+            String tablename        = "irsaliye";
             String filter0          = "";
             String filter1          = "";
             String filter2          = "";
             String filter3          = "";
             String andYes           = " AND ";
             if(irsaliyeid!=null && !irsaliyeid.equals("") ) {
-                filter1     = andYes + " irsaliyeid = " + Integer.valueOf(irsaliyeid);
+                filter1     = andYes + " id = " + Integer.valueOf(irsaliyeid);
             }
             else {
                 irsaliyeid  = null;
@@ -84,8 +84,7 @@ public class SevkRaporServlet extends HttpServlet {
             filter0 = filter1 + filter2 + filter3;
             
             // PAGING
-            //totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1" + filter0 );
-            totalrecord = DAOFunctions.irsaliyeListeGetirCount(IrsaliyeTip.ONAYLANDI, irsaliyeid, firmaid, tarih);
+            totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1" + filter0 );
             if(request.getParameter("page") != null)
                 page0   = Integer.parseInt(request.getParameter("page"));            
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);

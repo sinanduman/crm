@@ -395,14 +395,12 @@ public class DAOFunctions {
 	}
 
 	protected static String mamulEkle(String ad, String kod, String cevrimSuresi, String firmaid, String figur ) {
-		conn = ConnectionManager.getConnection();
-
-		BilesenTip bilesen = BilesenTip.MAMUL;
-		String insertQuery = "insert into irfan.mamul (ad, kod, cevrimsuresi, bilesentipid, firmaid, figur) values (?,?,?,?,?,?) ";
-
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String newMamulId = "-1";
+		conn                      = ConnectionManager.getConnection();
+		BilesenTip bilesen        = BilesenTip.MAMUL;
+		String insertQuery        = "insert into irfan.mamul (ad, kod, cevrimsuresi, bilesentipid, firmaid, figur) values (?,?,?,?,?,?) ";
+		String newMamulId         = "-1";
+		PreparedStatement pstmt   = null;
+		ResultSet rs              = null;
 		try {
 			pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, ad);
@@ -437,12 +435,10 @@ public class DAOFunctions {
 	}
 
 	protected static void mamulBilesenEkle(int mamulid, int bilesen, int birim, float miktar) {
-		conn = ConnectionManager.getConnection();
-
-		String insertQuery = "insert into irfan.mamulbilesen (mamulid, bilesenid, birimid, miktar) values (?,?,?,?)";
-
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		conn                      = ConnectionManager.getConnection();
+		String insertQuery        = "insert into irfan.mamulbilesen (mamulid, bilesenid, birimid, miktar) values (?,?,?,?)";
+		PreparedStatement pstmt   = null;
+		ResultSet rs              = null;
 		try {
 			pstmt = conn.prepareStatement(insertQuery);
 			pstmt.setInt(1, mamulid);
@@ -468,7 +464,7 @@ public class DAOFunctions {
 	}
 
 	protected static List<MamulBilesen> mamulBilesenListeGetirTum(Integer mamulid) {
-	    conn = ConnectionManager.getConnection();
+	    conn                      = ConnectionManager.getConnection();
 		List<MamulBilesen> temp   = new ArrayList<MamulBilesen>();
 		
 		String queryFilter        = (mamulid==null)?"":" where mamulid = " + mamulid;  
@@ -517,11 +513,11 @@ public class DAOFunctions {
 	}
 
 	protected static List<Stok> stokMamulListeGetirTum(Integer mamulid) {
-		List<Stok> temp = new ArrayList<Stok>();
-		conn = ConnectionManager.getConnection();
+	    conn              = ConnectionManager.getConnection();
+		List<Stok> temp   = new ArrayList<Stok>();
 	
-		String filter = (mamulid==null)?"":"where bilesenid = " + mamulid + " ";
-		String searchQuery = "select * from irfan.stokmamultum " + filter;
+		String filter     = (mamulid==null)?"":"where bilesenid = " + mamulid;
+		String searchQuery= "select * from irfan.stokmamultum " + filter;
 
 		System.out.println(searchQuery);
 		// connect to DB
@@ -602,8 +598,8 @@ public class DAOFunctions {
 						+ "b.ad bilesenad, b.kod bilesenkod, "
 						+ "bt.id bilesentipid, bt.ad bilesentipad, "
 						+ "br.id birimid, br.ad birimad, "
-						+ "f.id firmaid, f.ad firmaad, sum(CASE s.islemyonu "
-						+ "WHEN 1 THEN (-1) * s.miktar ELSE 1 * s.miktar END) OVER (PARTITION BY s.bilesenid ORDER BY CASE WHEN islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END) kalan "
+						+ "f.id firmaid, f.ad firmaad, (sum(CASE WHEN s.islemyonu = 0 THEN s.miktar ELSE -1*miktar END) "
+						+ "OVER (ORDER BY CASE WHEN s.islemyonu=0 THEN date(s.giristarihi) ELSE date(s.cikistarihi) END, s.id)) kalan "
 						+ "from irfan.stok s "
 						+ "left join irfan.uretimplan p on p.id=s.planid "
 						+ "left join irfan.mamul m2 on m2.id=p.mamulid "
@@ -612,10 +608,9 @@ public class DAOFunctions {
 						+ "left join irfan.birim br on br.id = b.birimid "
 						+ "join irfan.firma f on f.id = b.firmaid "
 						+ filter0 + filter1
-						+ "order by case when s.islemyonu=0 then s.giristarihi else s.cikistarihi end desc "
-						//+ "order by b.kod asc "
+						+ "order by case when s.islemyonu=0 then date(s.giristarihi) else date(s.cikistarihi) end desc, id desc "
 						+ pageFilter;
-
+		
 		System.out.println(searchQuery);
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -1010,7 +1005,7 @@ public class DAOFunctions {
 		String searchQuery= "select * from irfan.mamultum" + queryFilter +" ORDER BY kod ASC " + pageFilter; /* view */
 
 		// connect to DB
-		//System.out.println(searchQuery);
+		// System.out.println(searchQuery);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -2052,25 +2047,23 @@ public class DAOFunctions {
 	}
 
 
-	protected static String irsaliyeBilesenEkle(int irsaliyeid, String irsaliyeno, int mamulid, int gkrno, int miktar, String not) {
+	protected static String irsaliyeBilesenEkle(int irsaliyeid, int mamulid, int miktar, String not) {
 		conn   = ConnectionManager.getConnection();
 		String retVal	 ="-1";
 
-		String insertQuery = "SELECT irfan.irsaliyebilesen_ekle (?,?,?,?,?,?) ";
+		String insertQuery = "SELECT irfan.irsaliyebilesen_ekle (?,?,?,?) ";
 
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = conn.prepareStatement(insertQuery);
 			pstmt.setInt(1, irsaliyeid);
-			pstmt.setString(2, irsaliyeno);
-			pstmt.setInt(3, mamulid);
-			pstmt.setInt(4, gkrno);
-			pstmt.setInt(5, miktar);
+			pstmt.setInt(2, mamulid);
+			pstmt.setInt(3, miktar);
 			if (not!=null) 
-				pstmt.setString(6, not);
+				pstmt.setString(4, not);
 			else 
-				pstmt.setNull(6, Types.VARCHAR);
+				pstmt.setNull(4, Types.VARCHAR);
 			System.out.println(pstmt);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
@@ -2152,17 +2145,13 @@ public class DAOFunctions {
 		conn = ConnectionManager.getConnection();
 	
 		String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		String irsaliyeFilter = (irsaliyeid==null)?"":" and id = " + Integer.valueOf(irsaliyeid) + " ";
+		String irsaliyeFilter = (irsaliyeid==null)?"":" and i.id = " + Integer.valueOf(irsaliyeid) + " ";
 		String tarihFilter    = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
-		String firmaFilter    = (firmaid==null)?"":""
-		                            + " and i.id IN ("
-                    		        + "   select irsaliyeid from irfan.irsaliyebilesen ib "
-                    		        + "   join irfan.mamul m on m.id = ib.mamulid "
-                    		        + "   join irfan.firma f on f.id = m.firmaid "
-                    		        + "   WHERE f.id= " + Integer.valueOf(firmaid)
-                    		        + ")";
+		String firmaFilter    = (firmaid==null)?"":" and f.id= " + Integer.valueOf(firmaid) + " ";
 
-		String searchQuery = "select i.*, f.ad firmaad from irfan.irsaliye i left join firma f on f.id=i.firmaid "
+		String searchQuery = "select i.*, f.ad firmaad from irfan.irsaliye i "
+		                //+ "join irfan.irsaliyebilesen ib on ib.irsaliyeid = i.id "
+		                + "left join firma f on f.id=i.firmaid "
 						+ "where i.kapatildi=1 and i.onaylandi = ? "
 						+ firmaFilter
 						+ irsaliyeFilter
@@ -2215,21 +2204,17 @@ public class DAOFunctions {
 		List<IrsaliyeBilesen> temp = new ArrayList<IrsaliyeBilesen>();
 		conn                  = ConnectionManager.getConnection();
 		String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		String irsaliyeFilter = (irsaliyeid==null)?"":" and i.id = " + Integer.valueOf(irsaliyeid) + " ";
+		String irsaliyeFilter = (irsaliyeid==null)?"":" and x.id = " + Integer.valueOf(irsaliyeid) + " ";
 		String tarihFilter    = (tarih==null)?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
 		String firmaFilter    = (firmaid==null)?"":" and f.id = " + Integer.valueOf(firmaid) + " ";
 		
 		/* acik olan irsaliye bilsenlerini getirir */
 		String searchQuery = "select ib.*, i.olusturmatarihi, i.gonderimtarihi, i.irsaliyeno, i.firmaid irsaliyefirmaid, "
-						+ "m.ad mamulad, m.kod mamulkod, f.id firmaid, f.ad firmaad "
-						+ "from irfan.irsaliyebilesen ib "
-						+ "join (select * from irfan.irsaliye x where x.kapatildi=? and x.onaylandi=? order by x.id DESC "+ pageFilter +" ) i on i.id=ib.irsaliyeid "
+						+ "m.ad mamulad, m.kod mamulkod, fb.id firmaid, fb.ad firmaad "
+						+ "from irfan.irsaliyebilesen ib "						
+						+ "join (select x.* from irfan.irsaliye x left join irfan.firma f on f.id = x.firmaid where x.kapatildi=? and x.onaylandi=? "+ firmaFilter + irsaliyeFilter + tarihFilter + " order by x.id DESC "+ pageFilter +" ) i on i.id=ib.irsaliyeid "
 						+ "join irfan.mamul m on m.id = ib.mamulid "
-						+ "join irfan.firma f on f.id = m.firmaid "
-						+ "where 1=1 "
-						+ irsaliyeFilter
-						+ tarihFilter
-						+ firmaFilter
+						+ "join irfan.firma fb on fb.id = m.firmaid "						
 						+ "order by i.id desc, ib.id ";
 		// connect to DB
 		PreparedStatement pstmt = null;

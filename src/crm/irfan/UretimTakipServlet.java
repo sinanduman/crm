@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class UretimTakipServlet extends HttpServlet {
             List<Mamul> mamul = new ArrayList<Mamul>();
             mamul = DAOFunctions.mamulListeGetir(null, 0);
             
-            int totalrecord = DAOFunctions.recordCount("uretimplan"," where tamamlandi=0 ");
+            int totalrecord = DAOFunctions.recordAgg("uretimplantum_takip","count","*"," where tamamlandi=0 ");
             int page = 1;
             if(request.getParameter("page") != null)
                 page = Integer.parseInt(request.getParameter("page"));

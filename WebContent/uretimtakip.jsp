@@ -33,13 +33,13 @@
 	<%@ include file="logincheck.jsp" %>
 	<%
 	    List<Mamul> mamul				= (List<Mamul>) request.getAttribute("mamul");
-			List<Makina> makina 			= (List<Makina>) request.getAttribute("makina");
-			List<Calisan> calisan 			= (List<Calisan>) request.getAttribute("calisan");
-			List<HataSebep> hatasebep 		= (List<HataSebep>) request.getAttribute("hatasebep");
-			List<DurusSebep> durussebep 	= (List<DurusSebep>) request.getAttribute("durussebep");
-			List<UretimPlan> uretimplan		= (List<UretimPlan>) request.getAttribute("uretimplan");
-			List<SiparisPlan> siparisplan	= (List<SiparisPlan>) request.getAttribute("siparisplan");
-			String admin					= (String) session.getAttribute("admin");
+		List<Makina> makina 			= (List<Makina>) request.getAttribute("makina");
+		List<Calisan> calisan 			= (List<Calisan>) request.getAttribute("calisan");
+		List<HataSebep> hatasebep 		= (List<HataSebep>) request.getAttribute("hatasebep");
+		List<DurusSebep> durussebep 	= (List<DurusSebep>) request.getAttribute("durussebep");
+		List<UretimPlan> uretimplan		= (List<UretimPlan>) request.getAttribute("uretimplan");
+		List<SiparisPlan> siparisplan	= (List<SiparisPlan>) request.getAttribute("siparisplan");
+		String admin					= (String) session.getAttribute("admin");
 	%>
 	
 	<script>
@@ -197,7 +197,7 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group" id="div_hammadde">
 					<label for="hammadde" class="text-baslik">Hammadde / Kalan Miktar / Mamül Başı</label> 
 					<div>
 						<select class="form-control big" name="hammadde" id="hammadde" readonly="readonly"></select>
@@ -464,64 +464,54 @@
 					document.uretimtakipform.mamulad.value		= mamul[i].mamulad;
 					document.uretimtakipform.mamulid.value		= mamul[i].mamulid;
 					document.uretimtakipform.firmaad.value		= mamul[i].firmaad;
-					document.uretimtakipform.hammadde.value		= mamul[i].hammadde;					
+					document.uretimtakipform.hammadde.value		= mamul[i].hammadde;
 					
 					option = "";
 					var ham_name		= "";
+					var ham_gkrno		= "";					
 					var ham_miktar		= 0;
 					var ham_mamulbasi	= 0;
-					for (i in ham_name_ar) {						
-						if(ham_name == ""){
-							ham_name	= ham_name_ar[i];
-							ham_mamulbasi=parseInt(ham_mamulbasi_ar[i],10);
-						}
-						if(ham_name == ham_name_ar[i]){
-							ham_name	= ham_name_ar[i];
-							ham_miktar	= ham_miktar + parseInt(ham_agir_ar[i], 10);
-							ham_mamulbasi=parseInt(ham_mamulbasi_ar[i],10);
-						}
-						else {
-							option += "<option>" + ham_name +" / "+ ham_miktar / 1000.0 + " Kg / "+ ham_mamulbasi +" Gr</option>";
-							ham_name	= ham_name_ar[i];
-							ham_miktar	= parseInt(ham_agir_ar[i], 10);
-							ham_mamulbasi=parseInt(ham_mamulbasi_ar[i],10);
-						}						
-						//option += '<option>' + ham_name_ar[i] +"/"+ ham_gkrno_ar[i] +"/"+ ham_agir_ar[i] / 1000.0 + ' Kg.</option>';
+					for (i in ham_name_ar) {			
+
+						ham_name	= ham_name_ar[i];
+						ham_gkrno	= ham_gkrno_ar[i];
+						ham_miktar	= parseInt(ham_agir_ar[i], 10);
+						ham_mamulbasi=parseFloat(ham_mamulbasi_ar[i]);
+						
+						option += "<option>" + ham_name +" ("+ ham_gkrno +") / "+ ham_miktar / 1000.0 + " Kg / "+ ham_mamulbasi +" Gr</option>";
 					}
-					option += "<option>" + ham_name +" / "+ ham_miktar / 1000.0 + " Kg / "+ ham_mamulbasi +" Gr</option>";
-					$("#hammadde").append(option);
+					
+					if (ham_name_ar == "-1"){
+						//$("#div_hammadde").hide();
+					}
+					else{
+						//$("#div_hammadde").show();
+						$("#hammadde").append(option);	
+					}
 					
 					option = "";
 					var yari_name		= "";
+					var yari_gkrno		= "";
 					var yari_miktar		= 0;
-					var yari_mamulbasi	= 0;
+					var yari_mamulbasi	= 0;				
 					for (i in yari_name_ar) {
-						if(yari_name == ""){
-							yari_name	= yari_name_ar[i];
-							yari_mamulbasi=parseInt(yari_mamulbasi_ar[i],10);
-						}
-						if(yari_name == yari_name_ar[i]){
-							yari_name	= yari_name_ar[i];
-							yari_miktar	= yari_miktar + parseInt(yari_agir_ar[i], 10);
-							yari_mamulbasi=parseInt(yari_mamulbasi_ar[i],10);
-						}
-						else {
-							option += "<option>" + yari_name +" / "+ yari_miktar + " Ad / " + yari_mamulbasi+" Ad</option>";
-							yari_name	= yari_name_ar[i];
-							yari_miktar	= parseInt(yari_agir_ar[i], 10);
-							yari_mamulbasi=parseInt(yari_mamulbasi_ar[i],10);
-						}						
-						//option += '<option>' + yari_name_ar[i] +"/"+ yari_gkrno_ar[i] +"/"+ yari_agir_ar[i] + ' Ad.</option>';
+						console.log(i +" : " +yari_name_ar[i]);
+						
+						yari_name		= yari_name_ar[i];
+						yari_gkrno		= yari_gkrno_ar[i];
+						yari_miktar		= parseInt(yari_agir_ar[i], 10);
+						yari_mamulbasi	= parseInt(yari_mamulbasi_ar[i],10);
+
+						option += "<option>" + yari_name +" ("+yari_gkrno+") / "+ yari_miktar + " Ad / " + yari_mamulbasi+" Ad</option>";
 					}
-					console.log("yari_name: " +yari_name+ " yari_miktar: " + yari_miktar + " yari_mamulbasi: " + yari_mamulbasi );
-					option += "<option>" + yari_name +" / "+ yari_miktar + " Ad / " + yari_mamulbasi+" Ad</option>";
+					//console.log("yari_name: " +yari_name+ " yari_miktar: " + yari_miktar + " yari_mamulbasi: " + yari_mamulbasi );
 					if (yari_name=="-1"){
 						$("#div_yarimamul").hide();
 					}
 					else{
 						$("#div_yarimamul").show();
 						$("#yarimamul").append(option);	
-					}					
+					}
 				}
 			}
 		}	

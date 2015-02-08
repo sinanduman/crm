@@ -37,15 +37,15 @@
 	<%@ include file="logincheck.jsp" %>
 	<%
 	    List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
-			List<Irsaliye> irsaliye	= (List<Irsaliye>) request.getAttribute("irsaliye");
-			List<Irsaliye> irsaliyejson	= (List<Irsaliye>) request.getAttribute("irsaliyejson");
-			List<IrsaliyeBilesen> irsaliyebilesenonaylandi	= (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesenonaylandi");
-			
-			String irsaliyeid		= (String) request.getAttribute("irsaliyeid");
-			String irsaliyeno		= (String) request.getAttribute("irsaliyeno");
-			String firmaid			= (String) request.getAttribute("firmaid");
-			String tarih			= (String) request.getAttribute("tarih");
-			String excelsql			= (String) request.getAttribute("excelsql");
+		List<Irsaliye> irsaliye	= (List<Irsaliye>) request.getAttribute("irsaliye");
+		List<Irsaliye> irsaliyejson	= (List<Irsaliye>) request.getAttribute("irsaliyejson");
+		List<IrsaliyeBilesen> irsaliyebilesenonaylandi	= (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesenonaylandi");
+		
+		String irsaliyeid		= (String) request.getAttribute("irsaliyeid");
+		String irsaliyeno		= (String) request.getAttribute("irsaliyeno");
+		String firmaid			= (String) request.getAttribute("firmaid");
+		String tarih			= (String) request.getAttribute("tarih");
+		String excelsql			= (String) request.getAttribute("excelsql");
 	%>
 	
 	<script>
@@ -138,6 +138,7 @@
 					<td><label class="text-success">İrsaliye No</label></td>
 					<td><label class="text-success">Oluşturma Tarihi</label></td>
 					<td><label class="text-success">Gönderim Tarihi</label></td>
+					<td><label class="text-success">Müşteri</label></td>
 					<td class="text-center"><label class="text-success">Aksiyon</label></td>
 				</tr>
 				<%
@@ -148,7 +149,7 @@
 					<td><%=i.getIrsaliyeno()%></td>
 					<td><%=Util.getTarihTR(i.getOlusturmatarihi())%></td>
 					<td><%=Util.getTarihTR(i.getGonderimtarihi())%></td>
-					
+					<td><%=i.getFirmaad() %></td>
 					<td class="text-center">
 						<div id="divirsaliye<%= i.getId() %>">
 							<a href="javascript:hideshow('#tr_irs_detay<%= i.getId() %>');" title="İçerik"><span class="fa fa-chevron-down fa-lg text-success"></span></a>
@@ -156,11 +157,11 @@
 					</td>
 				</tr>
 				<tr id="tr_irs_detay<%= i.getId() %>" style="display:none;">
-					<td colspan="4">
+					<td colspan="5">
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (IrsaliyeBilesen j : irsaliyebilesenonaylandi) {%>
-							<% if ( j.getIrsaliyeid() == i.getId() ){ %>
+							<% if ( j.getIrsaliyeid().intValue() == i.getId().intValue() ){ %>
 							<% if ( (sayacbilesen++ == 0) ){ %>
 							<tr>
 								<td><label class="text-danger">Sıra No</label></td>
@@ -196,6 +197,7 @@
 			<%
 			String param1 = (irsaliyeid==null || irsaliyeid.equals(""))?"":"&amp;irsaliyeid="+ irsaliyeid;
 			String param2 = (firmaid==null || firmaid.equals(""))?"":"&amp;firmaid="+ firmaid;
+			String param3 = (tarih==null || tarih.equals(""))?"":"&amp;tarih="+ tarih;
 			%>
 			<jsp:include page="paging.jsp">
 				<jsp:param value="noofpages" name="noofpages"/>
@@ -203,6 +205,7 @@
 				<jsp:param value="sevkrapor" name="pagename"/>
 				<jsp:param value="<%=param1 %>" name="param1"/>
 				<jsp:param value="<%=param2 %>" name="param2"/>
+				<jsp:param value="<%=param3 %>" name="param3"/>
 			</jsp:include>
 		</div>
 		<%

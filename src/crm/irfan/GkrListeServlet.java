@@ -108,7 +108,7 @@ public class GkrListeServlet extends HttpServlet {
         
         // PAGING
         filter0     = (bilesenid==0)?"":" and bilesenid="+bilesenid;
-        totalrecord = DAOFunctions.recordCount("stokbilesen"," where bilesentipid IN (1,2) and islemyonu=" + Genel.IslemYonuGiris + filter0);
+        totalrecord = DAOFunctions.recordAgg("stokbilesen","count","*"," where bilesentipid IN (1,2) and islemyonu=" + Genel.IslemYonuGiris + filter0);
         if(request.getParameter("page") != null)
             page    = Integer.parseInt(request.getParameter("page"));        
         noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERLONGPAGE);

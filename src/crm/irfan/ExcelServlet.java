@@ -59,11 +59,13 @@ public class ExcelServlet extends HttpServlet {
                             "Hammadde Adı",
                             "Ham.GKR.No",
                             "Ürün Kodu", 
-                            "Ürün Adı", 
-                            "Baskı Adedi", 
+                            "Ürün Adı",
+                            "Planlanan Adet",
+                            "Üretilen Adet", 
                             "Hata Sebebi",
                             "Hatalı Miktar",
-                            "Duruş Sebebi"
+                            "Duruş Sebebi",
+                            "Sapma %",
                             }
             );
             
@@ -79,11 +81,13 @@ public class ExcelServlet extends HttpServlet {
                                 p.getHammaddead(),
                                 p.getHammaddeizlno(),
                                 p.getMamulkod(), 
-                                p.getMamulad(), 
+                                p.getMamulad(),
+                                p.getPlanlananmiktar(),
                                 p.getUretilenmiktar(),
                                 p.getHatakodu(),
                                 p.getHatalimiktar(),
-                                p.getDuruskodu()
+                                p.getDuruskodu(),
+                                p.getSapma()                                
                                 });
      
             }

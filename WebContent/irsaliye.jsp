@@ -75,7 +75,7 @@
 	var mamul2 = [
 	<%delimeter = "";
 	for (Stok s : stok) {
-		out.println(delimeter + " { label:'" + s.getBilesenkod() + "'" + ",id:" + s.getBilesenid() + "}");
+	    out.println(delimeter + " { value:'"+ s.getBilesenkod() + "', label:'" + s.getBilesenkod() + " ["+ s.getBilesenad() +"]',id:" + s.getBilesenid() + "}");
 		delimeter = ",";
 	}%>];
 </script>
@@ -343,7 +343,7 @@
 						<table style="width:100%;" class="tableplan">
 							<% int sayacbilesen = 0; %>
 							<% for (IrsaliyeBilesen j : irsaliyebilesencompleted) {%>
-							<% if ( j.getIrsaliyeid() == i.getId() ){ %>
+							<% if ( j.getIrsaliyeid().intValue() == i.getId().intValue() ){ %>
 							<% if ( (sayacbilesen++ == 0) ){ %>
 							<tr>
 								<td><label class="text-danger">Sıra No</label></td>
@@ -400,6 +400,7 @@
 			//console.log(ui.item.value);
 			//console.log(event);
 			changefun(ui.item);
+			$(this).val(ui.item.value);
 		}
 	});
 	$("#mamulkod").change(function() {
@@ -424,12 +425,14 @@
 					var miktar = mamul[i].miktar.split(";");
 					var stokid = mamul[i].stokid.split(";");
 					var option = "";
+					var total_miktar = 0;
 					for(var j = 0; j < gkrno.length; j++) {
 					   option += '<option value="'+ gkrno[j] + '">' + gkrno[j] +", Adet:" + miktar[j] +'</option>';
+					   total_miktar += parseInt(miktar[j]);
 					}
 					$("#gkrno").append(option);
 					$("#stokid").val(stokid[0]);
-					$("#miktarbox").val(miktar[0]);
+					$("#miktarbox").val(total_miktar);
 				}
 			}
 		}	

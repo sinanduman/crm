@@ -13,7 +13,7 @@ $("#irsaliyeekle").click(function(){
 		message += "İrsaliye No giriniz!\n";
 	}
 	if(is_positive($("#miktar").val()) && parseInt($("#miktarbox").val()) < parseInt($("#miktar").val()) ){
-		message += "Sevk miktarı, Üretim adedinden büyük olamaz!\n";
+		message += "Sevk miktarı " + parseInt($("#miktarbox").val())+ " ADET'ten büyük olamaz!\n";
 	}
 	if(message!=""){
 		alert(message);

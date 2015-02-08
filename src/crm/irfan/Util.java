@@ -127,6 +127,10 @@ public class Util {
         temp= ((double)((int)(temp*100)))/100;
         return temp;        
     }
+    public static double Round (double deger, double ondalik) {   
+        double temp = Math.round(deger * Math.pow(10, ondalik)) / Math.pow(10, ondalik);
+        return temp;    
+    }
     
     public static boolean isNotEmptyOrNull(Object o ) {        
         if(o!=null && !o.equals("")){
