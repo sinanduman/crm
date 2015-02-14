@@ -56,7 +56,7 @@ public class UretimRaporServlet extends HttpServlet {
                 
         List<UretimPlan> stokrapor = new ArrayList<UretimPlan>();
         if(raporgetirid!=null || page != null ) {
-            String tablename        = "uretimplanexcel";
+            String tablename        = "uretimplantum_plan";
             String filter0          = "";
             String filter1          = "";
             String filter2          = "";
@@ -86,9 +86,9 @@ public class UretimRaporServlet extends HttpServlet {
                 page0   = Integer.parseInt(request.getParameter("page"));            
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
-            stokrapor   = DAOFunctions.uretimBilesenRapor(bilesenid, page0, filter0);
+            stokrapor   = DAOFunctions.uretimBilesenRapor(tablename, page0, filter0);
             System.out.println("noofpages: "+ noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1" + filter0 );
-            excelsql = "SELECT * FROM "  + tablename+ " WHERE 1=1 " + filter0;
+            excelsql = filter0;
         } 
         
         request.setAttribute("makina", makina);
@@ -96,16 +96,16 @@ public class UretimRaporServlet extends HttpServlet {
         request.setAttribute("firma", firma);
         request.setAttribute("mamul", mamul);
         request.setAttribute("stokrapor", stokrapor);
-        request.setAttribute("bilesenid", bilesenid); 
+        request.setAttribute("bilesenid", bilesenid);
         request.setAttribute("makinaid", makinaid);
         request.setAttribute("calisanid", calisanid);
         request.setAttribute("firmaid", firmaid);
-        request.setAttribute("bas_tarih", bas_tarih);        
+        request.setAttribute("bas_tarih", bas_tarih);
         request.setAttribute("bit_tarih", bit_tarih);
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page0);
         request.setAttribute("noofpages", noofpages);
-        request.setAttribute("excelsql", excelsql);        
+        request.setAttribute("excelsql", excelsql);
         request.getRequestDispatcher("uretimrapor.jsp").forward(request, response);   
     }
     

@@ -781,16 +781,16 @@ public class DAOFunctions {
         return temp;
     }
 
-	protected static List<UretimPlan> uretimBilesenRapor(String bilesenid, int offset, String filterPage) {
+	protected static List<UretimPlan> uretimBilesenRapor(String tablename, int offset, String filterPage) {
 		List<UretimPlan> temp = new ArrayList<UretimPlan>();
 		conn                  = ConnectionManager.getConnection();
 	
 		String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 		String filter0        = filterPage;
 
-		String searchQuery    = "SELECT * FROM irfan.uretimplanexcel e "		                
+		String searchQuery    = "SELECT * FROM irfan."+ tablename+ " e "		                
 						    + " WHERE 1=1 " + filter0
-						    + " ORDER BY e.tarih DESC, e.mamulad "
+						    + " ORDER BY e.tarih, e.id "
 						    + pageFilter;
 
 		// connect to DB

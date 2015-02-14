@@ -110,11 +110,7 @@ User user = (User) request.getSession().getAttribute("user");
 				<li>
 					<a href="stokrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Stok</a>
-				</li>
-				<li>
-					<a href="gkrliste">
-						<span class="fa fa-dot-circle-o text-danger"></span> GKR Listesi</a>
-				</li>
+				</li>				
 				<li>
 					<a href="uretimrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Üretim</a>
@@ -122,6 +118,10 @@ User user = (User) request.getSession().getAttribute("user");
 				<li>
 					<a href="sevkrapor">
 						<span class="fa fa-dot-circle-o text-danger"></span> Sevk</a>
+				</li>
+				<li>
+					<a href="gkrliste">
+						<span class="fa fa-dot-circle-o text-danger"></span> GKR Listesi</a>
 				</li>
 			</ul>
 		</div>

@@ -88,11 +88,15 @@ public class StokRaporServlet extends HttpServlet {
                 totalrecord = DAOFunctions.recordAgg("stok", "COUNT", "*", " WHERE 1=1 " + "AND bilesenid = " + bilesenid );
                 noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             }
+            
+            excelsql = filter;
+            
             if(Genel.LOGMOD == LogMod.DEBUG) {
                 System.out.println("noofpages: " + noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1 " + filter );
                 System.out.println("bilesentip: " + bilesentipenum.id());
+                System.out.println("excelsql: " + excelsql);
             }
-            excelsql    = filter;
+            
         }         
         request.setAttribute("mamul", mamul);
         request.setAttribute("bilesen", bilesen);

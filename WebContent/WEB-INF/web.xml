@@ -218,6 +218,26 @@
   </servlet-mapping>
   <servlet>
     <description></description>
+    <display-name>ExcelUretimServlet</display-name>
+    <servlet-name>ExcelUretimServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelUretimServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelUretimServlet</servlet-name>
+    <url-pattern>/exceluretim</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExcelSevkServlet</display-name>
+    <servlet-name>ExcelSevkServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelSevkServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelSevkServlet</servlet-name>
+    <url-pattern>/excelsevk</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
     <display-name>ExcelMamulServlet</display-name>
     <servlet-name>ExcelMamulServlet</servlet-name>
     <servlet-class>crm.irfan.ExcelMamulServlet</servlet-class>

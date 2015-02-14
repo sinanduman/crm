@@ -52,6 +52,7 @@
 		+ ",bilesenid:" + m.getId() 
 		+ ",bilesenad:'" + m.getAd().replaceAll("'", "") + "'"
 		+ ",bilesenkod:'" + m.getKod() + "'"
+		+ ",value:'" + m.getKod() + "'"
 		+ ",label:'" + m.getKod() + " ["+ m.getAd().replaceAll("'", "") + "]'" + "}");
 			delimeter = ",";
 		}%>];
@@ -68,6 +69,7 @@
    		+ ",bilesenid:" + b.getId() 
    		+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
    		+ ",bilesenkod:'" + b.getKod() + "'"
+		+ ",value:'" + b.getKod() + "'"
    		+ ",label:'" + b.getKod() + " ["+ b.getAd().replaceAll("'", "") + "]'" + "}");
    			delimeter = ",";
    		}%>];
@@ -83,6 +85,7 @@
    		+ ",bilesenid:" + b.getId() 
    		+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
    		+ ",bilesenkod:'" + b.getKod() + "'"
+		+ ",value:'" + b.getKod() + "'"
    		+ ",label:'" + b.getKod() + " ["+ b.getAd().replaceAll("'", "") + "]'" + "}");
    			delimeter = ",";
    		}%>];
@@ -96,13 +99,6 @@
 		</div>
 		<div class="row">
 			<form class="form-inline" name="raporform" id="raporform" method="post" action="stokrapor">
-				<div class="form-group" style="display:none;">
-					<label for="tarih" class="text-baslik">Tarih</label>
-					<div>
-						<input type="text" style="width:120px;" class="form-control" name="tarih" id="tarih" placeholder="Tarih">
-					</div>
-				</div>
-				
 				<div class="form-group">
 					<label for="bilesentipid" class="text-baslik">Ürün Tipi</label>
 					<div>
@@ -126,7 +122,7 @@
 				<div class="form-group">
 					<label for="mamulkod" class="text-baslik">Ürün Kodu</label>
 					<div>
-  						<input type="text" class="form-control big" name="mamulkod" id="mamulkod" autocomplete="off">
+  						<input type="text" class="form-control normal" name="mamulkod" id="mamulkod" autocomplete="off">
   						<input type="hidden" name="bilesenid" id="bilesenid">
 					</div>
 				</div>
@@ -182,12 +178,7 @@
 				    if (stokdetay!=null && stokdetay.size()>0) {
 					    stokrapor = stokdetay;
 					}
-				%>
-				<%
 				    for (StokRapor sr : stokrapor) {
-				%>
-
-				<%
 				    if (sayac++ == 0) {
 				        int colsize	= 20;
 				        String birim= (sr.getBilesentipid()==BilesenTip.HAMMADDE.value())?"(Kg)":"(Adet)";
@@ -211,9 +202,10 @@
 				%>
 				<tr id="tr<%=sr.getId()%>">
 					<%
-					    String miktar = sr.getMiktar().toString();
+					    String miktar	= sr.getMiktar().toString();
 						if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
-						    miktar = Double.toString(Double.valueOf(sr.getMiktar().toString()) / Double.valueOf("1000.0"));
+						    Double m= Util.Round((Double.valueOf(sr.getMiktar()) / 1000.0),2.0);
+						    miktar	= m.toString();
 						}
 					%>
 					<td><%=sr.getBilesenkod()%></td>
@@ -243,8 +235,13 @@
 					</td>
 					<%
 					if(stokdetay.size()>0){
+						String kalan	= sr.getKalan().toString();
+						if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
+						    Double k= Util.Round((Double.valueOf(sr.getKalan()) / 1000.0),2.0);
+						    kalan	= k.toString();
+						}
 					%>
-					<td class="text-right-stok"><%=sr.getKalan()%></td>
+					<td class="text-right-stok"><%=kalan%></td>
 					<%
 					}
 					%>
@@ -279,7 +276,10 @@
 							<input type="hidden" value="0" name="excelegonder" id="excelegonder">
 							<input type="hidden" name="exceltarih" id="exceltarih" value="<%=Util.getTarihTR(new Date())%>">
 							<input type="hidden" name="excelsql" id="excelsql" value="<%=excelsql%>">
-							<input type="hidden" name="tablename" id="tablename" value="<%=tablename%>">
+							<input type="hidden" name="exceldetay" id="exceldetay" value="<%= (stokdetay!=null && stokdetay.size()>0)?1:0 %>">
+							<input type="hidden" name="exceldetayid" id="exceldetayid" value="<%=bilesenid%>">
+							<input type="hidden" name="excelstoktip" id="excelstoktip" value="<%=bilesentip%>">
+							<input type="hidden" name="tablename" id="tablename" value="<%=tablename%>">							
 						</form>
 					</div>
 				</div>
@@ -329,8 +329,8 @@
 		var found = false;
 		if (elem != null){
 			for (i in mamul) {
-				var b = elem.value.split("[");
-				if(b[0].trim() == mamul[i].bilesenkod){
+				//var b = elem.value.split("[");
+				if(elem.value == mamul[i].bilesenkod){
 					found = true;
 					document.raporform.mamulad.value	= mamul[i].bilesenad;
 					document.raporform.bilesenid.value	= mamul[i].bilesenid;

@@ -209,15 +209,17 @@
 			</jsp:include>
 		</div>
 		<%
-		if (sayac == -1 ){
+		if (sayac > 0 ){
 			%>
 				<div class="row text-right">
 					<div>
-						<form method="post" name="excelform" id="excelform" action="excel">
-							<button type="button" class="btn btn-danger" name="exceleaktar_uretimrapor" id="exceleaktar_uretimrapor">Excele Aktar</button>
+						<form method="post" name="excelform" id="excelform" action="excelsevk">
+							<button type="button" class="btn btn-danger" name="exceleaktar_sevk" id="exceleaktar_sevk">Excele Aktar</button>
 							<input type="hidden" value="0" name="excelegonder" id="excelegonder">
-							<input type="hidden" name="exceltarih" id="exceltarih">
-							<input type="hidden" name="excelsql" id="excelsql" value="<%=excelsql%>">
+							<input type="hidden" name="excelirsaliyeid" id="excelirsaliyeid" value="<%=(irsaliyeid==null)?"":irsaliyeid%>">
+							<input type="hidden" name="excelfirmaid" id="excelfirmaid" value="<%=(firmaid==null)?"":firmaid%>">
+							<input type="hidden" name="exceltarih" id="exceltarih" value="<%=(tarih==null)?"":tarih%>">
+							<input type="hidden" name="excelsql" id="excelsql" value="<%=(excelsql==null)?"":excelsql%>">
 						</form>
 					</div>
 				</div>
@@ -231,8 +233,8 @@
 	<script	src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="js/irfan.js?" type="text/javascript"></script>
-	<script	src="js/rapor.js?" type="text/javascript"></script>
+	<script src="js/irfan.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
+	<script	src="js/rapor.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
 	$(function() {
 		$('#tarih').datepicker({

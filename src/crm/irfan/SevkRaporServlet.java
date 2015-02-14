@@ -63,13 +63,13 @@ public class SevkRaporServlet extends HttpServlet {
             String filter2          = "";
             String filter3          = "";
             String andYes           = " AND ";
-            if(irsaliyeid!=null && !irsaliyeid.equals("") ) {
+            if(irsaliyeid!=null && Util.isNumeric(irsaliyeid)) {
                 filter1     = andYes + " id = " + Integer.valueOf(irsaliyeid);
             }
             else {
                 irsaliyeid  = null;
             }
-            if(firmaid!=null && !firmaid.equals("") ) {
+            if(firmaid!=null && Util.isNumeric(firmaid)) {
                 filter2     = andYes + " firmaid = " + Integer.valueOf(firmaid);
             }
             else {
@@ -93,17 +93,14 @@ public class SevkRaporServlet extends HttpServlet {
             irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, page0, irsaliyeid, firmaid, tarih);
             irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih, page0);
 
-            //stokrapor   = DAOFunctions.uretimBilesenRapor(irsaliyeid, page0, filter0);
-            
             if (Genel.LOGMOD==LogMod.DEBUG) {
                 System.out.println("noofpages: "+ noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1" + filter0 );
             }
 
-            excelsql = "SELECT * FROM "  + tablename + " WHERE 1=1 " + filter0;
+            excelsql = filter0;
         }
         
         request.setAttribute("firma", firma);
-        //request.setAttribute("stokrapor", stokrapor);
         request.setAttribute("irsaliyeid", irsaliyeid);
         request.setAttribute("irsaliyeno", irsaliyeno);
         request.setAttribute("irsaliye", irsaliye);

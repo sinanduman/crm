@@ -123,6 +123,18 @@ $("#exceleaktar_stok").click(function(){
 		$("#excelform").submit();
 	}
 });
+$("#exceleaktar_uretimrapor").click(function(){
+	if(confirm("Üretim Plan Raporu Excel'e aktarılsın mı?\n")){
+		$("#excelegonder").val(1);
+		$("#excelform").submit();
+	}
+});
+$("#exceleaktar_sevk").click(function(){
+	if(confirm("Sevk Raporu Excel'e aktarılsın mı?\n")){
+		$("#excelegonder").val(1);
+		$("#excelform").submit();
+	}
+});
 $("#exceleaktar_mamul").click(function(){
 	if(confirm("Mamul Stok Raporu Excel'e aktarılsın mı?\n")){
 		$("#excelegonder").val(1);

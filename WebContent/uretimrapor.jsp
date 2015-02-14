@@ -265,10 +265,11 @@
 			%>
 				<div class="row text-right">
 					<div>
-						<form method="post" name="excelform" id="excelform" action="excel">
+						<form method="post" name="excelform" id="excelform" action="exceluretim">
 							<button type="button" class="btn btn-danger" name="exceleaktar_uretimrapor" id="exceleaktar_uretimrapor">Excele Aktar</button>
 							<input type="hidden" value="0" name="excelegonder" id="excelegonder">
-							<input type="hidden" name="exceltarih" id="exceltarih">
+							<input type="hidden" name="excelbastarih" id="excelbastarih" value="<%=bas_tarih%>">
+							<input type="hidden" name="excelbittarih" id="excelbittarih" value="<%=bit_tarih%>">
 							<input type="hidden" name="excelsql" id="excelsql" value="<%=excelsql%>">
 						</form>
 					</div>
@@ -283,8 +284,8 @@
 	<script	src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
 	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="js/irfan.js?" type="text/javascript"></script>
-	<script	src="js/rapor.js?" type="text/javascript"></script>
+	<script src="js/irfan.js?<%=System.currentTimeMillis() %>>" type="text/javascript"></script>
+	<script	src="js/rapor.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
 	$(function() {
 		$('#bas_tarih').datepicker({

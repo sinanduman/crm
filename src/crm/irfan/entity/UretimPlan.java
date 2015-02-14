@@ -230,16 +230,18 @@ public class UretimPlan {
         return calisanad.substring(0, 1) + "." + calisansoyad;
     }
     
-    public Time getBaszaman() {
-        return baszaman;
+    public String getBaszaman() {
+        String date = (this.baszaman != null) ? (new SimpleDateFormat("HH:mm").format(baszaman)) : "";
+        return date;
     }
     
     public void setBaszaman(Time baszaman) {
         this.baszaman = baszaman;
     }
     
-    public Time getBitzaman() {
-        return bitzaman;
+    public String getBitzaman() {
+        String date = (this.bitzaman != null) ? (new SimpleDateFormat("HH:mm").format(bitzaman)) : "";
+        return date;
     }
     
     public void setBitzaman(Time bitzaman) {
