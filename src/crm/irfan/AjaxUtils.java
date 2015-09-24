@@ -111,7 +111,8 @@ public class AjaxUtils extends HttpServlet {
                                 rs.getInt("id"), 
                                 rs.getString("ad"), 
                                 rs.getString("soyad"), 
-                                rs.getString("gorev")
+                                rs.getString("gorev"),
+                                rs.getInt("durum")
                                 )
                 );
             }

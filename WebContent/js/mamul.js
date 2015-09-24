@@ -219,6 +219,53 @@ function updateMamulGo(url,id,action_form,islem){
 	}
 }
 
+function updateMamulBilesenGo(url, mamulid, bilesenid, bilesen_miktar, islem){
+	var f_mamulid	= mamulid;
+	var f_bilesenid	= bilesenid;
+	var f_miktar	= $.trim(bilesen_miktar.value);
+	var f_islemid	= islem;
+	var alert_mesaj	= "";
+	
+	if(f_miktar==""){
+		alert("Miktar BOŞ olamaz!");
+		return false;
+	}
+	
+	if(!is_ondalik(f_miktar)){
+		alert("Miktar NÜMERİK bir değer olmalıdır!");
+		return false;
+	}
+	
+	if(confirm("Mamül Bileşen Bilgisini GÜNCELLEMEK istediğinden"+"\n\n"+"Emin misin?")){
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: { 
+				mamulid		: f_mamulid, 
+				bilesenid	: f_bilesenid, 
+				miktar		: f_miktar,
+				islemid		: f_islemid
+			},
+			dataType: 'html',
+			beforeSend: function ( xhr ) {
+			},
+			success: function(data, textStatus, xhr) {
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
+			}
+		}).done(function( msg ) {
+			if(is_number( msg )){
+				$("#tr_mam_bilesen_detay_"+mamulid+"_"+bilesenid).css('background-color','darkkhaki');
+				alert(alert_mesaj +" Mamül Bileşen Bilgisi başarıyla GÜNCELLENDİ" );
+			}
+			else{
+				alert("Hata:"+ msg + ":" );
+			}
+		});
+	}
+}
+
 function deleteMamulGo(url,id,action_form,islem){
 	var f_bilesenid	= id;
 	var f_kod		= $.trim(action_form.liste_kod.value);

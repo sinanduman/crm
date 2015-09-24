@@ -44,7 +44,8 @@ public class CalisanServlet extends HttpServlet {
                                     new String(request.getParameter("id").getBytes("UTF-8")),
                                     new String(request.getParameter("ad").getBytes("UTF-8")),
                                     new String(request.getParameter("soyad").getBytes("UTF-8")),
-                                    new String(request.getParameter("gorev").getBytes("UTF-8"))
+                                    new String(request.getParameter("gorev").getBytes("UTF-8")),
+                                    new String(request.getParameter("durum").getBytes("UTF-8"))
                                     );
                     break;
                 case 3:
@@ -75,7 +76,7 @@ public class CalisanServlet extends HttpServlet {
             int noofpages = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             
             List<Calisan> calisan = new ArrayList<Calisan>();
-            calisan = DAOFunctions.calisanListeGetirTum(page);
+            calisan = DAOFunctions.calisanListeGetirTum(page, null);
             
             request.setAttribute("calisan", calisan);
             request.setAttribute("message", message);

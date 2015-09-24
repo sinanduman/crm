@@ -24,13 +24,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import crm.irfan.entity.IrsaliyeBilesen;
-import crm.irfan.entity.IrsaliyeTip;
+import crm.irfan.entity.IzlemeNo;
 
-public class ExcelSevkServlet extends HttpServlet {
+public class ExcelIzlemeNoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public ExcelSevkServlet() {
+    public ExcelIzlemeNoServlet() {
         super();
     }
 
@@ -40,63 +39,49 @@ public class ExcelSevkServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    response.setCharacterEncoding("UTF-8");
         
-        String excelegonder     = request.getParameter("excelegonder");
-        String excelirsaliyeid  = request.getParameter("excelirsaliyeid");
-        String excelfirmaid     = request.getParameter("excelfirmaid");
-        String excelmamulid     = request.getParameter("excelmamulid");
-        String exceltarih       = request.getParameter("exceltarih");
-        String excelsql         = request.getParameter("excelsql");
-        
-        excelirsaliyeid = (Util.isNotEmptyOrNull(excelirsaliyeid))?excelirsaliyeid:null;
-        excelfirmaid    = (Util.isNotEmptyOrNull(excelfirmaid))?excelfirmaid:null;
-        exceltarih      = (Util.isNotEmptyOrNull(exceltarih))?exceltarih:null;
-        excelmamulid    = (Util.isNotEmptyOrNull(excelmamulid))?excelmamulid:null;
-
+        String excelegonder = request.getParameter("excelegonder");
+        String excelbastarih= request.getParameter("excelbastarih");
+        String excelbittarih= request.getParameter("excelbittarih");
+        String excelsql     = request.getParameter("excelsql");
+        String tablename    = "izlemeno_tum";
+                
         System.out.println("excelsql: " + excelsql);
         
         if(excelegonder!=null && excelegonder.equals("1")) {
             
-            List<IrsaliyeBilesen> irsaliyebilesen = new ArrayList<IrsaliyeBilesen>();
-            
-            irsaliyebilesen = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, excelirsaliyeid, excelfirmaid, exceltarih, 0, excelmamulid);
+            List<IzlemeNo> stokrapor = new ArrayList<IzlemeNo>();
+            stokrapor   = DAOFunctions.izlemeNoTum(tablename, excelsql, 0);
             
             Workbook workbook = new XSSFWorkbook();
-            //Sheet sheeti    = workbook.createSheet("Irsaliye");
-            Sheet sheetib   = workbook.createSheet("IrsaliyeBilesen");
-            //int cnti        = 0;
-            int cntib       = 0;
-            Map<Integer, Object[]> dataib   = new TreeMap<Integer, Object[]>();
+            Sheet sheet = workbook.createSheet();
             
-            dataib.put(++cntib, new Object[] {
-                            "Gönderim Tarihi",
-                            "İrsaliye No",
-                            "Mamül Adı",
-                            "Mamül Kodu",
-                            "Firma",
-                            "GKR.No",
-                            "Miktarı"
+            int cnt     = 0;
+            Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
+            
+            data.put(++cnt, new Object[] {
+                            "Tarih",
+                            "İzleme No",
+                            "Mamül Kod",
+                            "Mamül Ad",
+                            "Miktar"
                             }
             );
             
-            
-            for(IrsaliyeBilesen sr: irsaliyebilesen) {
-                
-                dataib.put(++cntib, new Object[] {
-                                Util.getTarih(sr.getGonderimtarihi()),
-                                sr.getIrsaliyeno(),
-                                sr.getMamulad(),
+            for(IzlemeNo sr: stokrapor) {
+                data.put(++cnt, new Object[] {
+                                Util.getTarihTR(sr.getKullanildi_tarih()),
+                                sr.getGkrno().toString(),
                                 sr.getMamulkod(),
-                                sr.getFirmaad(),
-                                sr.getGkrno(),
-                                sr.getMiktar()
-                                });                
+                                sr.getMamulad(),                                
+                                sr.getMiktar().toString() + " Ad."
+                                });
             }
 
-            Set<Integer> keysetib = dataib.keySet();
-            int rownumib = 0;
-            for (Integer key : keysetib) {
-                Row row = sheetib.createRow(rownumib++);
-                Object [] objArr = dataib.get(key);
+            Set<Integer> keyset = data.keySet();
+            int rownum = 0;
+            for (Integer key : keyset) {
+                Row row = sheet.createRow(rownum++);
+                Object [] objArr = data.get(key);
                 int cellnum = 0;
                 for (Object obj : objArr) {
                     Cell cell = row.createCell(cellnum++);                    
@@ -136,7 +121,7 @@ public class ExcelSevkServlet extends HttpServlet {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Expires:", "0"); // eliminates browser caching
             response.setContentLength(outArray.length);
-            response.setHeader("Content-Disposition", "attachment; filename="+ "excel_sevk_" + (new Date()).toString()  + ".xls");
+            response.setHeader("Content-Disposition", "attachment; filename="+ "excel_gkrliste_" + excelbastarih +"_"+  excelbittarih + ".xls");
             OutputStream outStream = response.getOutputStream();
             outStream.write(outArray);
             outStream.flush();

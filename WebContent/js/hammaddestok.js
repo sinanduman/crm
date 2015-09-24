@@ -1,3 +1,19 @@
+$("#lot, #tarih, #miktar, #iade").change(
+		function() {
+			if (
+					!is_empty($("#lot").val()) && 
+					!is_empty($("#tarih").val()) && 
+					is_positive($("#miktar").val())
+			) {
+				hammaddeStokKontrol(
+						$("#tarih").val(), 
+						$.trim($("#lot").val()), 
+						$.trim($("#miktar").val()) * parseInt($("#malzemebirimcarpan").val()),
+						$("#iade").is(":checked"),
+						$("#bilesentipid").val()
+						);
+			}
+		});
 $("#hammaddestokekle").click(function(){
 	if(!is_positive($("#bilesenid").val()) ){
 		alert("BİLEŞEN adı boş olamaz!");
@@ -7,20 +23,16 @@ $("#hammaddestokekle").click(function(){
 		alert("Miktar NÜMERİK bir değer olmalıdır!");
 		return false;
 	}
-	else if(is_empty($("#irsaliyeno").val()) ){
-		alert("İRSALİYE No boş olamaz!");
-		return false;
-	}
-	else if(is_empty($("#lot").val()) ){
-		alert("LOT/Batch No boş olamaz!");
-		return false;
-	}
 	else{
 		if($("#iade").is(":checked")){
 			//console.log("sumag: 	" + $("#sumagg") );
 			//console.log("sumag val: " + parseInt($("#sumagg").val()));
 			if(isNaN(parseInt($("#sumagg").val())) ){
 				alert("Envanter Miktarı belli değil, stok düşülemez!");
+				return false;
+			}
+			if(is_empty($("#lot").val())){
+				alert("LOT/Batch alanına GKR.No giriniz!");
 				return false;
 			}
 			if(is_empty($("#not").val())){
@@ -41,7 +53,15 @@ $("#hammaddestokekle").click(function(){
 			}
 		}
 		else{
-			if(confirm($("#bilesenad").val() + " için " +$("#miktar").val() +" "+ $("#malzemebirimad").val() +" Stok EKLEMEYİ onaylıyor musun?")){
+			if(is_empty($("#irsaliyeno").val()) ){
+				alert("İRSALİYE No boş olamaz!");
+				return false;
+			}
+			else if(is_empty($("#lot").val()) ){
+				alert("LOT/Batch No boş olamaz!");
+				return false;
+			}
+			else if(confirm($("#bilesenad").val() + " için " +$("#miktar").val() +" "+ $("#malzemebirimad").val() +" Stok EKLEMEYİ onaylıyor musun?")){
 				$("#bilesenekleid").val("1");
 				$("#hammaddestokform").submit();
 			}
@@ -125,5 +145,48 @@ function deleteHammaddeStokGo(url,id,islem){
 				alert("Hata: "+ msg );
 			}
 		});
+	}
+}
+
+function hammaddeStokKontrol(tarih, gkrno, miktar, iade, bilesentipid){
+	var f_tarih			= tarih;
+	var f_gkrno			= gkrno;
+	var f_miktar		= miktar;
+	var f_iade			= iade;
+	var f_bilesentipid	= bilesentipid;
+	var f_islem	= 6;
+	
+	if($("#iade").is(":checked")){
+		$.ajax({
+			url : "hammaddestok",
+			type : "POST",
+			data : {
+				tarih		: f_tarih,
+				gkrno		: f_gkrno,
+				miktar		: f_miktar,
+				iade		: f_iade,
+				bilesentipid: f_bilesentipid,
+				islemid 	: f_islem
+			},
+			beforeSend : function(xhr) {
+			},
+			success : function(data, textStatus, xhr) {
+			},
+			error : function(xhr, textStatus, errorThrown) {
+				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
+			}
+		}).done(function(msg) {
+			if (msg != "0") {
+				$("#hammaddestokekle").prop("disabled", true);
+				$("#hammadde-stok-ekle-kutu").text(msg);
+			} else {
+				$("#hammaddestokekle").prop("disabled", false);
+				$("#hammadde-stok-ekle-kutu").text("");
+			}
+		});
+	}
+	else{
+		$("#hammaddestokekle").prop("disabled", false);
+		$("#hammadde-stok-ekle-kutu").text("");
 	}
 }

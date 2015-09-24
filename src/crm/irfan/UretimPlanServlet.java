@@ -120,7 +120,7 @@ public class UretimPlanServlet extends HttpServlet {
         makina = DAOFunctions.makinaListeGetirTum(0);
         
         List<Calisan> calisan = new ArrayList<Calisan>();
-        calisan = DAOFunctions.calisanListeGetirTum(0);
+        calisan = DAOFunctions.calisanListeGetirTum(0, null);
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);

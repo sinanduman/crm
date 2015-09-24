@@ -32,18 +32,23 @@
 <body>
 	<%@ include file="logincheck.jsp" %>
 	<%
+		@SuppressWarnings("unchecked")
 	    List<Firma> firma		= (List<Firma>) request.getAttribute("firma");
-			List<Makina> makina		= (List<Makina>) request.getAttribute("makina");
-			List<Calisan> calisan	= (List<Calisan>) request.getAttribute("calisan");
-			List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
-			List<UretimPlan> stokrapor=(List<UretimPlan>) request.getAttribute("stokrapor");
-			String bilesenid		= (String) request.getAttribute("bilesenid");		
-			String makinaid			= (String) request.getAttribute("makinaid");
-			String calisanid		= (String) request.getAttribute("calisanid");
-			String firmaid			= (String) request.getAttribute("firmaid");
-			String bas_tarih		= (String) request.getAttribute("bas_tarih");
-			String bit_tarih		= (String) request.getAttribute("bit_tarih");
-			String excelsql			= (String) request.getAttribute("excelsql");
+		@SuppressWarnings("unchecked")
+		List<Makina> makina		= (List<Makina>) request.getAttribute("makina");
+		@SuppressWarnings("unchecked")
+		List<Calisan> calisan	= (List<Calisan>) request.getAttribute("calisan");
+		@SuppressWarnings("unchecked")
+		List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
+		@SuppressWarnings("unchecked")
+		List<UretimPlan> stokrapor=(List<UretimPlan>) request.getAttribute("stokrapor");
+		String bilesenid		= (String) request.getAttribute("bilesenid");		
+		String makinaid			= (String) request.getAttribute("makinaid");
+		String calisanid		= (String) request.getAttribute("calisanid");
+		String firmaid			= (String) request.getAttribute("firmaid");
+		String bas_tarih		= (String) request.getAttribute("bas_tarih");
+		String bit_tarih		= (String) request.getAttribute("bit_tarih");
+		String excelsql			= (String) request.getAttribute("excelsql");
 	%>
 	
 	<script>
@@ -59,6 +64,13 @@
 			delimeter = ",";
 		}%>];
 		var mamuldef = mamul;
+		
+		var mamul2 = [
+       	<%delimeter = "";
+       	for (Mamul m : mamul) {
+       		out.println(delimeter + " { value:'"+ m.getKod() + "', label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
+       		delimeter = ",";
+       	}%>];
 		
 	</script>
 
@@ -147,7 +159,7 @@
 					<label for="mamulkod" class="text-baslik">Mamül Kodu</label>
 					<div>
   						<input type="text" class="form-control small" name="mamulkod" id="mamulkod" autocomplete="off">
-  						<input type="hidden" name="bilesenid" id="bilesenid">
+  						<input type="hidden" name="bilesenid" id="bilesenid" value='<%= (bilesenid!=null)?bilesenid:"" %>'>
 					</div>
 				</div>
 				
@@ -293,29 +305,50 @@
 			format : 'dd-mm-yy',
 			firstDay:1,
 		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","<%= (bas_tarih=="")?"today":bas_tarih%>");
-	});
-	$(function() {
+
 		$('#bit_tarih').datepicker({
 			inline: true,
 			format : 'dd-mm-yy',
 			firstDay:1,
 		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","<%= (bit_tarih=="")?"today":bit_tarih%>");
-	});
-	$("#mamulkod" ).autocomplete({
-		source		: mamul,
-		minLength	: 1,
-		select		: function(event, ui){
-			changefun(ui.item);
+		
+		$("#mamulkod" ).autocomplete({
+			source		: mamul2,
+			minLength	: 1,
+			select		: function(event, ui){
+				changefun(ui.item);
+				$(this).val(ui.item.value);
+			}
+		});
+		$("#mamulkod").change(function() {
+			changefun(this);
+		});
+		
+		if($("#bilesenid").val() != ""){
+			var found_bilesenid = mamul.filter(function(obj) {
+			    return obj.id == $("#bilesenid").val();
+			});
+			/*
+			var found_bilesenid = $.grep(bilesen, function(v) {
+			    return v.id == $("#bilesenid").val();
+			});
+			*/
+
+			if (found_bilesenid != undefined){
+				//console.log(found_bilesenid);
+				$("#mamulkod").val( found_bilesenid[0].bilesenkod );
+				$("#mamulad").val( found_bilesenid[0].bilesenad );
+			}
 		}
+		
 	});
-	$("#mamulkod").change(function() {
-		changefun(this);
-	});
+	
 	function changefun(elem){
 		var found = false;
 		if (elem != null){
 			for (i in mamul) {
 				if(elem.value == mamul[i].bilesenkod){
+					//console.log(mamul[i]);
 					found = true;
 					document.raporform.mamulad.value	= mamul[i].bilesenad;
 					document.raporform.bilesenid.value	= mamul[i].bilesenid;

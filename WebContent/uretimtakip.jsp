@@ -170,13 +170,22 @@
 						</select>
 					</div>
 				</div>
-				
+				<!-- 
 				<div class="form-group">
 					<label for="tarih" class="text-baslik">Mamül İzl.No.</label>
 					<div>
 						<input type="text" class="form-control xm" name="mamulizleno" id="mamulizleno" placeholder="Mamül Izl. No" autocomplete="off">
 					</div>
 				</div>
+				 -->
+				
+				<div class="form-group">
+					<label for="mamulizleno" class="text-baslik">Mamül İzl.No</label>
+					<div>
+						<select class="form-control normal" name="mamulizleno" id="mamulizleno"></select>
+					</div>
+				</div>
+			
 				
 				<div class="clearfix"></div>
 
@@ -274,8 +283,8 @@
 				<div class="clearfix"></div>
 				
 				<%
-								    if(admin!=null && admin.equals("1")){
-								%>
+					if(admin!=null && (admin.equals("1") || (admin.equals("2")))){
+				%>
 				<div class="form-group" style="margin:10px 0;">
 					<div>
 						<input type="hidden" name="uretimplanid" id="uretimplanid" value="0">
@@ -495,7 +504,7 @@
 					var yari_miktar		= 0;
 					var yari_mamulbasi	= 0;				
 					for (i in yari_name_ar) {
-						console.log(i +" : " +yari_name_ar[i]);
+						//console.log(i +" : " +yari_name_ar[i]);
 						
 						yari_name		= yari_name_ar[i];
 						yari_gkrno		= yari_gkrno_ar[i];
@@ -512,6 +521,10 @@
 						$("#div_yarimamul").show();
 						$("#yarimamul").append(option);	
 					}
+					
+					/* Mamul Izleme No Kutusu Doldurma */
+					/* MamulId, Uret/Kontrol(1,6), Kullanildi/Kullanilmadi(0:1), SelectBox */				
+					izlemeNoKontrol(document.uretimtakipform.mamulid.value, 6, 1, "#mamulizleno",0);
 				}
 			}
 		}	
@@ -522,6 +535,7 @@
 			document.uretimtakipform.hammadde.value	= "";
 			$("#hammadde option").remove();
 			$("#yarimamul option").remove();
+			$("#mamulizleno option").remove();
 		}
 	}
 	</script>

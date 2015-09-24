@@ -52,6 +52,12 @@ public class IrsaliyeServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 out.print(result);
             }
+			else if (islemid == 6) {
+                ajaxInAction  = true;
+                String result   = DAOFunctions.IrsaliyeNoKontrol(request.getParameter("irsaliyeno"));
+                PrintWriter out = response.getWriter();
+                out.print(result);
+            }
 			else {
 			    if(Genel.LOGMOD == LogMod.DEBUG) {
 			        System.out.println("islemid :" + islemid);
@@ -112,6 +118,10 @@ public class IrsaliyeServlet extends HttpServlet {
 	        List<Irsaliye> irsaliye = new ArrayList<Irsaliye>();
 	        irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null);
 	        
+	        /* Son eklenen irsaliyeyi getir */
+	        List<Irsaliye> irsaliyekapali = new ArrayList<Irsaliye>();
+	        irsaliyekapali = DAOFunctions.irsaliyeListeGetirKapaliTum(IrsaliyeTip.COMPLETED, 1);	        
+	        
 	        List<IrsaliyeBilesen> irsaliyebilesenopen = new ArrayList<IrsaliyeBilesen>();
 	        irsaliyebilesenopen = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.OPEN, 0, null, null, null,0);
 	        
@@ -123,6 +133,7 @@ public class IrsaliyeServlet extends HttpServlet {
 	        request.setAttribute("stok", stok);
 	        request.setAttribute("message", message);
 	        request.setAttribute("irsaliye", irsaliye);
+	        request.setAttribute("irsaliyekapali", irsaliyekapali);
 	        request.setAttribute("irsaliyebilesenopen", irsaliyebilesenopen);
 	        request.setAttribute("irsaliyebilesencompleted", irsaliyebilesencompleted);
 	        

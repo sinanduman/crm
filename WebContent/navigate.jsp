@@ -123,6 +123,10 @@ User user = (User) request.getSession().getAttribute("user");
 					<a href="gkrliste">
 						<span class="fa fa-dot-circle-o text-danger"></span> GKR Listesi</a>
 				</li>
+				<li>
+					<a href="izlemeno">
+						<span class="fa fa-dot-circle-o text-danger"></span> Mamül İzleme No</a>
+				</li>
 			</ul>
 		</div>
 		<!-- /btn-group -->

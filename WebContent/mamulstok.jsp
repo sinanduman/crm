@@ -70,7 +70,7 @@
 	var mamul2 = [
 	<%delimeter = "";
 	for (Mamul m : mamul) {
-		out.println(delimeter + " { label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
+		out.println(delimeter + " { value:'"+ m.getKod() + "', label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
 		delimeter = ",";
 	}%>];
 
@@ -124,7 +124,7 @@
 			<div class="form-group">
 				<label for="miktar" class="text-baslik">Stoktan Düş: </label>
 				<div>
-			     	<input type="checkbox" id="iade" name="iade" value="1"><span class="text-danger"></span>
+			     	<input type="checkbox" id="iade" name="iade" value="1" onchange="javascript:changeStokButonText();"><span class="text-danger"></span>
 			  	</div>
 			</div>
 			<%
@@ -141,9 +141,9 @@
 			<div class="clearfix"></div>
 			
 			<div class="form-group">
-				<label for="lot" class="control-label text-baslik">LOT/Batch No: </label>
+				<label for="lot" class="control-label text-baslik">Mamül İzl. No: </label>
 				<div>
-					<input type="text" class="form-control big" name="lot" id="lot" placeholder="LOT/Batch No" autocomplete="off">
+					<input type="text" class="form-control big" name="lot" id="lot" placeholder="Mamül İzl. No" autocomplete="off">
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -163,6 +163,7 @@
 				</div>
 			</div>
 			<div class="clearfix"></div>
+			<div><input type="hidden" name="mamulekleid" id="mamulekleid" value="0"></div>
 			
 			<%
 			    String admin = (String) session.getAttribute("admin");
@@ -171,7 +172,7 @@
 			<div class="form-group" style="margin-top:5px;">
 				<div>
 					<button type="button" class="btn btn-danger" id="mamulstokekle" name="mamulstokekle">Ekle</button>
-					<input type="hidden" name="mamulekleid" id="mamulekleid" value="0">
+					<span class="text-left text-danger birim" id="stok-ekle-kutu"></span>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -204,10 +205,10 @@
 			</tr>
 			<tr>
 				<td width="15%"><label class="text-sevk">TARİH</label></td>
-				<td width="18%" class='text-center'><label class="text-sevk">GİREN</label></td>
-				<td width="18%" class='text-center'><label class="text-sevk">ÇIKAN</label></td>
-				<td width="18%" class='text-center'><label class="text-sevk">KALAN</label></td>
-				<td width="31%"><label class="text-sevk">AÇIKLAMA</label></td>
+				<td width="17%" class='text-center'><label class="text-sevk">GİREN</label></td>
+				<td width="17%" class='text-center'><label class="text-sevk">ÇIKAN</label></td>
+				<td width="17%" class='text-center'><label class="text-sevk">KALAN</label></td>
+				<td width="34%"><label class="text-sevk">AÇIKLAMA</label></td>
 			</tr>
 			<%
 			    }
@@ -291,6 +292,7 @@ $("#mamulkod" ).autocomplete({
 	minLength	: 1,
 	select		: function(event, ui){
 		changefun(ui.item);
+		$(this).val(ui.item.value);
 	}
 });
 $("#mamulkod").change(function() {
@@ -308,8 +310,7 @@ function changefun(elem){
 	var found = false;
 	if (elem != null){
 		for (i in mamul) {
-			var b = elem.value.split("[");
-			if(b[0].trim() == mamul[i].mamulkod){
+			if(elem.value == mamul[i].mamulkod){
 				found = true;
 				//alert("selam kelam");
 				$("#mamulid").val(mamul[i].mamulid);
@@ -354,6 +355,15 @@ function findmamulkod(elemval){
 				break;
 			}
 		}
+	}
+}
+
+function changeStokButonText(){
+	if ($("#iade").prop("checked")){
+		$("#mamulstokekle").text("Düş");
+	}
+	else{
+		$("#mamulstokekle").text("Ekle");
 	}
 }
 </script>

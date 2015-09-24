@@ -33,6 +33,7 @@
 
 <%
     List<Irsaliye> irsaliye = (List<Irsaliye>) request.getAttribute("irsaliye");
+	List<Irsaliye> irsaliyekapali = (List<Irsaliye>) request.getAttribute("irsaliyekapali");           
 	List<IrsaliyeBilesen> irsaliyebilesenopen = (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesenopen");
 	List<IrsaliyeBilesen> irsaliyebilesencompleted = (List<IrsaliyeBilesen>) request.getAttribute("irsaliyebilesencompleted");
 	List<Stok> stok 	= (List<Stok>) request.getAttribute("stok");
@@ -44,6 +45,7 @@
 <%
     int acikirsaliyeid			= 0;
 	int acikirsaliyefirmaid		= 0;
+	String kapaliirsaliyeno		= "";
 	String acikirsaliyeno		= "";
 	String acikirsaliyeotarihi	= (String) (new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
 	for(IrsaliyeBilesen ib: irsaliyebilesenopen){
@@ -51,6 +53,11 @@
     	acikirsaliyefirmaid = ib.getIrsaliyefirmaid();
     	acikirsaliyeno		= ib.getIrsaliyeno();
     	acikirsaliyeotarihi = (String) (new SimpleDateFormat("dd-MM-yyyy").format(ib.getOlusturmatarihi()));
+    	break;
+	}
+	
+	for(Irsaliye ik: irsaliyekapali){
+	    kapaliirsaliyeno	= ik.getIrsaliyeno();
     	break;
 	}
 %>
@@ -102,13 +109,6 @@
 			</div>
 			
 			<div class="form-group">
-				<label for="irsaliyeno" class="text-baslik">İrsaliye No</label>
-				<div>
-					<input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno%>" <%=readonly%> placeholder="İrsaliye No" autocomplete="off">
-				</div>
-			</div>
-			
-			<div class="form-group">
 				<label for="firmaad" class="text-baslik">Müşteri</label>
 				<div>
 					<select class="form-control big" name="firmaid" id="firmaid" <%=disabled%> <%=readonly%>>
@@ -124,6 +124,21 @@
 						}
 					%>
 					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="irsaliyeno" class="text-baslik">İrsaliye No</label>
+				<div>
+					<input type="text" class="form-control xm" name="irsaliyeno" id="irsaliyeno" value="<%=acikirsaliyeno%>" <%=readonly%> placeholder="İrsaliye No" autocomplete="off">
+					<input type="hidden" name="acikirsaliyeno" id="acikirsaliyeno" value="<%=acikirsaliyeno%>">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="sonirsaliyeno" class="text-baslik">Son İrsaliye No</label>
+				<div>
+					<input type="text" class="form-control xs" name="sonirsaliyeno" id="sonirsaliyeno" value="<%=kapaliirsaliyeno%>" readonly="readonly" disabled="disabled">
 				</div>
 			</div>
 			
@@ -177,7 +192,7 @@
 			
 			<div class="clearfix"></div>
 			<%
-			    if(admin!=null && admin.equals("1")){
+			if(admin!=null && (admin.equals("1") || (admin.equals("3")))){
 			%>
 			<div class="form-group" style="margin:20px 0;">
 				<div>
@@ -239,7 +254,7 @@
 				<th>Sevk Adedi</th>
 				<th>Açıklama</th>
 				<%
-				    if(admin!=null && admin.equals("1")){
+					if(admin!=null && (admin.equals("1") || (admin.equals("3")))){
 				%>
 				<th class="text-center">Aksiyon</th>
 				<%
@@ -262,7 +277,7 @@
 				<td class="text-right"><%=ib.getMiktar()%></td>
 				<td><%=not%></td>
 				<%
-				    if(admin!=null && admin.equals("1")){
+				if(admin!=null && (admin.equals("1") || (admin.equals("3")))){
 				%>
 				<td class="text-center">
 					<div id="div<%=ib.getId()%>">
@@ -283,7 +298,7 @@
 	
 	<%
 		if (syc>0){
-	    if(admin!=null && admin.equals("1")){
+		    if(admin!=null && (admin.equals("1") || (admin.equals("3")))){
 	%>
 	<div class="row size12px">
 		<div class="form-group">
@@ -385,27 +400,31 @@
 	<script>
 	var today	= '<%= acikirsaliyeotarihi.equals("")?"today":acikirsaliyeotarihi %>';
 	$(function() {
+		
 		$('#tarih').datepicker({
 			inline: true,
 			format : 'dd-mm-yy',
 			firstDay:1,
 		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate",today);
+	
+		$("#mamulkod" ).autocomplete({
+			source		: mamul2,
+			minLength	: 1,
+			select		: function(event, ui){
+				//$("#go").removeAttr("disabled");
+				//console.log(ui.item.id);
+				//console.log(ui.item.value);
+				//console.log(event);
+				changefun(ui.item);
+				$(this).val(ui.item.value);
+			}
+		});
+	
+		$("#mamulkod").change(function() {
+			changefun(this);
+		});
 	});
-	$("#mamulkod" ).autocomplete({
-		source		: mamul2,
-		minLength	: 1,
-		select		: function(event, ui){
-			//$("#go").removeAttr("disabled");
-			//console.log(ui.item.id);
-			//console.log(ui.item.value);
-			//console.log(event);
-			changefun(ui.item);
-			$(this).val(ui.item.value);
-		}
-	});
-	$("#mamulkod").change(function() {
-		changefun(this);
-	});
+	
 	function changefun(elem){
 		var found = false;
 		if (elem != null){

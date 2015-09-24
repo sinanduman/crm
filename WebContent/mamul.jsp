@@ -223,7 +223,7 @@
 		<% 
 		if(admin!=null && admin.equals("1")){
 		%>
-		<div class="row" sytle="margin-bottom:5px;">
+		<div class="row" style="margin-bottom:5px;">
 			<div class="col-xs-5">
 				<button type="button" class="btn btn-danger" ng-click="saveMamul()">Mamül Ekle</button>
 				<input type="hidden" id="bilesen_length" name="bilesen_length" ng-model="bilesen_length" value="{{bilesenler.length}}">
@@ -342,15 +342,64 @@
 								<td><label class="text-danger">Tür</label></td>
 								<td><label class="text-danger">Birim</label></td>
 								<td><label class="text-danger">Miktarı</label></td>
+								<% if(admin!=null && admin.equals("1")){ %>
+								<td class="text-center"><label class="text-danger">Aksiyon</label></td>
+								<% } %>
 							</tr>
 							<% } %><%-- if tablo baslik --%>
-							<tr>
+							<tr id="tr_mam_bilesen_detay_<%= m.getId() %>_<%= j.getBilesenid() %>">
 								<td><%= sayacbilesen %></td>
 								<td><%= j.getBilesenad() %></td>
 								<td><%= j.getBilesenkod() %></td>
 								<td><%= j.getBilesentipad() %></td>
 								<td><%= j.getBirimad() %></td>
-								<td><%= (Math.round(j.getMiktar()) == j.getMiktar()) ? Math.round(j.getMiktar()) +"" : j.getMiktar() %></td>
+								<td>
+								<%
+								/* Hammadde Gramaj Guncelleme*/
+								if(j.getBilesentipid()==1){
+								    String val = "";
+								  	if(j.getMiktar().intValue() == j.getMiktar()){
+										Integer vale= j.getMiktar().intValue();
+										val			= vale.toString();
+								  	}
+								  	else{
+										Float vale	= j.getMiktar();
+										val			= vale.toString();
+								  	}
+								%>
+									<% if(admin!=null && admin.equals("1")){ %>
+									<input type="text" class="form-control xs" value="<%= val %>" name="mamulbilesen_miktar<%= j.getBilesenid() %>" id="mamulbilesen_miktar<%= j.getBilesenid() %>">
+									<% } else { %>
+									<%= j.getMiktar() %>
+									<% } %>
+								<%
+								}
+								else{
+								    %>
+								    <% if(admin!=null && admin.equals("1")){ %>
+								    <select class='form-control xs' name='mamulbilesen_miktar<%= j.getBilesenid() %>' id='mamulbilesen_miktar<%= j.getBilesenid() %>'>
+								    <%
+								    for(int t = 1; t <= 10 ; t++){
+								        if(j.getMiktar().intValue() == t){
+								            out.print("<option value='"+ t +"' selected>"+ t +"</option>" );
+								        }
+								        else{
+								            out.print("<option value='"+ t +"'>"+ t +"</option>" );
+								        }
+								    }
+								    %>
+								    </select>
+								    <% } else { %>
+									<%= j.getMiktar().intValue() %>
+									<% } %>
+								    <%
+								}
+								%>								
+								</td>
+								<% if(admin!=null && admin.equals("1")){ %>
+								<td class="text-center"><a href="javascript:updateMamulBilesenGo('mamul',<%=m.getId()%>,<%=j.getBilesenid()%>,document.action_form<%=m.getId()%>.mamulbilesen_miktar<%= j.getBilesenid() %>,2);" title="Güncelle"><span class="fa fa-refresh fa-lg text-warning"></span></a></td>
+								<% } %>
+								
 							</tr>
 							<% } %><%-- if  j== m--%>
 							<% } %> <%-- mamulbilesen --%>

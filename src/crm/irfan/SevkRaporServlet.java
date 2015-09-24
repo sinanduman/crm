@@ -15,6 +15,7 @@ import crm.irfan.entity.Irsaliye;
 import crm.irfan.entity.IrsaliyeBilesen;
 import crm.irfan.entity.IrsaliyeTip;
 import crm.irfan.entity.LogMod;
+import crm.irfan.entity.Mamul;
 
 public class SevkRaporServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -39,6 +40,7 @@ public class SevkRaporServlet extends HttpServlet {
         String irsaliyeno   = request.getParameter("irsaliyeno");
         String firmaid      = request.getParameter("firmaid");
         String tarih        = request.getParameter("tarih");
+        String mamulid      = request.getParameter("mamulid");
         String page         = request.getParameter("page");
         String excelsql     = "";
         
@@ -50,10 +52,12 @@ public class SevkRaporServlet extends HttpServlet {
         int noofpages   = 0;
         int page0       = 1;
         
+        List<Mamul> mamul = new ArrayList<Mamul>();
+        mamul = DAOFunctions.mamulListeGetir(null, 0);
+        
         List<Irsaliye> irsaliyejson = new ArrayList<Irsaliye>();
         irsaliyejson = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, 0, null, null, null);
         
-        List<Irsaliye> irsaliye = new ArrayList<Irsaliye>();
         List<IrsaliyeBilesen> irsaliyebilesenonaylandi = new ArrayList<IrsaliyeBilesen>();
         
         if(raporgetirid!=null || page != null ) {
@@ -62,6 +66,7 @@ public class SevkRaporServlet extends HttpServlet {
             String filter1          = "";
             String filter2          = "";
             String filter3          = "";
+            String filter4          = "";
             String andYes           = " AND ";
             if(irsaliyeid!=null && Util.isNumeric(irsaliyeid)) {
                 filter1     = andYes + " id = " + Integer.valueOf(irsaliyeid);
@@ -81,7 +86,13 @@ public class SevkRaporServlet extends HttpServlet {
             else {
                 tarih=null;
             }
-            filter0 = filter1 + filter2 + filter3;
+            if(mamulid!=null && Util.isNumeric(mamulid) ) {
+                filter4     = andYes + " exists (select 1 from irsaliyebilesen ib where irsaliye.id = ib.irsaliyeid and ib.mamulid = " + Integer.valueOf(mamulid) + ")";
+            }
+            else {
+                tarih=null;
+            }
+            filter0 = filter1 + filter2 + filter3 + filter4;
             
             // PAGING
             totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1" + filter0 );
@@ -90,29 +101,29 @@ public class SevkRaporServlet extends HttpServlet {
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
             
-            irsaliye = DAOFunctions.irsaliyeListeGetirTum(IrsaliyeTip.ONAYLANDI, page0, irsaliyeid, firmaid, tarih);
-            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeGetirTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih, page0);
-
-            if (Genel.LOGMOD==LogMod.DEBUG) {
-                System.out.println("noofpages: "+ noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1" + filter0 );
+            if (Genel.LOGMOD == LogMod.DEBUG) {
+                System.out.println("noofpages: " + noofpages + ", totalrecord: " + totalrecord + ", " + tablename + " WHERE 1=1" + filter0);
             }
+            
+            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih, page0, mamulid);
 
             excelsql = filter0;
         }
         
+        request.setAttribute("mamul", mamul);
         request.setAttribute("firma", firma);
         request.setAttribute("irsaliyeid", irsaliyeid);
         request.setAttribute("irsaliyeno", irsaliyeno);
-        request.setAttribute("irsaliye", irsaliye);
         request.setAttribute("irsaliyejson", irsaliyejson);
         request.setAttribute("irsaliyebilesenonaylandi", irsaliyebilesenonaylandi);
         request.setAttribute("firmaid", firmaid);
         request.setAttribute("tarih", tarih);
+        request.setAttribute("mamulid", mamulid);
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page0);
         request.setAttribute("noofpages", noofpages);
         request.setAttribute("excelsql", excelsql);        
-        request.getRequestDispatcher("sevkrapor.jsp").forward(request, response);   
+        request.getRequestDispatcher("sevkrapor.jsp").forward(request, response);
     }
     
 }

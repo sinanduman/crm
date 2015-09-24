@@ -42,7 +42,7 @@ public class UretimRaporServlet extends HttpServlet {
         makina = DAOFunctions.makinaListeGetirTum(0);
         
         List<Calisan> calisan = new ArrayList<Calisan>();
-        calisan = DAOFunctions.calisanListeGetirTum(0);
+        calisan = DAOFunctions.calisanListeGetirTum(0, null);
         
         List<Firma> firma = new ArrayList<Firma>();
         firma = DAOFunctions.firmaListeGetirTum(0);
@@ -64,6 +64,7 @@ public class UretimRaporServlet extends HttpServlet {
             String filter4          = "";
             String filter5          = "";
             String andYes           = " AND ";
+            
             if(bilesenid!=null && !bilesenid.equals("") ) {
                 filter1     = andYes + " mamulid = " + Integer.valueOf(bilesenid);
             }
@@ -80,12 +81,14 @@ public class UretimRaporServlet extends HttpServlet {
                 filter5     = andYes + " ( tarih BETWEEN '" + Util.date_tr_to_eng(bas_tarih) + "' AND '" + Util.date_tr_to_eng(bit_tarih) +"')";
             }
             filter0 = filter1 + filter2 + filter3 + filter4 + filter5;
+            
             // PAGING
             totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1" + filter0 );
             if(request.getParameter("page") != null)
-                page0   = Integer.parseInt(request.getParameter("page"));            
+                page0   = Integer.parseInt(page);
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
+            
             stokrapor   = DAOFunctions.uretimBilesenRapor(tablename, page0, filter0);
             System.out.println("noofpages: "+ noofpages + ", totalrecord: "+ totalrecord + ", " + tablename + " WHERE 1=1" + filter0 );
             excelsql = filter0;

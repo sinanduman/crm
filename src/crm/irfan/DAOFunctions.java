@@ -24,6 +24,7 @@ import crm.irfan.entity.HataSebep;
 import crm.irfan.entity.Irsaliye;
 import crm.irfan.entity.IrsaliyeBilesen;
 import crm.irfan.entity.IrsaliyeTip;
+import crm.irfan.entity.IzlemeNo;
 import crm.irfan.entity.LogMod;
 import crm.irfan.entity.Makina;
 import crm.irfan.entity.Mamul;
@@ -184,11 +185,12 @@ public class DAOFunctions {
 		return result;
 	}
 
-	protected static List<Calisan> calisanListeGetirTum(int offset) {
+	protected static List<Calisan> calisanListeGetirTum(int offset, Integer durum) {
 		List<Calisan> temp= new ArrayList<Calisan>();
 		conn              = ConnectionManager.getConnection();	
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
-		String searchQuery= "select * from irfan.calisan order by ad ASC " + pageFilter;
+		String durumFilter= (durum != null && durum == 1)?" where durum = 1 ":"";
+		String searchQuery= "select * from irfan.calisan " + durumFilter + " order by ad ASC " + pageFilter;
 
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -201,7 +203,8 @@ public class DAOFunctions {
 								rs.getInt("id"), 
 								rs.getString("ad"), 
 								rs.getString("soyad"), 
-								rs.getString("gorev")
+								rs.getString("gorev"),
+								rs.getInt("durum")
 								)
 				);
 			}
@@ -570,29 +573,101 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
+	
+	protected static List<Stok> stokListeRapor(String tablename, int offset, String filterPage) {
+	    
+	    
+        List<Stok> temp   = new ArrayList<Stok>();
+        conn              = ConnectionManager.getConnection();
+        
+        String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+        String filter0        = filterPage;
+
+        String searchQuery    = "SELECT e.*, f.ad firmaad FROM irfan."+ tablename + " e JOIN irfan.firma f on f.id = e.firmaid"                     
+                            + " WHERE 1=1 " + filter0 + " and islemyonu = 0"
+                            + " ORDER BY e.giristarihi, e.id "
+                            + pageFilter;
+        
+        System.out.println(searchQuery);
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(searchQuery);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                temp.add(new Stok(
+                                rs.getInt("id"), 
+                                rs.getInt("bilesenid"), 
+                                rs.getString("bilesenad"),
+                                rs.getString("bilesenkod"),
+                                rs.getInt("bilesentipid"),
+                                rs.getString("bilesentipad"),
+                                rs.getInt("birimid"),
+                                rs.getString("birimad"),
+                                rs.getInt("firmaid"),
+                                rs.getString("firmaad"),
+                                rs.getInt("miktar"),
+                                null, //rs.getInt("kalan"), 
+                                rs.getString("gkrno"), 
+                                rs.getString("irsaliyeno"), 
+                                rs.getString("lot"), 
+                                rs.getTimestamp("giristarihi"), 
+                                rs.getTimestamp("cikistarihi"), 
+                                rs.getString("not"),
+                                null, //rs.getString("miktarstr"), 
+                                null, //rs.getString("gkrnostr"), 
+                                null, //rs.getString("stokidstr"), 
+                                rs.getInt("islemyonu"),
+                                null //rs.getString("mamulkod")
+                                ));
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
 
 
-	protected static List<Stok> stokListeGetirTum(BilesenTip bilesentip, Integer bilesenid, int offset, Map<String,Integer> param) {
+	protected static List<Stok> stokListeGetirTum(BilesenTip bilesentip, Integer bilesenid, int offset, Map<String,String> param) {
 		List<Stok> temp   = new ArrayList<Stok>();
 		conn              = ConnectionManager.getConnection();
 		Integer rowperpage= Genel.ROWPERPAGE;
+		String where      = " where 1=1 ";
+		
 		if(param!=null) {
-		    rowperpage    = param.get("rowperpage");
+		    rowperpage    = Integer.valueOf(param.get("rowperpage"));
 		}
+		
 		String pageFilter = (offset==0)?"":" offset " + (offset-1) * rowperpage + " limit " + rowperpage;
 	
 		String join0	= (bilesentip!=null && bilesentip.value()==BilesenTip.MAMUL.value())?"join irfan.mamul b on b.id=s.bilesenid ":"join irfan.bilesen b on b.id=s.bilesenid ";
-		String filter0  = (bilesentip==null) ? "" : "where b.bilesentipid IN (" + bilesentip.id() + ") ";
+		String filter0  = (bilesentip==null) ? "" : "and b.bilesentipid IN (" + bilesentip.id() + ") ";
+		
 		if(bilesenid!=0) {
-			if(filter0.equals("")) {
-				filter0 = "where s.bilesenid = " + bilesenid + " ";
-			}
-			else {
-				filter0 = filter0 + " and s.bilesenid = " + bilesenid + " ";
-			}		
+		    filter0 = filter0 + " and s.bilesenid = " + bilesenid + " ";
 		}
-		String filter1  = (param==null)?"":
-		    (filter0.equals(""))?"where islemyonu="+ param.get("islemyonu"):" and islemyonu="+ param.get("islemyonu");
+		
+		String filter1    = (param==null) ? " " : " and islemyonu="+ param.get("islemyonu");
+		
+		String filter2    = (param==null) ? " " :
+		                    (param.get("bas_tarih")!=null) ? " and ( giristarihi BETWEEN '" + 
+                            Util.date_tr_to_eng(param.get("bas_tarih")) + 
+                            "' AND '" + 
+                            Util.date_tr_to_eng(param.get("bit_tarih")) + 
+                            "')": "";
 
 		String searchQuery = "select m2.kod mamulkod, s.*, "
 						+ "b.ad bilesenad, b.kod bilesenkod, "
@@ -607,7 +682,7 @@ public class DAOFunctions {
 						+ "join irfan.bilesentip bt on bt.id = b.bilesentipid "
 						+ "left join irfan.birim br on br.id = b.birimid "
 						+ "join irfan.firma f on f.id = b.firmaid "
-						+ filter0 + filter1
+						+ where + filter0 + filter1 + filter2
 						+ "order by case when s.islemyonu=0 then date(s.giristarihi) else date(s.cikistarihi) end desc, id desc "
 						+ pageFilter;
 		
@@ -721,6 +796,52 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
+	
+	protected static List<IzlemeNo> izlemeNoTum(String tablename, String filter, int offset) {
+        List<IzlemeNo> temp = new ArrayList<IzlemeNo>();
+        conn = ConnectionManager.getConnection();
+    
+        String pageFilter   = (offset==0)?"":" OFFSET " + (offset-1) * Genel.ROWPERLONGPAGE + " LIMIT " + Genel.ROWPERLONGPAGE;
+
+        String searchQuery = "SELECT * FROM (SELECT * FROM " + tablename + ") e" 
+                        + " WHERE 1=1 " + filter
+                        + " ORDER BY e.kullanildi_tarih DESC, e.gkrno DESC"
+                        + pageFilter;
+
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(searchQuery);
+            System.out.println(pstmt);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                temp.add(new IzlemeNo(
+                                rs.getInt("id"),
+                                rs.getInt("gkrno"),
+                                rs.getDate("kullanildi_tarih"),
+                                rs.getString("kod"),
+                                rs.getString("ad"),
+                                rs.getInt("miktar"),
+                                rs.getInt("kullanildi")
+                                ));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
 	
 	protected static List<StokRapor> stokBilesenDetayRapor(String tablename, String filter, int offset, int bilesenid) {
         List<StokRapor> temp= new ArrayList<StokRapor>();
@@ -2199,6 +2320,60 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
+	
+	protected static List<Irsaliye> irsaliyeListeGetirKapaliTum(IrsaliyeTip irsaliyetip, int offset) {
+        List<Irsaliye> temp = new ArrayList<Irsaliye>();
+        conn = ConnectionManager.getConnection();
+    
+        String pageFilter     = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+
+        String searchQuery = "select i.*, f.ad firmaad from irfan.irsaliye i "
+                        //+ "join irfan.irsaliyebilesen ib on ib.irsaliyeid = i.id "
+                        + "left join firma f on f.id=i.firmaid "
+                        + "where i.kapatildi= ? "
+                        + "order by i.id DESC "
+                        + pageFilter;
+        
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+
+            pstmt = conn.prepareStatement(searchQuery);
+            pstmt.setInt(1, irsaliyetip.value());
+            
+            if (Genel.LOGMOD==LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+            
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+                temp.add(new Irsaliye(
+                                rs.getInt("id"), 
+                                rs.getString("irsaliyeno"), 
+                                rs.getTimestamp("olusturmatarihi"), 
+                                rs.getTimestamp("gonderimtarihi"),
+                                rs.getInt("firmaid"),
+                                rs.getString("firmaad")
+                                )
+                );
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
 
 	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeGetirTum(IrsaliyeTip irsaliyetip, int onaylandi, String irsaliyeid, String firmaid, String tarih, int offset) {
 		List<IrsaliyeBilesen> temp = new ArrayList<IrsaliyeBilesen>();
@@ -2266,6 +2441,79 @@ public class DAOFunctions {
 		}
 		return temp;
 	}
+	
+	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeTum(IrsaliyeTip irsaliyetip, int onaylandi, String irsaliyeid, String firmaid, String tarih, int offset, String mamulid) {
+        List<IrsaliyeBilesen> temp = new ArrayList<IrsaliyeBilesen>();
+        conn                    = ConnectionManager.getConnection();
+        String pageFilter       = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
+        String irsaliyeFilter   = (irsaliyeid==null || irsaliyeid.equals(""))?"":" and e.id = " + Integer.valueOf(irsaliyeid) + " ";
+        String tarihFilter      = (tarih==null || tarih.equals(""))?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
+        String firmaFilter      = (firmaid==null || firmaid.equals(""))?"":" and e.firmaid = " + Integer.valueOf(firmaid) + " ";
+        String mamulFilter      = (mamulid==null || mamulid.equals(""))?"":" where ib.mamulid = " + Integer.valueOf(mamulid) + " "; 
+        String mamulFilterIrs   = (mamulid==null || mamulid.equals(""))?"":" and exists (select 1 from irsaliyebilesen ib where e.id = ib.irsaliyeid and ib.mamulid = " + Integer.valueOf(mamulid) + ") "; 
+        
+        /* acik olan irsaliye bilsenlerini getirir */
+        String searchQuery = "select ib.*, i.olusturmatarihi, i.gonderimtarihi, i.irsaliyeno, i.firmaid irsaliyefirmaid, "
+                        + "m.ad mamulad, m.kod mamulkod, f.id firmaid, f.ad firmaad "
+                        + "from irfan.irsaliyebilesen ib "                      
+                        + "join (select * "
+                                + "from irfan.irsaliye e "
+                                + "where e.kapatildi=? and e.onaylandi=? "+ firmaFilter + irsaliyeFilter + tarihFilter + mamulFilterIrs + " "
+                                + "order by e.id DESC "+ pageFilter +" ) i on i.id=ib.irsaliyeid "
+                        + "join irfan.mamul m on m.id = ib.mamulid "
+                        + "join irfan.firma f on f.id = m.firmaid "
+                        + mamulFilter + " "
+                        + "order by i.id desc, ib.id ";
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt= conn.prepareStatement(searchQuery);
+            pstmt.setInt(1, irsaliyetip.value());
+            pstmt.setInt(2, onaylandi);
+            
+            if (Genel.LOGMOD==LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+            
+            rs   = pstmt.executeQuery();
+
+            while (rs.next()) {
+                temp.add(new IrsaliyeBilesen(
+                                rs.getInt("id"),
+                                rs.getInt("irsaliyeid"),
+                                rs.getString("irsaliyeno"),
+                                rs.getInt("firmaid"),
+                                rs.getString("firmaad"),
+                                rs.getInt("mamulid"),
+                                rs.getString("mamulad"),
+                                rs.getString("mamulkod"),
+                                rs.getInt("gkrno"),
+                                rs.getInt("stokid"),
+                                rs.getInt("miktar"),
+                                rs.getTimestamp("olusturmatarihi"), 
+                                rs.getTimestamp("gonderimtarihi"),
+                                rs.getString("not"),
+                                rs.getInt("irsaliyefirmaid")
+                                )
+                );
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
 
 	protected static String IrsaliyeSil(String irsaliyeid) {
 
@@ -2315,6 +2563,40 @@ public class DAOFunctions {
             pstmt.setInt(1, Integer.valueOf(irsaliyebilesenid));
             
             result = pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+	
+	protected static String IrsaliyeNoKontrol(String irsaliyeno) {
+
+        conn = ConnectionManager.getConnection();
+        String result       = "0";
+        String updateQuery  = "select count(*) from irfan.irsaliye where trim(irsaliyeno) = ?";
+    
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);
+            pstmt.setString(1, irsaliyeno);
+            
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                result = rs.getString(1);
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -2463,12 +2745,193 @@ public class DAOFunctions {
 		}
 		return result;
 	}
+	protected static List<IzlemeNo> IzlemeNoUret(String mamulid, String kullanildi) {
+	    
+	    List<IzlemeNo> temp = new ArrayList<IzlemeNo>();
+        conn = ConnectionManager.getConnection();
+        String updateQuery  = "insert into irfan.izlemeno (mamulid) values(?)";
+    
+        // connect to DB
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);            
+            pstmt.setInt(1, Integer.valueOf(mamulid));            
+            pstmt.executeUpdate();
+
+            temp = IzlemeNoKontrol(mamulid, kullanildi);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
+	
+	protected static List<IzlemeNo> IzlemeNoKontrol(String mamulid, String kullanildi) {
+	    
+	    List<IzlemeNo> temp = new ArrayList<IzlemeNo>();
+        conn = ConnectionManager.getConnection();
+        String updateQuery  = "select i.*, m.ad mamulad, m.kod mamulkod "
+                        + "from irfan.izlemeno i "
+                        + "join irfan.mamul m on m.id=i.mamulid "
+                        + "where mamulid = ? and kullanildi <= ? order by gkrno desc limit 10";
+    
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);            
+            pstmt.setInt(1, Integer.valueOf(mamulid));
+            pstmt.setInt(2, Integer.valueOf(kullanildi));
+            System.out.println(pstmt);
+            rs = pstmt.executeQuery();
+            
+            System.out.println(pstmt);
+            
+            while (rs.next()) {
+                temp.add(new IzlemeNo(                    
+                                rs.getInt("mamulid"),
+                                rs.getInt("gkrno"),
+                                rs.getDate("kullanildi_tarih"),                                 
+                                rs.getString("mamulkod"),
+                                rs.getString("mamulad"),
+                                Integer.valueOf(0), /* Ilk Uretim */
+                                rs.getInt("kullanildi")                                
+                                )
+                );
+            }
+            
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
+	
+	protected static List<IzlemeNo> IzlemeNoSil(String mamulid, String gkrno, String kullanildi) {
+        
+	    List<IzlemeNo> temp = new ArrayList<IzlemeNo>();
+        conn = ConnectionManager.getConnection();
+        String updateQuery  = "delete from irfan.izlemeno where mamulid = ? and gkrno = ? and kullanildi = 0";
+    
+        // connect to DB
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);
+            pstmt.setInt(1, Integer.valueOf(mamulid));
+            pstmt.setInt(2, Integer.valueOf(gkrno));
+            pstmt.executeUpdate();
+            if (Genel.LOGMOD == LogMod.DEBUG) {
+                System.out.println(pstmt);
+            }
+            temp = IzlemeNoKontrol(mamulid, kullanildi);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp;
+    }
+	
+	protected static String StokKontrol(String tarih, String gkrno, String miktar, String iade, String bilesentipid) {
+
+        conn = ConnectionManager.getConnection();
+        Integer sum         = null;
+        String result       = "0";
+        String updateQuery  = "select sum(case when islemyonu = 0 then miktar else -1*miktar end) "
+                        + "from irfan.stok "
+                        + "where gkrno = ? and exists "
+                        + "(select 1 from irfan.stok where gkrno = ? and islemyonu = 0 and (date(giristarihi) = ? or date(cikistarihi) = ?)) "
+                        + "group by gkrno ";
+    
+        // connect to DB
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);            
+            pstmt.setInt(1, Integer.valueOf(gkrno));
+            pstmt.setInt(2, Integer.valueOf(gkrno));
+            pstmt.setDate(3, Date.valueOf(Util.date_tr_to_eng(tarih)));
+            pstmt.setDate(4, Date.valueOf(Util.date_tr_to_eng(tarih)));
+            
+            rs = pstmt.executeQuery();
+            
+            System.out.println(pstmt);
+            
+            if(rs.next()) {
+                sum = rs.getInt(1);
+            }
+            
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (Boolean.valueOf(iade)) {
+            if(sum == null)
+                sum = 0;
+                String resStr = "";
+                Double hammaddeMiktar = 0.0;            
+            if (Integer.valueOf(miktar) > sum) {
+                resStr = sum.toString();
+                /* Donus degerinin KG olarak verilmesi icin */
+                if(bilesentipid.equals("1")) {
+                    hammaddeMiktar= Util.Round((Double.valueOf(sum) / Double.parseDouble("1000.0")),2.0);
+                    resStr = hammaddeMiktar.toString() + " Kg";
+                }                
+                result = Util.getTarihTRShort(Date.valueOf(Util.date_tr_to_eng(tarih))) + " tarihli stok miktarı " + resStr + ". İade işlemini gözden geçirin!";
+            }
+        }
+        else {
+            if (sum == null) {
+                result = Util.getTarihTRShort(Date.valueOf(Util.date_tr_to_eng(tarih)))  + " tarihinde bir üretim yok!";
+            }
+        }
+        return result;
+    }	
 
 	protected static String calisanSil(String id) {
 
 		conn	 = ConnectionManager.getConnection();
-		String result	   = "0";
-		String updateQuery  = "select irfan.calisan_sil(?)";
+		String result     = "0";
+		String updateQuery= "select irfan.calisan_sil(?)";
 		// connect to DB
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2501,8 +2964,8 @@ public class DAOFunctions {
 	protected static String firmaSil(String id) {
 
 		conn	 = ConnectionManager.getConnection();
-		String result	   = "0";
-		String updateQuery  = "select irfan.firma_sil(?)";
+		String result     = "0";
+		String updateQuery= "select irfan.firma_sil(?)";
 		// connect to DB
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2536,8 +2999,8 @@ public class DAOFunctions {
 	protected static String makinaSil(String id) {
 
 		conn	 = ConnectionManager.getConnection();
-		String result	   = "0";
-		String updateQuery  = "select irfan.makina_sil(?)";
+		String result     = "0";
+		String updateQuery= "select irfan.makina_sil(?)";
 		// connect to DB
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2611,7 +3074,7 @@ public class DAOFunctions {
 		return result;
 	}
 
-	protected static String calisanGuncelle(String id, String ad, String soyad, String gorev) {
+	protected static String calisanGuncelle(String id, String ad, String soyad, String gorev, String durum) {
 
 	    conn	          = ConnectionManager.getConnection();
 		String result	  = "0";
@@ -2619,7 +3082,8 @@ public class DAOFunctions {
 						+ "set "
 						+ "ad = ? ,"
 						+ "soyad  = ? ,"
-						+ "gorev  = ? "
+						+ "gorev  = ? ,"
+						+ "durum  = ? "
 						+ "where id = ?";
 
 		// connect to DB
@@ -2629,7 +3093,8 @@ public class DAOFunctions {
 			pstmt.setString(1, ad);
 			pstmt.setString(2, soyad);
 			pstmt.setString(3, gorev);
-			pstmt.setInt(4, Integer.valueOf(id));
+			pstmt.setInt(4, Integer.valueOf(durum));
+			pstmt.setInt(5, Integer.valueOf(id));
 			System.out.println(pstmt);
 			pstmt.executeUpdate();
 		}
@@ -2811,6 +3276,39 @@ public class DAOFunctions {
 		}
 		return result;
 	}
+	
+	protected static String mamulBilesenGuncelle(String mamulid, String bilesenid, String miktar) {
+
+        conn              = ConnectionManager.getConnection();
+        String result     = "0";
+        String updateQuery= "update irfan.mamulbilesen set miktar = ? where mamulid = ? and bilesenid = ? ";
+
+        // connect to DB
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(updateQuery);
+            pstmt.setFloat(1, Float.valueOf(miktar));            
+            pstmt.setInt(2, Integer.valueOf(mamulid));
+            pstmt.setInt(3, Integer.valueOf(bilesenid));
+
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            result = e.getMessage();
+        }
+        finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
 	public static int recordCount(String tablename, String filter) {
 		int result        = 0;
@@ -2848,9 +3346,9 @@ public class DAOFunctions {
 	public static int recordAgg(String tablename, String aggfunc, String aggfield, String filter) {
 		int result        = 0;
 		conn              = ConnectionManager.getConnection();
-		String selectQuery= "select "+ aggfunc +"(" + aggfield + ")"+" from irfan." + tablename  + filter;
+		String selectQuery= "select "+ aggfunc +"(" + aggfield + ")"+" from " + tablename  + filter;
 		//System.out.println(selectQuery);
-
+		System.out.println(selectQuery);
 		// connect to DB
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

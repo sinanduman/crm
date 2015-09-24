@@ -5,6 +5,7 @@ public class Calisan {
     private String  ad;
     private String  soyad;
     private String  gorev;
+    private Integer durum;
     
     public Calisan() {
     }
@@ -49,10 +50,19 @@ public class Calisan {
         return ad.substring(0, 1) + "." + soyad;
     }
     
-    public Calisan(Integer id, String ad, String soyad, String gorev) {
+    public Integer getDurum() {
+        return durum;
+    }
+
+    public void setDurum(Integer durum) {
+        this.durum = durum;
+    }
+
+    public Calisan(Integer id, String ad, String soyad, String gorev, Integer durum) {
         this.id = id;
         this.ad = ad;
         this.soyad = soyad;
         this.gorev = gorev;
+        this.durum = durum;
     }
 }

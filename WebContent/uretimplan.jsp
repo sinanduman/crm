@@ -237,6 +237,9 @@
 
 				<div class="clearfix"></div>
 				
+				<%
+					if(admin!=null && (admin.equals("1") || (admin.equals("2")))){
+				%>
 				<div class="form-group" style="margin:10px 0;">
 					<div>
 						<input type="hidden" name="uretimplanid" id="uretimplanid" value="0">
@@ -245,8 +248,10 @@
 					</div>
 				</div>
 
-				<div class="clearfix">
-				</div>
+				<div class="clearfix"></div>
+				<%
+				    }
+				%>
 
 			</form>
 		</div>

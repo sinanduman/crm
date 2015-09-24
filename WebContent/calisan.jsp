@@ -103,6 +103,7 @@
 					<td><label class="text-success">Adı</label></td>
 					<td><label class="text-success">Soyadı</label></td>
 					<td><label class="text-success">Görev</label></td>
+					<td><label class="text-success">Aktif</label></td>
 					<% 
 					if(admin!=null && admin.equals("1")){
 					%>
@@ -111,10 +112,30 @@
 				</tr>
 				<% } %>
 				<form name="action_form<%=c.getId()%>" id="action_form<%=c.getId()%>">
-				<tr id="tr<%=c.getId() %>">
+				<tr id="tr<%=c.getId() %>" <% if(c.getDurum() == 0){ out.print("style='background-color:silver;'");} %>>
 					<td><input type="text" class="form-control" value="<%= c.getAd() %>" name="liste_calisanad" id="liste_calisanad" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= c.getSoyad() %>" name="liste_calisansoyad" id="liste_calisansoyad" autocomplete="off"></td>
 					<td><input type="text" class="form-control" value="<%= c.getGorev() %>" name="liste_calisangorev" id="liste_calisangorev" autocomplete="off"></td>
+					<td>
+						<div class="form-group">
+							<div>
+								<select class="form-control xs" name="liste_calisandurum" id="liste_calisandurum" >
+									<%							
+									    if( c.getDurum() == 1){
+									        out.println("<option value='"+ 1 + "' selected>Aktif</option>");
+									        out.println("<option value='"+ 0 + "'>Pasif</option>");
+									    }
+									    else{
+									        out.println("<option value='"+ 0 + "' selected>Pasif</option>");
+									        out.println("<option value='"+ 1 + "'>Aktif</option>");
+									    }
+									%>
+								</select>
+							</div>
+						</div>
+					</td>
+					
+					
 					<% 
 					if(admin!=null && admin.equals("1")){
 					%>

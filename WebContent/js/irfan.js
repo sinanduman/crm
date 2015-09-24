@@ -141,3 +141,90 @@ $("#exceleaktar_mamul").click(function(){
 		$("#excelform").submit();
 	}
 });
+$("#exceleaktar_gkrliste").click(function(){
+	if(confirm("GKR Liste Raporu Excel'e aktarılsın mı?\n")){
+		$("#excelegonder").val(1);
+		$("#excelform").submit();
+	}
+});
+
+$("#exceleaktar_izlemeno").click(function(){
+	if(confirm("İzleme No Raporu Excel'e aktarılsın mı?\n")){
+		$("#excelegonder").val(1);
+		$("#excelform").submit();
+	}
+});
+function izlemeNoTest(mamulid, islemid, kullanildi, inputbox, gkrno){
+	if(confirm(gkrno + " ID'li İzleme No'yu SİLMEK istediğinden emin misin?")){
+		/* Uretim No Sil */
+		izlemeNoKontrol(mamulid, islemid, kullanildi, inputbox, gkrno);
+	}
+}
+function izlemeNoKontrol(mamulid, islemid, kullanildi, inputbox, gkrno){
+	var f_mamulid	= mamulid;
+	var f_islem		= islemid; /* 1:Yeni Kayit, 3:Kayit Sil, 6:Kontrol */
+	var f_kullanildi= kullanildi; /* 0:Kullanilmadi, 1:Kullanildi */
+	var f_gkrno		= gkrno; /* Sadece Silme Isleminde Anlamli, Digerlerinde degeri: 0*/
+	
+	if(!is_empty(mamulid)){
+		$.ajax({
+			url: "izlemeno",
+			type: "POST",
+			data: { 
+				mamulid:	f_mamulid, 
+				islemid:	f_islem,
+				kullanildi:	f_kullanildi,
+				gkrno:		f_gkrno
+			},
+			beforeSend: function ( xhr ) {
+			},
+			success: function(data, textStatus, xhr) {
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
+			}
+		}).done(function( msg ) {
+			
+			var obj = $.parseJSON( msg );
+			
+			if(f_islem == "3"){				
+				var trbox = eval("'#tr" + f_mamulid +"_" + f_gkrno + "'");
+				$(trbox).hide();
+			}
+			
+			if(f_islem == "1"){
+				
+				var strTR = "\"<tr id='tr" + obj[0].mamulid + "_" +obj[0].gkrno + "'>" +
+				"<td>" + obj[0].kullanildi_tarih + "</td>" +
+				"<td>" + obj[0].gkrno + "</td>" +
+				"<td>" + obj[0].mamulkod + "</td>" +
+				"<td>" + obj[0].mamulad + "</td>" +
+				"<td class='text-right'>" + "0 Ad." + "</td>" +
+				"<td class='text-center'>" + 
+				"<a href=\"javascript:izlemeNoTest(" + obj[0].mamulid +","+3+","+0+ ",'#gkrno',"+ obj[0].gkrno+");\" title='İzleme No Sil'><span class='fa fa-minus-circle fa-lg text-danger'></span></a>" +
+				"</td></tr>\"";
+				//console.log(obj[0]);
+				//console.log(strTR);
+				$("#izlemenotable tr:first").after(strTR);
+			}
+			
+			var inputbox_option = eval("'" + inputbox + " option'");
+			//console.log(inputbox_option);
+			$(inputbox_option).remove();
+
+			//var gkrno  = mamul[i].gkrno.split(";");
+			//var miktar = mamul[i].miktar.split(";");
+			//var used = jQuery.parseJSON('{"0":"Kullanılmadı", "1":"Kullanıldı"}');
+			var option = "";
+			for(var i = 0; i < obj.length; i++) {
+				// console.log(obj[i]);
+				var kullanildi ="";
+				if(obj[i].kullanildi=="1"){
+					kullanildi = " (*)";
+				}
+				option += '<option value="'+ obj[i].gkrno + '">' + obj[i].gkrno + " -> " + obj[i].kullanildi_tarih + kullanildi + '</option>';
+			}
+			$(inputbox).append(option);
+		});
+	}
+}

@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" href="css/irfan.css?<%=System.currentTimeMillis()%>">
+	<link rel="stylesheet" href="css/irfan.css">
 	<link rel="stylesheet" href="css/fonts.css">
 	<link rel="stylesheet" href="css/font-awesome.css">
 	<link rel="stylesheet" href="css/jquery-ui-1.10.0.custom.css">
@@ -65,7 +65,7 @@
 	var bilesen2 = [
 	<%delimeter = "";
 	for (Bilesen b : hammadde) {
-		out.println(delimeter + " { label:'" + b.getKod() + " ["+b.getAd().replaceAll("'", "") +"]',id:" + b.getId() + "}");
+	    out.println(delimeter + " { value:'"+ b.getKod() + "',label:'" + b.getKod() + " ["+b.getAd().replaceAll("'", "") +"]',id:" + b.getId() + "}");
 		delimeter = ",";
 	}%>];
 
@@ -86,6 +86,7 @@
 				<div>
 					<input type="text" class="form-control big" name="bilesenkod" id="bilesenkod" placeholder="Malzeme Kodu" autocomplete="off">
 					<input type="hidden" name="bilesenid" id="bilesenid">
+					<input type="hidden" name="bilesentipid" id="bilesentipid">
 				</div>
 			</div>
 			
@@ -116,17 +117,19 @@
 			<div class="clearfix"></div>
 			
 			<%!
-			String sumaggStr = "";
-			String sumaggTip = "";
+			String sumaggStr			= "";
+			String sumaggTip			= "";
+			String malzemeBirimCarpan 	= "1";
 			%>
 			<%
 			sumaggTip 		= BirimTip.ADET.ad();
 			sumaggStr		= sumagg.toString();
 			if(stok!=null && !stok.isEmpty()){
 				if(stok.get(0).getBilesentipid()==1){
-				    Double s	= Util.Round((Double.valueOf(sumagg) / Double.parseDouble("1000.0")),2.0);
-				    sumaggStr	= s.toString();
-				    sumaggTip	= BirimTip.KILOGRAM.ad();
+				    Double s			= Util.Round((Double.valueOf(sumagg) / Double.parseDouble("1000.0")),2.0);
+				    sumaggStr			= s.toString();
+				    sumaggTip			= BirimTip.KILOGRAM.ad();
+				    malzemeBirimCarpan	= "1000";
 				}
 			}
 			%>
@@ -136,6 +139,7 @@
 				<div>
 					<input type="text" class="form-control normal" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
 					<input type="hidden" id="malzemebirimad" name="malzemebirimad" class="birim" value="Kg.">
+					<input type="hidden" id="malzemebirimcarpan" name="malzemebirimcarpan" value="<%=malzemeBirimCarpan%>">
 				</div>
 			</div>
 			<%
@@ -144,7 +148,7 @@
 			<div class="form-group">
 				<label for="miktar" class="text-baslik">Stoktan Düş: </label>
 				<div>
-			     	<input type="checkbox" id="iade" name="iade" value="1"><span class="text-danger"></span>
+			     	<input type="checkbox" id="iade" name="iade" value="1" onchange="javascript:changeStokButonText();"><span class="text-danger"></span>
 			  	</div>
 			</div>
 			<%
@@ -183,7 +187,7 @@
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			
+			<div><input type="hidden" name="bilesenekleid" id="bilesenekleid" value="0"></div>
 			<%
 			    String admin = (String) session.getAttribute("admin");
 				if(admin!=null && admin.equals("1")){
@@ -191,7 +195,7 @@
 			<div class="form-group" style="margin-top:5px;">
 				<div>
 					<button type="button" class="btn btn-danger" id="hammaddestokekle" name="hammaddestokekle">Ekle</button>
-					<input type="hidden" name="bilesenekleid" id="bilesenekleid" value="0">
+					<span class="text-left text-danger birim" id="hammadde-stok-ekle-kutu"></span>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -331,6 +335,7 @@ $("#bilesenkod" ).autocomplete({
 	minLength	: 1,
 	select		: function(event, ui){
 		changefun(ui.item);
+		$(this).val(ui.item.value);
 	}
 });
 $("#bilesenkod").change(function() {
@@ -341,8 +346,7 @@ function changefun(elem){
 	if (elem != null){
 		for (i in bilesen) {
 			/* autocomplete alanina birden fazla alan ekler */
-			var b = elem.value.split("[");
-			if(b[0].trim() == bilesen[i].bilesenkod){
+			if(elem.value == bilesen[i].bilesenkod){
 				//console.log("elem: " + elem.value);
 				//console.log("bilesen: " + bilesen[i]);
 				found = true;
@@ -423,6 +427,14 @@ function findbilesenkod(elemval){
 				}
 			}
 		}
+	}
+}
+function changeStokButonText(){
+	if ($("#iade").prop("checked")){
+		$("#hammaddestokekle").text("Düş");
+	}
+	else{
+		$("#hammaddestokekle").text("Ekle");
 	}
 }
 </script>

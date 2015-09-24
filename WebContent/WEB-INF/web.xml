@@ -226,6 +226,28 @@
     <servlet-name>ExcelUretimServlet</servlet-name>
     <url-pattern>/exceluretim</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>ExcelGkrListeServlet</display-name>
+    <servlet-name>ExcelGkrListeServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelGkrListeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelGkrListeServlet</servlet-name>
+    <url-pattern>/excelgkrliste</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ExcelIzlemeNoServlet</display-name>
+    <servlet-name>ExcelIzlemeNoServlet</servlet-name>
+    <servlet-class>crm.irfan.ExcelIzlemeNoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExcelIzlemeNoServlet</servlet-name>
+    <url-pattern>/excelizlemeno</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>ExcelSevkServlet</display-name>
@@ -266,6 +288,17 @@
   <servlet-mapping>
     <servlet-name>GkrListeServlet</servlet-name>
     <url-pattern>/gkrliste</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>IzlemeNoServlet</display-name>
+    <servlet-name>IzlemeNoServlet</servlet-name>
+    <servlet-class>crm.irfan.IzlemeNoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>IzlemeNoServlet</servlet-name>
+    <url-pattern>/izlemeno</url-pattern>
   </servlet-mapping>
   
   <servlet>

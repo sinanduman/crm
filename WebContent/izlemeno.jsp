@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="crm.irfan.entity.Bilesen,crm.irfan.entity.BilesenTip,crm.irfan.entity.Genel" %>
-<%@ page import="crm.irfan.entity.Stok" %>
+<%@ page import="crm.irfan.entity.Bilesen, crm.irfan.entity.BilesenTip, crm.irfan.entity.Genel" %>
+<%@ page import="crm.irfan.entity.Mamul, crm.irfan.entity.IzlemeNo" %>
 <%@ page import="crm.irfan.Util"%>
 <%@ page import="java.util.List" %>
 <!doctype html>
@@ -34,53 +34,61 @@
 <%@ include file="logincheck.jsp" %>
 
 <%
+    @SuppressWarnings("unchecked")
+	List<Mamul> mamul		= (List<Mamul>) request.getAttribute("mamul");
 	@SuppressWarnings("unchecked")
-    List<Bilesen> hammadde	= (List<Bilesen>) request.getAttribute("hammadde");
-	@SuppressWarnings("unchecked")
-	List<Stok> stok 		= (List<Stok>) request.getAttribute("stok");
-	Integer totalrecord		= (Integer) request.getAttribute("totalrecord");
-	Integer currentpage		= (Integer) request.getAttribute("currentpage");
-	Integer noofpages		= (Integer) request.getAttribute("noofpages");
-	Integer bilesenid		= (Integer) request.getAttribute("bilesenid");
-	
-	String bas_tarih		= (String) request.getAttribute("bas_tarih");
-	String bit_tarih		= (String) request.getAttribute("bit_tarih");
-	String excelsql			= (String) request.getAttribute("excelsql");
+	List<IzlemeNo> stok = (List<IzlemeNo>) request.getAttribute("stok");
+    Integer totalrecord = (Integer) request.getAttribute("totalrecord");
+    Integer currentpage = (Integer) request.getAttribute("currentpage");
+    Integer noofpages = (Integer) request.getAttribute("noofpages");
+    Integer bilesenid = (Integer) request.getAttribute("bilesenid");
+    
+    String bas_tarih = (String) request.getAttribute("bas_tarih");
+    String bit_tarih = (String) request.getAttribute("bit_tarih");
+    String excelsql = (String) request.getAttribute("excelsql");
+    String admin	= (String) session.getAttribute("admin");
 %>
 
 <script type="text/javascript">
 
-	var bilesen = [
+	var mamul = [
 	<%String delimeter = "";
-	for (Bilesen b : hammadde) {
-		out.println(delimeter
-	+ " { id:" + b.getId()
-	+ ",bilesenid:" + b.getId() 
-	+ ",bilesenad:'" + b.getAd().replaceAll("'", "") + "'"
-	+ ",bilesenkod:'" + b.getKod() + "'"
-	+ ",bilesentipid:" + b.getBilesentipid()
-	+ ",bilesentipad:'" + b.getBilesentipad() + "'"
-	+ ",firmaid:" + b.getFirmaid()
-	+ ",firmaad:'" + b.getFirmaad().replaceAll("'", "") + "'" + "}");
+	for (Mamul m : mamul) {
+		out.println(delimeter 
+	+ " { id:" + m.getId()
+	+ ",bilesenid:" + m.getId() 
+	+ ",bilesenad:'" + m.getAd().replaceAll("'", "") + "'"
+	+ ",bilesenkod:'" + m.getKod() + "'"
+	+ ",label:'" + m.getKod() + "'" + "}");
 		delimeter = ",";
 	}%>];
-	var bilesen2 = [
-	<%delimeter = "";
-	for (Bilesen b : hammadde) {
-		out.println(delimeter + " { value:'"+ b.getKod() + "', label:'" + b.getKod() + " ["+b.getAd().replaceAll("'", "") +"]',id:" + b.getId() + "}");
-		delimeter = ",";
-	}%>];
+	
+	var mamul2 = [
+		<%delimeter = "";
+		for (Mamul m : mamul) {
+			out.println(delimeter + " { value:'"+ m.getKod() + "', label:'" + m.getKod() + " ["+m.getAd().replaceAll("'", "") +"]',id:" + m.getId() + "}");
+			delimeter = ",";
+		}%>];
 
 </script>
 
+
 <div class="container">
 	<div class="row text-warning text-center">
-		<label class="text-danger rounded">Giriş Kontrol Rapor Listesi</label>
+		<label class="text-danger rounded">Mamül İzleme No</label>
 	</div>
 	
 	<div class="row">
-		<form class="form-inline" name="gkrlisteform" id="gkrlisteform" method="post" action="gkrliste">
-		
+		<form class="form-inline" name="izlemenoform" id="izlemenoform" method="post" action="izlemeno">
+			<%
+				String disabled="";
+				String readonly="";
+			    if("".equals("")){
+			        disabled="disabled='disabled'";
+			        readonly="readonly='readonly'";
+			    }
+			%>
+			
 			<div class="form-group">
 				<label for="tarih" class="text-baslik">Başlangıç Tarihi</label>
 				<div>
@@ -94,25 +102,41 @@
 					<input type="text" style="width:120px;" class="form-control" name="bit_tarih" id="bit_tarih" placeholder="Tarih">
 				</div>
 			</div>
-			
+						
 			<div class="form-group">
-				<label for="mamulkod" class="text-baslik">Malzeme Kodu</label>
+				<label for="mamulkod" class="text-baslik">Mamül Kodu</label>
 				<div>
-					<input type="text" class="form-control normal" name="bilesenkod" id="bilesenkod" autocomplete="off">
+					<input type="text" class="form-control small" name="mamulkod" id="mamulkod" autocomplete="off">
 					<input type="hidden" name="bilesenid" id="bilesenid" value='<%= (bilesenid!=null)?bilesenid:"" %>'>
 				</div>
 			</div>
 			
 			<div class="form-group">
-				<label for="bilesenad" class="text-baslik">Malzeme Adı</label>
+				<label for="mamulad" class="text-baslik">Mamül Adı</label>
 				<div>
-					<input type="text" class="form-control normal" name="bilesenad" id="bilesenad" readonly="readonly">
+					<input type="text" class="form-control normal" name="mamulad" id="mamulad" readonly="readonly">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="gkrno" class="text-baslik">Kullanılmamış İzl. No</label>
+				<div>
+					<select class="form-control normal" name="gkrno" id="gkrno"></select>
+					<input type="hidden" name="stokid" id="stokid">
+					<input type="hidden" name="miktarbox" id="miktarbox">
 				</div>
 			</div>
 			
 			<div class="form-group">
 				<label for="mamulkod" class="text-success bgsaydam">&nbsp;&nbsp;</label>
 				<div>
+					<% 
+					if(admin!=null && admin.equals("1")){
+					%>
+						<button type="button" class="btn btn-success" name="izlemenouret" id="izlemenouret" disabled="disabled">Yeni İzl. No Üret</button>
+					<% 
+					}
+					%>
 					<button type="button" class="btn btn-danger" name="raporgetir" id="raporgetir">Rapor Getir</button>
 					<input type="hidden" name="raporgetirid" id="raporgetirid" value="0">
 				</div>
@@ -127,55 +151,44 @@
 		int sayac = 0;
 	%>
 	<div class="row" style="font-size:12px;">
-		<table class="tableplan">
-			<%
-			    for (Stok s : stok) {
-			%>
-			<%
-			    if (sayac++ == 0) {
-			%>
+		<table class="tableplan" id="izlemenotable">
+			
 			<tr>
 				<th>Tarih</th>
-				<th>Firma</th>
-				<th>Bileşen Kod</th>
-				<th>Bileşen Ad</th>
+				<th>İzleme No</th>
+				<th>Mamül Kod</th>
+				<th>Mamül Ad</th>
 				<th>Miktar</th>
-				<th>GKR. No</th>
-				<th>İrsaliye No</th>
-				<th>Lot/Batch No</th>
-				<th>Açıklama</th>
+				<% 
+				if(admin!=null && admin.equals("1")){
+				%>
+				<th class="text-center"><label class="text-success">Aksiyon</label></th>
+				<% } %>
 			</tr>
 			<%
-			    }
+			    for (IzlemeNo s : stok) {
+			        sayac++;
 			%>
-			<tr id="tr<%=s.getId()%>">
-				<td><%=(s.getIslemyonu()==0) ? Util.getTarihTR(s.getGiristarihi()) : Util.getTarihTR(s.getCikistarihi())%></td>
-				<td><%=s.getFirmaad()%></td>
-				<td><%=s.getBilesenkod()%></td>
-				<td><%=s.getBilesenad()%></td>
-				<%
-				    String smiktar = "";
-					Double dmkitar = 0.0;
-					Integer imiktar= 0;
-					if(s.getBilesentipid() == BilesenTip.HAMMADDE.value()){
-						if( (Integer.valueOf(s.getMiktar()) / 1000.0) > ( Integer.valueOf(s.getMiktar()) / 1000)){
-							dmkitar = (Integer.valueOf(s.getMiktar())) / 1000.0;
-							smiktar = dmkitar.toString() + " Kg.";
-						}
-						else{
-							imiktar = (Integer.valueOf(s.getMiktar()))/1000;
-							smiktar = imiktar.toString() + " Kg.";
-						}
-					}
-					else{
-						smiktar = s.getMiktar().toString() + " Ad.";
-					}
+			
+			<tr id="tr<%=s.getMamulid()%>_<%=s.getGkrno()%>">
+				<td><%=Util.getTarihTR(s.getKullanildi_tarih())%></td>
+				<td><%=s.getGkrno() %></td>
+				<td><%= (s.getMamulkod()==null?"":s.getMamulkod()) %></td>
+				<td><%= (s.getMamulad()==null?"":s.getMamulad()) %></td>
+				<td class="text-right"><%=s.getMiktar() + " Ad."%></td>
+				<% 
+				if(admin!=null && admin.equals("1")){
 				%>
-				<td class="text-right"><%=smiktar%></td>
-				<td><%= s.getGkrno() %></td>
-				<td><%= (s.getIrsaliyeno()==null) ? "" : s.getIrsaliyeno() %></td>
-				<td><%= (s.getLot()==null) ? "" : s.getLot() %></td>
-				<td><%= (s.getNot()==null) ? "" : s.getNot() %></td>
+				<td>
+					<%
+					if(s.getKullanildi() == 0){
+					%>
+					<div id="div<%= s.getId() %>" class="text-center">
+						<a href="javascript:izlemeNoTest(<%=s.getMamulid()%>,3,<%=s.getKullanildi()%>,'#gkrno',<%=s.getGkrno()%>);" title="İzleme No Sil"><span class="fa fa-minus-circle fa-lg text-danger"></span></a>
+					</div>
+					<% } %>
+				</td>
+				<% }%>
 			</tr>
 			<% } %>
 		</table>
@@ -199,8 +212,8 @@
 		%>
 			<div class="row text-right">
 				<div>
-					<form method="post" name="excelform" id="excelform" action="excelgkrliste">
-						<button type="button" class="btn btn-danger" name="exceleaktar_gkrliste" id="exceleaktar_gkrliste">Excele Aktar</button>
+					<form method="post" name="excelform" id="excelform" action="excelizlemeno">
+						<button type="button" class="btn btn-danger" name="exceleaktar_izlemeno" id="exceleaktar_izlemeno">Excele Aktar</button>
 						<input type="hidden" value="0" name="excelegonder" id="excelegonder">
 						<input type="hidden" name="excelbastarih" id="excelbastarih" value="<%=bas_tarih%>">
 						<input type="hidden" name="excelbittarih" id="excelbittarih" value="<%=bit_tarih%>">
@@ -218,11 +231,12 @@
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script	src="js/bootbox.js" type="text/javascript"></script>
-<script src="js/irfan.js" type="text/javascript"></script>
-<script src="js/gkrliste.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
+<script src="js/irfan.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
+<script src="js/izlemeno.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(function() {
+	
 	$('#bas_tarih').datepicker({
 		inline: true,
 		format : 'dd-mm-yy',
@@ -235,21 +249,22 @@ $(function() {
 		firstDay:1,
 	}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","<%= (bit_tarih=="")?"today":bit_tarih%>");
 	
-	$("#bilesenkod" ).autocomplete({
-		source		: bilesen2,
+	$("#mamulkod" ).autocomplete({
+		source		: mamul2,
 		minLength	: 1,
 		select		: function(event, ui){
+			//changefun(ui.item);
 			changefun(ui.item);
 			$(this).val(ui.item.value);
 		}
 	});
 	
-	$("#bilesenkod").change(function() {
+	$("#mamulkod").change(function() {
 		changefun(this);
 	});
 	
 	if($("#bilesenid").val() != "0"){
-		var found_bilesenid = bilesen.filter(function(obj) {
+		var found_bilesenid = mamul.filter(function(obj) {
 		    return obj.id == $("#bilesenid").val();
 		});
 		/*
@@ -260,44 +275,38 @@ $(function() {
 
 		if (found_bilesenid != undefined){
 			//console.log(found_bilesenid);
-			$("#bilesenkod").val( found_bilesenid[0].bilesenkod );
-			$("#bilesenad").val( found_bilesenid[0].bilesenad );
+			$("#mamulkod").val( found_bilesenid[0].bilesenkod );
+			$("#mamulad").val( found_bilesenid[0].bilesenad );
+			$("#izlemenouret").prop( "disabled", false );			
+			/* 1: Uretim, 6: Kontrol */
+			izlemeNoKontrol($("#bilesenid").val(), 6, 0, "#gkrno", 0);
 		}
 	}
 });
 function changefun(elem){
 	var found = false;
 	if (elem != null){
-		for (i in bilesen) {
+		for (i in mamul) {
 			/* autocomplete alanina birden fazla alan ekler */
-			if(elem.value == bilesen[i].bilesenkod){
-				//console.log("elem: " + elem.value);
-				//console.log("bilesen: " + bilesen[i]);
+			if(elem.value == mamul[i].bilesenkod){
+				//console.log("mamulid: " + mamul[i].bilesenid);
+				//console.log("mamulad: " + mamul[i].bilesenad);
+				//console.log("mamulkod: " + mamul[i].bilesenkod);
 				found = true;
-				$("#bilesenid").val(bilesen[i].bilesenid);
-				$("#bilesenad").val(bilesen[i].bilesenad);
-				$("#firmaid").val(bilesen[i].firmaid);
-				$("#firmaad").val(bilesen[i].firmaad);
-				$("#bilesentipid").val(bilesen[i].bilesentipid);
-				if(bilesen[i].bilesentipid==<%= BilesenTip.HAMMADDE.value() %> ){
-					$("#malzemebirimad").text("Kg.");
-					$("#birimid_select").val("KG"); // KG
-					$("#birimid").val(3); // KG
-				}
-				else{
-					$("#malzemebirimad").text("Adet");
-					$("#birimid_select").val("Adet"); // Adet
-					$("#birimid").val(2); // Adet
-				}
+				$("#bilesenid").val(mamul[i].bilesenid);
+				$("#mamulad").val(mamul[i].bilesenad);
+				$("#izlemenouret").prop( "disabled", false );				
+				/* 1: Uretim, 6: Kontrol */
+				izlemeNoKontrol($("#bilesenid").val(), 6, 0, "#gkrno");
+				
 			}
 		}
 	}
 	if(!found){
 		$("#bilesenid").val("");
-		$("#bilesenad").val("");
-		$("#firmaid").val("");
-		$("#firmaad").val("");
-		$("#bilesentipid").val("");
+		$("#mamulad").val("");
+		$("#izlemenouret").prop( "disabled", true );
+		$("#gkrno option").remove();
 	}
 }
 </script>

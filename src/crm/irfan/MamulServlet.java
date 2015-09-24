@@ -98,6 +98,13 @@ public class MamulServlet extends HttpServlet {
                                     new String(request.getParameter("cevrimsuresi").getBytes("UTF-8"))
                                     );
                     break;
+                case 2:
+                    message = DAOFunctions.mamulBilesenGuncelle(
+                                    new String(request.getParameter("mamulid").getBytes("UTF-8")),
+                                    new String(request.getParameter("bilesenid").getBytes("UTF-8")),
+                                    new String(request.getParameter("miktar").getBytes("UTF-8"))
+                                    );
+                    break;
                 case 3:
                     message = DAOFunctions.mamulSil(new String(request.getParameter("bilesenid").getBytes("UTF-8")));                    
                     break;

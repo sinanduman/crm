@@ -1,3 +1,15 @@
+$("#raporgetir").click(function(){
+	$("#raporgetirid").val("1");
+	$("#izlemenoform").submit();
+});
+
+$("#izlemenouret").click(function(){
+	if(confirm($("#mamulad").val() + " için İzleme No Üretmek istediğinden emin misin?")){
+		$("#islemid").val("1");
+		izlemeNoKontrol($("#bilesenid").val(), 1, 0, "#gkrno");
+	}
+});
+
 $( "#irsaliyeno" ).change(function() {
 	if(!is_empty($("#irsaliyeno").val())){		
 		if(is_empty($("#acikirsaliyeno").val())){
@@ -158,135 +170,4 @@ function irsaliyepaketguncelle(sender,bilesenid){
 	/* 0:insert, 1:update, 2:sil */
 	$("#islemid").val("1");
 	//changefun(document.irsaliyeform.mamulkod);
-}
-
-function deleteGoIrsaliyePaket(url,id,irsaliyeno,islem){
-	var f_irsaliyeid	= id;
-	var f_irsaliyeno	= irsaliyeno;
-	var f_islemid		= islem;
-	var alert_mesaj		= f_irsaliyeno + " Numaralı "; 
-	if(confirm(alert_mesaj +"\n\n" + "İrsaliyeyi SİLMEK istediğinden" +"\n\n" + "Emin misin?")){
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: { 
-				irsaliyeid: f_irsaliyeid, 
-				islemid: f_islemid
-			},
-			beforeSend: function ( xhr ) {
-			},
-			success: function(data, textStatus, xhr) {
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
-			}
-		}).done(function( msg ) {
-			if( msg == "0"){
-				$("#tr"+id).css("display","none");
-				$("#tr_irs_detay"+id).css("display","none");
-				alert( f_irsaliyeno + " NO'lu İrsaliye Bilgisi SİLİNDİ" );
-				history.go(0);
-			}
-			else{
-				alert("Hata: "+ msg );
-			}
-		});
-	}
-}
-
-function okGoIrsaliyePaket(url,id,irsaliyeno,islem){
-	var f_irsaliyeid	= id;
-	var f_irsaliyeno	= irsaliyeno;
-	var f_islemid		= islem;
-	var alert_mesaj		= f_irsaliyeno + " Numaralı "; 
-	if(confirm(alert_mesaj +"\n\n" + "İrsaliyeyi ONAYLAMAK istediğinden" +"\n\n" + "Emin misin?")){
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: { 
-				irsaliyeid: f_irsaliyeid, 
-				islemid: f_islemid
-			},
-			beforeSend: function ( xhr ) {
-			},
-			success: function(data, textStatus, xhr) {
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
-			}
-		}).done(function( msg ) {
-			if( msg == "0"){
-				//$("#tr"+id).css("display","none");
-				//$("#tr_irs_detay"+id).css("display","none");
-				$("#divirsaliye"+f_irsaliyeid).html("<span class='text-danger'><strong>onaylandı</strong></span>");
-				alert( f_irsaliyeno + " NO'lu İrsaliye ONAYLANDI" );
-			}
-			else{
-				alert("Hata: "+ msg );
-			}
-		});
-	}
-}
-
-function irsaliyebilesensil(sender, gkrno, miktar, siraid){
-	var f_irsaliyesiraid= siraid;
-	var f_miktar		= miktar;
-	var f_gkrno			= gkrno;
-	var f_islem			= 5;
-	var f_alert			= f_gkrno + " İzleme No'lu " + f_miktar + " Adet İrsaliye Maddesi";
-	if (confirm(f_alert + "ni SİLMEK istediğinden" +"\n\n" + "Emin misin?")) {
-		$.ajax({
-			url: "irsaliye",
-			type: "POST",
-			data: { 
-				irsaliyebilesenid:	f_irsaliyesiraid, 
-				islemid:			f_islem
-			},
-			beforeSend: function ( xhr ) {
-			},
-			success: function(data, textStatus, xhr) {
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
-			}
-		}).done(function( msg ) {
-			if( msg != "-1"){
-				$(sender).css("display","none");
-				alert(f_alert + " Başarıyla SİLİNDİ" );
-			}
-			else{
-				alert( msg );
-			}
-		});
-	}; 
-}
-
-function irsaliyeNoKontrol(irsaliyeno){
-	var f_irsaliyeno	= irsaliyeno;
-	var f_islem			= 6;
-	
-	if(is_empty($("#acikirsaliyeno").val())){
-		$.ajax({
-			url: "irsaliye",
-			type: "POST",
-			data: { 
-				irsaliyeno:	f_irsaliyeno, 
-				islemid:	f_islem
-			},
-			beforeSend: function ( xhr ) {
-			},
-			success: function(data, textStatus, xhr) {
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				alert("Hata Oluştu: " + textStatus + " , " + errorThrown);
-			}
-		}).done(function( msg ) {
-			if( msg != "0"){
-				$( "#irsaliyeekle" ).prop( "disabled", true );
-			}
-			else{
-				$( "#irsaliyeekle" ).prop( "disabled", false );			
-			}
-		});
-	}
 }

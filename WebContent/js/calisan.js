@@ -3,6 +3,7 @@ function updateCalisanGo(url,id,action_form,islem){
 	var f_calisanad		= $.trim(action_form.liste_calisanad.value);
 	var f_calisansoyad	= $.trim(action_form.liste_calisansoyad.value);
 	var f_calisangorev	= $.trim(action_form.liste_calisangorev.value);
+	var f_calisandurum	= $.trim(action_form.liste_calisandurum.value);
 	var f_islemid		= islem;
 	var alert_mesaj		= f_calisanad + " " + f_calisansoyad;
 	if(is_empty(f_calisanad) || is_empty(f_calisansoyad) ){
@@ -17,7 +18,8 @@ function updateCalisanGo(url,id,action_form,islem){
 				id:		f_calisanid, 
 				ad:		f_calisanad, 
 				soyad:	f_calisansoyad, 
-				gorev:	f_calisangorev, 
+				gorev:	f_calisangorev,
+				durum:	f_calisandurum, 
 				islemid:f_islemid
 			},
 			dataType: 'html',
