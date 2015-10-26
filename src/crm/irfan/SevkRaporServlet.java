@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import crm.irfan.entity.IrsaliyeTip;
 import crm.irfan.entity.LogMod;
 import crm.irfan.entity.Mamul;
 
+@WebServlet("/sevkrapor")
 public class SevkRaporServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
@@ -39,7 +41,8 @@ public class SevkRaporServlet extends HttpServlet {
         String irsaliyeid   = request.getParameter("irsaliyeid");
         String irsaliyeno   = request.getParameter("irsaliyeno");
         String firmaid      = request.getParameter("firmaid");
-        String tarih        = request.getParameter("tarih");
+        String bas_tarih    = request.getParameter("bas_tarih");
+        String bit_tarih    = request.getParameter("bit_tarih");
         String mamulid      = request.getParameter("mamulid");
         String page         = request.getParameter("page");
         String excelsql     = "";
@@ -79,25 +82,22 @@ public class SevkRaporServlet extends HttpServlet {
             }
             else {
                 firmaid=null;
-            }
-            if(tarih!=null && Util.isDate(tarih) ) {
-                filter3     = andYes + " ( date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih) + "' )";
-            }
-            else {
-                tarih=null;
-            }
+            }            
+            if(bas_tarih!=null && bit_tarih!=null && !bas_tarih.equals("") && !bit_tarih.equals("") ) {
+                filter3     = andYes + " ( date(gonderimtarihi) BETWEEN '" + Util.date_tr_to_eng(bas_tarih) + "' AND '" + Util.date_tr_to_eng(bit_tarih) +"')";
+            }            
             if(mamulid!=null && Util.isNumeric(mamulid) ) {
                 filter4     = andYes + " exists (select 1 from irsaliyebilesen ib where irsaliye.id = ib.irsaliyeid and ib.mamulid = " + Integer.valueOf(mamulid) + ")";
             }
             else {
-                tarih=null;
+                mamulid=null;
             }
             filter0 = filter1 + filter2 + filter3 + filter4;
             
             // PAGING
             totalrecord = DAOFunctions.recordAgg(tablename, "COUNT", "*", " WHERE 1=1" + filter0 );
             if(request.getParameter("page") != null)
-                page0   = Integer.parseInt(request.getParameter("page"));            
+                page0   = Integer.parseInt(request.getParameter("page"));
             noofpages   = (int) Math.ceil(totalrecord * 1.0 / Genel.ROWPERPAGE);
             // PAGING
             
@@ -105,7 +105,7 @@ public class SevkRaporServlet extends HttpServlet {
                 System.out.println("noofpages: " + noofpages + ", totalrecord: " + totalrecord + ", " + tablename + " WHERE 1=1" + filter0);
             }
             
-            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, tarih, page0, mamulid);
+            irsaliyebilesenonaylandi = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, irsaliyeid, firmaid, bas_tarih, bit_tarih, page0, mamulid);
 
             excelsql = filter0;
         }
@@ -117,7 +117,8 @@ public class SevkRaporServlet extends HttpServlet {
         request.setAttribute("irsaliyejson", irsaliyejson);
         request.setAttribute("irsaliyebilesenonaylandi", irsaliyebilesenonaylandi);
         request.setAttribute("firmaid", firmaid);
-        request.setAttribute("tarih", tarih);
+        request.setAttribute("bas_tarih", bas_tarih);
+        request.setAttribute("bit_tarih", bit_tarih);
         request.setAttribute("mamulid", mamulid);
         request.setAttribute("totalrecord", totalrecord);
         request.setAttribute("currentpage", page0);

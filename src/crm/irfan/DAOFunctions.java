@@ -2442,12 +2442,12 @@ public class DAOFunctions {
 		return temp;
 	}
 	
-	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeTum(IrsaliyeTip irsaliyetip, int onaylandi, String irsaliyeid, String firmaid, String tarih, int offset, String mamulid) {
+	protected static List<IrsaliyeBilesen> irsaliyeBilesenListeTum(IrsaliyeTip irsaliyetip, int onaylandi, String irsaliyeid, String firmaid, String bas_tarih, String bit_tarih, int offset, String mamulid) {
         List<IrsaliyeBilesen> temp = new ArrayList<IrsaliyeBilesen>();
         conn                    = ConnectionManager.getConnection();
         String pageFilter       = (offset==0)?"":" offset " + (offset-1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
         String irsaliyeFilter   = (irsaliyeid==null || irsaliyeid.equals(""))?"":" and e.id = " + Integer.valueOf(irsaliyeid) + " ";
-        String tarihFilter      = (tarih==null || tarih.equals(""))?"":" and date(gonderimtarihi) = '" + Util.date_tr_to_eng(tarih)+ "' ";
+        String tarihFilter      = (bas_tarih!=null && bit_tarih !=null)?" and (date(gonderimtarihi) BETWEEN '" + Util.date_tr_to_eng(bas_tarih) + "' AND '" + Util.date_tr_to_eng(bit_tarih) +"')":"";
         String firmaFilter      = (firmaid==null || firmaid.equals(""))?"":" and e.firmaid = " + Integer.valueOf(firmaid) + " ";
         String mamulFilter      = (mamulid==null || mamulid.equals(""))?"":" where ib.mamulid = " + Integer.valueOf(mamulid) + " "; 
         String mamulFilterIrs   = (mamulid==null || mamulid.equals(""))?"":" and exists (select 1 from irsaliyebilesen ib where e.id = ib.irsaliyeid and ib.mamulid = " + Integer.valueOf(mamulid) + ") "; 

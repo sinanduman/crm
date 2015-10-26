@@ -1,17 +1,23 @@
 package crm.irfan;
 
-import crm.irfan.entity.*;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import crm.irfan.entity.Bilesen;
+import crm.irfan.entity.BilesenTip;
+import crm.irfan.entity.Firma;
+import crm.irfan.entity.Genel;
+import crm.irfan.entity.Stok;
+
+@WebServlet("/hammaddestok")
 public class HammaddeStokServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

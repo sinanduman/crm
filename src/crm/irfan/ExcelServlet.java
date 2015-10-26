@@ -2,20 +2,24 @@ package crm.irfan;
 
 import crm.irfan.entity.UretimDurum;
 import crm.irfan.entity.UretimPlan;
+
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
+@WebServlet("/excel")
 public class ExcelServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

@@ -25,13 +25,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import crm.irfan.entity.IzlemeNo;
+import crm.irfan.entity.BilesenTip;
+import crm.irfan.entity.Stok;
 
-@WebServlet("/excelizlemeno")
-public class ExcelIzlemeNoServlet extends HttpServlet {
+@WebServlet("/excelgkrliste")
+public class ExcelGkrListeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public ExcelIzlemeNoServlet() {
+    public ExcelGkrListeServlet() {
         super();
     }
 
@@ -45,15 +46,20 @@ public class ExcelIzlemeNoServlet extends HttpServlet {
         String excelbastarih= request.getParameter("excelbastarih");
         String excelbittarih= request.getParameter("excelbittarih");
         String excelsql     = request.getParameter("excelsql");
-        String tablename    = "izlemeno_tum";
+        String tablename    = "stokbilesen";
                 
         System.out.println("excelsql: " + excelsql);
         
         if(excelegonder!=null && excelegonder.equals("1")) {
             
-            List<IzlemeNo> stokrapor = new ArrayList<IzlemeNo>();
-            stokrapor   = DAOFunctions.izlemeNoTum(tablename, excelsql, 0);
+            List<Stok> stokrapor = new ArrayList<Stok>();
+            stokrapor = DAOFunctions.stokListeRapor(tablename, 0, excelsql);
             
+//            <input type="hidden" value="0" name="excelegonder" id="excelegonder">
+//            <input type="hidden" name="excelbastarih" id="excelbastarih" value="01-08-2015">
+//            <input type="hidden" name="excelbittarih" id="excelbittarih" value="01-09-2015">
+//            <input type="hidden" name="excelsql" id="excelsql" value=" AND  ( giristarihi BETWEEN '2015-08-01' AND '2015-09-01')">
+
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet();
             
@@ -62,20 +68,54 @@ public class ExcelIzlemeNoServlet extends HttpServlet {
             
             data.put(++cnt, new Object[] {
                             "Tarih",
-                            "İzleme No",
-                            "Mamül Kod",
-                            "Mamül Ad",
-                            "Miktar"
+                            "Firma",
+                            "Bileşen Kod",
+                            "Bileşen Ad",
+                            "Miktar",
+                            "GKR.No",
+                            "İrsaliye No",
+                            "Lot/Batch No",
+                            "Açıklama"
                             }
             );
             
-            for(IzlemeNo sr: stokrapor) {
+            for(Stok sr: stokrapor) {
+                String smiktar  = "";
+                Double dmkitar  = 0.0;
+                Integer imiktar = 0;
+                if (sr.getBilesentipid() == BilesenTip.HAMMADDE.value()) {
+                    if ((Integer.valueOf(sr.getMiktar()) / 1000.0) > (Integer.valueOf(sr.getMiktar()) / 1000)) {
+                        dmkitar = (Integer.valueOf(sr.getMiktar())) / 1000.0;
+                        smiktar = dmkitar.toString() + " Kg.";
+                    }
+                    else {
+                        imiktar = (Integer.valueOf(sr.getMiktar())) / 1000;
+                        smiktar = imiktar.toString() + " Kg.";
+                    }
+                }
+                else {
+                    smiktar = sr.getMiktar().toString() + " Ad.";
+                }
                 data.put(++cnt, new Object[] {
-                                Util.getTarihTR(sr.getKullanildi_tarih()),
-                                sr.getGkrno().toString(),
-                                sr.getMamulkod(),
-                                sr.getMamulad(),                                
-                                sr.getMiktar().toString() + " Ad."
+                                Util.getTarihTR(sr.getGiristarihi()),
+                                sr.getFirmaad(),
+                                sr.getBilesenkod(),
+                                sr.getBilesenad(),
+                                smiktar,
+                                sr.getGkrno(),
+                                sr.getIrsaliyeno(),
+                                sr.getLot(),
+                                sr.getNot()
+//                                Util.splitLine(sr.getHammaddead(), ";", "; "),
+//                                Util.splitLine(sr.getHammaddeizlno() , ";", "; "),
+//                                sr.getMamulkod(),
+//                                sr.getMamulad(),
+//                                sr.getMamulizlno(),
+//                                sr.getPlanlananmiktar(),
+//                                sr.getUretilenmiktar(),
+//                                ((sr.getFark()==0) ? "" : sr.getFark()),
+//                                ((sr.getSapma()==0) ? "" : "% " + sr.getSapma()),
+//                                sr.getHataad()
                                 });
             }
 

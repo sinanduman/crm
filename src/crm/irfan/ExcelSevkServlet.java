@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import crm.irfan.entity.IrsaliyeBilesen;
 import crm.irfan.entity.IrsaliyeTip;
 
+@WebServlet("/excelsevk")
 public class ExcelSevkServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -44,12 +46,14 @@ public class ExcelSevkServlet extends HttpServlet {
         String excelirsaliyeid  = request.getParameter("excelirsaliyeid");
         String excelfirmaid     = request.getParameter("excelfirmaid");
         String excelmamulid     = request.getParameter("excelmamulid");
-        String exceltarih       = request.getParameter("exceltarih");
+        String excelbastarih    = request.getParameter("excelbastarih");
+        String excelbittarih    = request.getParameter("excelbittarih");
         String excelsql         = request.getParameter("excelsql");
         
         excelirsaliyeid = (Util.isNotEmptyOrNull(excelirsaliyeid))?excelirsaliyeid:null;
         excelfirmaid    = (Util.isNotEmptyOrNull(excelfirmaid))?excelfirmaid:null;
-        exceltarih      = (Util.isNotEmptyOrNull(exceltarih))?exceltarih:null;
+        excelbastarih   = (Util.isNotEmptyOrNull(excelbastarih))?excelbastarih:null;
+        excelbittarih   = (Util.isNotEmptyOrNull(excelbittarih))?excelbittarih:null;
         excelmamulid    = (Util.isNotEmptyOrNull(excelmamulid))?excelmamulid:null;
 
         System.out.println("excelsql: " + excelsql);
@@ -58,7 +62,7 @@ public class ExcelSevkServlet extends HttpServlet {
             
             List<IrsaliyeBilesen> irsaliyebilesen = new ArrayList<IrsaliyeBilesen>();
             
-            irsaliyebilesen = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, excelirsaliyeid, excelfirmaid, exceltarih, 0, excelmamulid);
+            irsaliyebilesen = DAOFunctions.irsaliyeBilesenListeTum(IrsaliyeTip.ONAYLANDI, 1, excelirsaliyeid, excelfirmaid, excelbastarih, excelbittarih, 0, excelmamulid);
             
             Workbook workbook = new XSSFWorkbook();
             //Sheet sheeti    = workbook.createSheet("Irsaliye");
@@ -70,6 +74,7 @@ public class ExcelSevkServlet extends HttpServlet {
             dataib.put(++cntib, new Object[] {
                             "Gönderim Tarihi",
                             "İrsaliye No",
+                            "Sıra No",
                             "Mamül Adı",
                             "Mamül Kodu",
                             "Firma",
@@ -78,12 +83,18 @@ public class ExcelSevkServlet extends HttpServlet {
                             }
             );
             
-            
+            int sayac = 0;
+            int irsaliyeid= 0;
             for(IrsaliyeBilesen sr: irsaliyebilesen) {
                 
+                if(irsaliyeid != sr.getIrsaliyeid()) {
+                    sayac = 0;
+                    irsaliyeid = sr.getIrsaliyeid();
+                }
                 dataib.put(++cntib, new Object[] {
                                 Util.getTarih(sr.getGonderimtarihi()),
                                 sr.getIrsaliyeno(),
+                                ++sayac,
                                 sr.getMamulad(),
                                 sr.getMamulkod(),
                                 sr.getFirmaad(),
@@ -136,7 +147,7 @@ public class ExcelSevkServlet extends HttpServlet {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Expires:", "0"); // eliminates browser caching
             response.setContentLength(outArray.length);
-            response.setHeader("Content-Disposition", "attachment; filename="+ "excel_sevk_" + (new Date()).toString()  + ".xls");
+            response.setHeader("Content-Disposition", "attachment; filename="+ "excel_sevk_" + excelbastarih +"_"+  excelbittarih + ".xls");
             OutputStream outStream = response.getOutputStream();
             outStream.write(outArray);
             outStream.flush();

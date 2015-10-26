@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import crm.irfan.entity.Genel;
 import crm.irfan.entity.Mamul;
 import crm.irfan.entity.MamulBilesen;
 
+@WebServlet("/mamul")
 public class MamulServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static long token = 1L;

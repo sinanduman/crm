@@ -1,17 +1,20 @@
 package crm.irfan;
 
-import crm.irfan.entity.Calisan;
-import crm.irfan.entity.Genel;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import crm.irfan.entity.Calisan;
+import crm.irfan.entity.Genel;
+
+@WebServlet("/calisan")
 public class CalisanServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
