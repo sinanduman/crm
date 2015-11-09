@@ -126,7 +126,7 @@
 			sumaggStr		= sumagg.toString();
 			if(stok!=null && !stok.isEmpty()){
 				if(stok.get(0).getBilesentipid()==1){
-				    Double s			= Util.Round((Double.valueOf(sumagg) / Double.parseDouble("1000.0")),2.0);
+				    Double s			= Util.Round((Double.valueOf(sumagg) / Double.parseDouble("1000.0")),3.0);
 				    sumaggStr			= s.toString();
 				    sumaggTip			= BirimTip.KILOGRAM.ad();
 				    malzemeBirimCarpan	= "1000";
@@ -259,17 +259,17 @@
 					/* Hammadde */
 					if(s.getBilesentipid()==1){
 					    if(!giren.equals("")){
-					        Double g= Util.Round((Double.valueOf(giren) / Double.parseDouble("1000.0")),2.0);
+					        Double g= Util.Round((Double.valueOf(giren) / Double.parseDouble("1000.0")),3.0);
 					        //Double g= Double.valueOf(giren);
 						    giren	= g.toString();
 					    }
 					    if(!cikan.equals("")){
-					        Double c= Util.Round((Double.valueOf(cikan) / Double.parseDouble("1000.0")),2.0);
+					        Double c= Util.Round((Double.valueOf(cikan) / Double.parseDouble("1000.0")),3.0);
 					        //Double c= Double.valueOf(cikan);
 						    cikan	= c.toString();
 					    }
 					    if(!kalan.equals("")){
-					        Double k= Util.Round((Double.valueOf(kalan) / Double.parseDouble("1000.0")),2.0);
+					        Double k= Util.Round((Double.valueOf(kalan) / Double.parseDouble("1000.0")),3.0);
 					        //Double k= Double.valueOf(kalan);
 						    kalan	= k.toString();
 					    }

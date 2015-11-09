@@ -237,7 +237,7 @@
 					if(stokdetay.size()>0){
 						String kalan	= sr.getKalan().toString();
 						if(sr.getBilesentipid()==BilesenTip.HAMMADDE.value()){
-						    Double k= Util.Round((Double.valueOf(sr.getKalan()) / 1000.0),2.0);
+						    Double k= Util.Round((Double.valueOf(sr.getKalan()) / 1000.0),3.0);
 						    kalan	= k.toString();
 						}
 					%>

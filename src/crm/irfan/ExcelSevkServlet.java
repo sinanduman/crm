@@ -152,6 +152,7 @@ public class ExcelSevkServlet extends HttpServlet {
             outStream.write(outArray);
             outStream.flush();
             outStream.close();
+            workbook.close();
         }
         else {
             request.getRequestDispatcher("index.jsp").forward(request, response);

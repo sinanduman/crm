@@ -55,11 +55,6 @@ public class ExcelGkrListeServlet extends HttpServlet {
             List<Stok> stokrapor = new ArrayList<Stok>();
             stokrapor = DAOFunctions.stokListeRapor(tablename, 0, excelsql);
             
-//            <input type="hidden" value="0" name="excelegonder" id="excelegonder">
-//            <input type="hidden" name="excelbastarih" id="excelbastarih" value="01-08-2015">
-//            <input type="hidden" name="excelbittarih" id="excelbittarih" value="01-09-2015">
-//            <input type="hidden" name="excelsql" id="excelsql" value=" AND  ( giristarihi BETWEEN '2015-08-01' AND '2015-09-01')">
-
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet();
             
@@ -106,16 +101,6 @@ public class ExcelGkrListeServlet extends HttpServlet {
                                 sr.getIrsaliyeno(),
                                 sr.getLot(),
                                 sr.getNot()
-//                                Util.splitLine(sr.getHammaddead(), ";", "; "),
-//                                Util.splitLine(sr.getHammaddeizlno() , ";", "; "),
-//                                sr.getMamulkod(),
-//                                sr.getMamulad(),
-//                                sr.getMamulizlno(),
-//                                sr.getPlanlananmiktar(),
-//                                sr.getUretilenmiktar(),
-//                                ((sr.getFark()==0) ? "" : sr.getFark()),
-//                                ((sr.getSapma()==0) ? "" : "% " + sr.getSapma()),
-//                                sr.getHataad()
                                 });
             }
 
@@ -168,6 +153,7 @@ public class ExcelGkrListeServlet extends HttpServlet {
             outStream.write(outArray);
             outStream.flush();
             outStream.close();
+            workbook.close();
         }
         else {
             request.getRequestDispatcher("index.jsp").forward(request, response);

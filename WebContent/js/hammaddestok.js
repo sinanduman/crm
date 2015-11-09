@@ -3,7 +3,7 @@ $("#lot, #tarih, #miktar, #iade").change(
 			if (
 					!is_empty($("#lot").val()) && 
 					!is_empty($("#tarih").val()) && 
-					is_positive($("#miktar").val())
+					is_ondalik($("#miktar").val())
 			) {
 				hammaddeStokKontrol(
 						$("#tarih").val(), 
@@ -19,7 +19,7 @@ $("#hammaddestokekle").click(function(){
 		alert("BİLEŞEN adı boş olamaz!");
 		return false;
 	}	
-	else if(!is_positive($("#miktar").val())){
+	else if(!is_ondalik($("#miktar").val())){
 		alert("Miktar NÜMERİK bir değer olmalıdır!");
 		return false;
 	}
