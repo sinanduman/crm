@@ -6,9 +6,6 @@ User user = (User) request.getSession().getAttribute("user");
 %>
 <div class="container" style="margin-top:20px;">
 
-	<!--div class="container text-center" style="margin:10px 30px 20px 30px; display:none;">
-		<a href=""><img alt="<%-- Genel.TITLE --%>" src="img/ip_logo_mini.png"></a>
-	</div-->
 	<div class="row">
 		<!-- /btn-group -->
 		<div class="btn-group">
