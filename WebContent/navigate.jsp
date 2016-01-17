@@ -25,27 +25,6 @@ User user = (User) request.getSession().getAttribute("user");
 				</li>
 			</ul>
 		</div>
-		<!-- /btn-group -->			
-		<div class="btn-group" style="display:none;">
-			<button type="button" class="btn btn-info">Sipariş</button>
-			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-				<span class="caret"></span>
-				<span class="sr-only">Toggle Dropdown</span>
-			</button>
-			<ul class="dropdown-menu">
-				<li>
-					<a href="siparis"><span class="fa fa-dot-circle-o text-info"></span> Yeni Sipariş</a>
-				</li>
-				<li>
-					<a href="bekleyensiparis">
-						<span class="fa fa-dot-circle-o text-info"></span> Üretimde/Bekleyen Siparişler</a>
-				</li>
-				<li>
-					<a href="tamamlanansiparis">
-						<span class="fa fa-dot-circle-o text-info"></span> Tamamlanan Siparişler</a>
-				</li>
-			</ul>
-		</div>
 		<!-- /btn-group -->
 		<div class="btn-group">
 			<button type="button" class="btn btn-success">Stok</button>
