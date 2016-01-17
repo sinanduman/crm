@@ -79,6 +79,13 @@ public class Util {
         }
         return returnValue;
     }
+    public static Boolean isPositive(String str) {
+        Boolean returnValue = false;
+        if (str.matches("[1-9][0-9]*")) {
+            returnValue = true;
+        }
+        return returnValue;
+    }
     
     public static Boolean isDate(String str) {
         Boolean returnValue = false;
@@ -137,5 +144,14 @@ public class Util {
             return true;
         }
         return false;
+    }
+    
+    public static String gkrnoNumberCheck(String gkrno){
+    	if(isPositive(gkrno)){
+    		return gkrno;
+    	}
+    	else{
+    		return null;
+    	}    	
     }
 }

@@ -116,7 +116,7 @@
 			</div>
 			<div class="clearfix"></div>
 			
-			<%!
+			<%
 			String sumaggStr			= "";
 			String sumaggTip			= "";
 			String malzemeBirimCarpan 	= "1";
@@ -138,7 +138,7 @@
 				<label for="miktar" class="text-baslik">Miktarı (<span class="text-danger"><%=sumaggTip %></span>):</label> 
 				<div>
 					<input type="text" class="form-control normal" name="miktar" id="miktar" placeholder="Miktar" autocomplete="off">
-					<input type="hidden" id="malzemebirimad" name="malzemebirimad" class="birim" value="Kg.">
+					<input type="hidden" id="malzemebirimad" name="malzemebirimad" class="birim" value="<%=sumaggTip %>">
 					<input type="hidden" id="malzemebirimcarpan" name="malzemebirimcarpan" value="<%=malzemeBirimCarpan%>">
 				</div>
 			</div>
@@ -320,7 +320,7 @@
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script	src="js/bootbox.js" type="text/javascript"></script>
-<script src="js/irfan.js" type="text/javascript"></script>
+<script src="js/irfan.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
 <script src="js/hammaddestok.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
 <script type="text/javascript">
 $(function() {

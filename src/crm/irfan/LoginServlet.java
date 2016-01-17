@@ -12,11 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet implements Serializable {
     private static final long serialVersionUID = 1L;
-
     public LoginServlet() {
         super();
     }
-
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);

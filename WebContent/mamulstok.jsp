@@ -109,7 +109,7 @@
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			<%!
+			<%
 			String sumaggTip = BirimTip.ADET.ad();
 			%>
 			<div class="form-group">

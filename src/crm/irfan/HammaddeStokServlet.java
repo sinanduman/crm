@@ -114,7 +114,7 @@ public class HammaddeStokServlet extends HttpServlet {
                                     request.getParameter("miktar"),
                                     request.getParameter("irsaliyeno"),
                                     request.getParameter("lot"),
-                                    request.getParameter("lot"), /* gkrno*/
+                                    Util.gkrnoNumberCheck(request.getParameter("lot")), /* gkrno */
                                     request.getParameter("tarih"),
                                     request.getParameter("not")
                                     );

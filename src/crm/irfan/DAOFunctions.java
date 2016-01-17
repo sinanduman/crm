@@ -1,5 +1,6 @@
 package crm.irfan;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -1648,10 +1649,7 @@ public class DAOFunctions {
 			pstmt = conn.prepareStatement(insertQuery);
 			pstmt.setNull(1, Types.INTEGER); // planid
 			pstmt.setInt(2, Integer.valueOf(bilesenid));
-			pstmt.setInt(3, Integer.valueOf(miktar)); // Triggerda KG * 1000 =
-														// Gram olarak
-														// kaydediliyor
-			
+			pstmt.setBigDecimal(3, BigDecimal.valueOf(Double.valueOf(miktar)));
 			if (gkrno != null) pstmt.setInt(4, Integer.valueOf(gkrno));
 			else pstmt.setNull(4, Types.INTEGER);
 			if (irsaliyeno != null) pstmt.setString(5, irsaliyeno);
@@ -1695,7 +1693,7 @@ public class DAOFunctions {
 			pstmt = conn.prepareStatement(updateQuery);
 			pstmt.setNull(1, Types.INTEGER); // Planid
 			pstmt.setInt(2, Integer.valueOf(bilesenid));
-			pstmt.setInt(3, Integer.valueOf(miktar));
+			pstmt.setBigDecimal(3, BigDecimal.valueOf(Double.valueOf(miktar)));
 			if (gkrno != null) pstmt.setInt(4, Integer.valueOf(gkrno));
 			else pstmt.setNull(4, Types.INTEGER);
 			if (irsaliyeno != null) pstmt.setString(5, irsaliyeno);
