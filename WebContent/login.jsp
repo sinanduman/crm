@@ -78,10 +78,6 @@
 		</div>
 		<%
 			request.getSession().setAttribute("message", "");
-		%>
-
-
-		<%
 			}
 		%>
 
