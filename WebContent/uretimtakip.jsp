@@ -60,6 +60,7 @@
 		+ ",yarimamulagir:'" + m.getYarimamulmiktar() + "'"
 		+ ",yarimamulmamulbasi:'" + m.getYarimamulmamulbasi() + "'"
 		+ ",firmaad:'" + m.getFirmaad().replaceAll("'", "") + "'"
+        + ",figur:" + m.getFigur()
 		+ ",cevrimsure:" + m.getCevrimsuresi() + "}");
 			delimeter = ",";
 		}%>];
@@ -285,12 +286,32 @@
 				<%
 					if(admin!=null && (admin.equals("1") || (admin.equals("2")))){
 				%>
-				<div class="form-group" style="margin:10px 0;">
+				<div class="form-group" style="margin:10px 10px 0 0;">
+					<div>&nbsp;</div>
 					<div>
 						<input type="hidden" name="uretimplanid" id="uretimplanid" value="0">
 						<input type="hidden" name="islemid" id="islemid" value="0">
-						<button type="button" class="btn btn-danger" name="uretimekle" id="uretimekle">Ekle</button>
+						<button type="button" class="btn btn-danger" name="uretimekle" id="uretimekle"> Ekle </button>
 						<button type="button" class="btn btn-danger" name="uretimiptal" id="uretimiptal" style="display:none;">İptal</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="firmaad" class="text-baslik">ÇS/Fg.</label>
+					<div>
+						<input type="text" class="form-control xs" name="cevrimsure" id="cevrimsure" readonly="readonly">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="firmaad" class="text-baslik">Toplam Süre</label>
+					<div>
+						<input type="text" class="form-control xm" name="toplamsure" id="toplamsure" readonly="readonly">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="firmaad" class="text-baslik">Tahmini Üretim</label>
+					<div>
+						<input type="text" class="form-control xm" name="tahminiuretim" id="tahminiuretim" readonly="readonly"><span class="birim"> Adet</span>
 					</div>
 				</div>
 				<div class="clearfix"></div>
@@ -425,9 +446,11 @@
 	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 	<script	src="js/bootbox.js" type="text/javascript"></script>
+	<script	src="js/moment.min.js" type="text/javascript"></script>
 	<script src="js/irfan.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script	src="js/siparis.js?<%= System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
+	var globalMamul = new Object();
 	$(function() {
 		$('#tarih').datepicker({
 			inline: true,
@@ -450,6 +473,12 @@
 	$("#mamulkod").change(function() {
 		changefun(this);
 	});
+	
+	$("#bassaat, #basdakika, #bitsaat, #bitdakika").change(function() {
+		if($("#mamulid").val()!=""){
+			dateDiff();
+		};
+	});
 	function changefun(elem){
 		var found = false;
 		var option= "";	
@@ -459,6 +488,8 @@
 			for (i in mamul) {
 				// var b = elem.value.split("[");
 				if(elem.value == mamul[i].mamulkod){
+					globalMamul				= mamul[i];
+					//console.log(globalMamul);
 					found = true;
 					var ham_name_ar			= mamul[i].hammadde.split(";");
 					var ham_gkrno_ar		= mamul[i].hammaddegkrno.split(";");
@@ -470,10 +501,28 @@
 					var yari_agir_ar		= mamul[i].yarimamulagir.split(";");
 					var yari_mamulbasi_ar	= mamul[i].yarimamulmamulbasi.split(";");
 					
+					var gkrno				= mamul[i].gkrno;
+					var cevrimsure			= mamul[i].cevrimsure;
+					
 					document.uretimtakipform.mamulad.value		= mamul[i].mamulad;
 					document.uretimtakipform.mamulid.value		= mamul[i].mamulid;
 					document.uretimtakipform.firmaad.value		= mamul[i].firmaad;
 					document.uretimtakipform.hammadde.value		= mamul[i].hammadde;
+					
+					dateDiff(); /* Difference in Minutes */
+					
+					/*
+					diffHour = Math.floor(diff / 60);
+					diffMin  = diff - diffHour * 60;
+					
+					diffHourStr = (diffHour == 0 ) ? "" : diffHour + " saat ";
+					diffMinStr = (diffMin == 0 ) ? "" : diffMin + " dakika";
+					
+					
+					document.uretimtakipform.cevrimsure.value	= mamul[i].cevrimsure + "/" + mamul[i].figur;
+					document.uretimtakipform.toplamsure.value	= diffHourStr + diffMinStr;
+					document.uretimtakipform.tahminiuretim.value= Math.floor(diff*60/mamul[i].cevrimsure)*mamul[i].figur;
+					*/
 					
 					option = "";
 					var ham_name		= "";
@@ -533,10 +582,42 @@
 			document.uretimtakipform.mamulid.value	= "";
 			document.uretimtakipform.firmaad.value	= "";
 			document.uretimtakipform.hammadde.value	= "";
+			document.uretimtakipform.toplamsure.value= "";
+			document.uretimtakipform.tahminiuretim.value= "";
 			$("#hammadde option").remove();
 			$("#yarimamul option").remove();
 			$("#mamulizleno option").remove();
+			globalMamul = null;
 		}
+	}
+	function dateDiff(){
+		var basFullDate = document.uretimtakipform.tarih.value +" " + document.uretimtakipform.bassaat.value +":" + document.uretimtakipform.basdakika.value;
+		var bitFullDate = document.uretimtakipform.tarih.value +" " + document.uretimtakipform.bitsaat.value +":" + document.uretimtakipform.bitdakika.value;
+		
+		var basTime = document.uretimtakipform.bassaat.value + document.uretimtakipform.basdakika.value;
+		var bitTime = document.uretimtakipform.bitsaat.value + document.uretimtakipform.bitdakika.value;
+		
+		var basDay = moment(basFullDate, "DD-MM-YYYY HH:mm");
+		var bitDay = moment(bitFullDate, "DD-MM-YYYY HH:mm");
+		
+		if(bitTime <= basTime ){
+			bitDay = bitDay.add(1, 'days');
+		}
+		
+		var diffMinutes = bitDay.diff(basDay,'minutes');
+		
+		var diff = diffMinutes; /* Difference in Minutes */
+		
+		diffHour = Math.floor(diff / 60);
+		diffMin  = diff - diffHour * 60;
+		
+		diffHourStr = (diffHour == 0 ) ? "" : diffHour + " saat ";
+		diffMinStr = (diffMin == 0 ) ? "" : diffMin + " dakika";
+		
+		
+		document.uretimtakipform.cevrimsure.value	= globalMamul.cevrimsure + "/" + globalMamul.figur;
+		document.uretimtakipform.toplamsure.value	= diffHourStr + diffMinStr;
+		document.uretimtakipform.tahminiuretim.value= Math.floor(diff*60/globalMamul.cevrimsure)*globalMamul.figur;
 	}
 	</script>
 </body>

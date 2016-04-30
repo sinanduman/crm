@@ -8,6 +8,7 @@ build/
 .settings/
 .idea/
 .DS_Store
+context.xml
 # ignore all target directories
 target/
 
