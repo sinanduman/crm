@@ -142,7 +142,7 @@
 
 </div>
 
-<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/irfan.js" type="text/javascript"></script>
 <script	src="js/firma.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>

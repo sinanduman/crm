@@ -41,6 +41,7 @@
 		String bilesenid		= (String) request.getAttribute("bilesenid");
 		String excelsql			= (String) request.getAttribute("excelsql");
 		String tablename		= (String) request.getAttribute("tablename");
+		String tarih			= (String) request.getAttribute("tarih");
 	%>
 	
 	<script>
@@ -133,6 +134,12 @@
 						<input type="text" class="form-control normal" name="mamulad" id="mamulad" readonly="readonly">
 					</div>
 				</div>
+				<div class="form-group">
+					<label for="tarih" class="text-baslik">Tarih</label>
+					<div>
+						<input type="text" style="width:120px;" class="form-control" name="tarih" id="tarih" placeholder="Tarih">
+					</div>
+				</div>
 				
 				<div class="form-group">
 					<label for="mamulkod" class="text-success bgsaydam">&nbsp;&nbsp;</label>
@@ -187,7 +194,7 @@
 					<th width="20%">Bileşen Kod</th>
 					<th width="20%">Bileşen Ad</th>
 					<th width="20%">Firma</th>
-					<th width="20%">Tarih</th>
+					<th width="20%">Son İşlem Tarihi</th>
 					<%
 					if(stokdetay.size()>0){
 					%>
@@ -257,6 +264,7 @@
 			<%
 			    String param1 = "&amp;bilesentipid="+ bilesentip;
 				String param2 = (bilesenid==null || bilesenid.equals(""))?"":"&amp;bilesenid="+ bilesenid;
+				String param3 = "&amp;tarih="+ tarih;
 			%>
 			<jsp:include page="paging.jsp">
 				<jsp:param value="noofpages" name="noofpages"/>
@@ -264,6 +272,7 @@
 				<jsp:param value="stokrapor" name="pagename"/>
 				<jsp:param value="<%=param1%>" name="param1"/>
 				<jsp:param value="<%=param2%>" name="param2"/>
+				<jsp:param value="<%=param3%>" name="param3"/>
 			</jsp:include>
 		</div>
 		<%
@@ -290,21 +299,42 @@
 		
 	</div>
 	
-	<script	src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
-	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script	src="js/jquery.min.js" type="text/javascript"></script>
 	<script	src="js/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="js/irfan.js" type="text/javascript"></script>
-	<script	src="js/rapor.js" type="text/javascript"></script>
+	<script	src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/irfan.js?<%=System.currentTimeMillis() %>>" type="text/javascript"></script>
+	<script	src="js/rapor.js?<%=System.currentTimeMillis() %>" type="text/javascript"></script>
 	<script>
-	$("#bilesentipid").change(function(){
-		changebilesenid();
+	$(function() {
+		$("#tarih").datepicker({
+			inline: true,
+			format : "dd-mm-yy",
+			firstDay:1,
+		}).datepicker("option", "dateFormat", "dd-mm-yy").datepicker("setDate","<%= (tarih=="")?"today":tarih%>");
+		
+		$("#bilesentipid").change(function(){
+			changebilesenid();
+		});
+		
+		$("#mamulkod" ).autocomplete({
+			source		: mamul,
+			minLength	: 1,
+			select		: function(event, ui){
+				changefun(ui.item);
+			}
+		});
+		$("#mamulkod").change(function() {
+			changefun(this);
+		});
+		changebilesenid(); // once, when page is loading		
 	});
+	
 	function changebilesenid(){
 		$("#mamulad").val("");
 		$("#mamulkod").val("");
 		if($("#bilesentipid").val()==1){
 			mamul = hammadde;
-			 $("#mamulkod" ).autocomplete('option', 'source', hammadde);
+			$("#mamulkod" ).autocomplete('option', 'source', hammadde);
 		}
 		else if ($("#bilesentipid").val()==2){
 			mamul = yarimamul;
@@ -315,16 +345,7 @@
 			$("#mamulkod" ).autocomplete('option', 'source', mamuldef);
 		}
 	}	
-	$("#mamulkod" ).autocomplete({
-		source		: mamul,
-		minLength	: 1,
-		select		: function(event, ui){
-			changefun(ui.item);
-		}
-	});
-	$("#mamulkod").change(function() {
-		changefun(this);
-	});
+	
 	function changefun(elem){
 		var found = false;
 		if (elem != null){
@@ -342,7 +363,6 @@
 			document.raporform.bilesenid.value	= "";
 		}
 	}
-	changebilesenid(); // once, when page is loading
 	</script>
 </body>
 </html>

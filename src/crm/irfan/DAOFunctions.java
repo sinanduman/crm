@@ -617,13 +617,17 @@ public class DAOFunctions {
 		String pageFilter = (offset == 0) ? ""
 				: " offset " + (offset - 1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 				
-		String searchQuery = "SELECT b.*, null::INTEGER as stokid, -1::INTEGER as islemyonu, s.miktar, s.tarih, f.ad firmaad, bt.ad bilesentipad FROM "
-				+ tablename + " LEFT JOIN (SELECT bilesenid, "
-				+ " MAX(CASE WHEN islemyonu = 0 THEN giristarihi ELSE cikistarihi END) tarih, "
-				+ " SUM(CASE WHEN islemyonu = 0 THEN miktar ELSE -1*miktar END) miktar FROM stok "
-				+ " GROUP BY bilesenid) s on s.bilesenid=b.id " + " JOIN firma f ON f.id=b.firmaid "
-				+ " JOIN bilesentip bt ON bt.id=b.bilesentipid " + " WHERE 1=1 " + filter
-				+ " ORDER BY b.bilesentipid, b.ad " + pageFilter;
+		String searchQuery = "select t.*, f.ad firmaad, b.ad bilesentipad, -1::integer as islemyonu from ("
+				+ " select s.bilesenid, m.ad, m.kod, m.firmaid, m.bilesentipid, "
+				+ " sum(case when islemyonu = 0 then miktar else -1*miktar end) miktar, "
+				+ " max(case when islemyonu = 0 then giristarihi else cikistarihi end) tarih " 
+				+ " from stok s "
+				+ " join "+ tablename +" on s.bilesenid =m.id "
+				+ " where 1=1 "+ filter 
+				+ " group by s.bilesenid, m.ad, m.kod, m.firmaid, m.bilesentipid) t "
+				+ " join firma f on f.id = t.firmaid "
+				+ " join bilesentip b on b.id=t.bilesentipid "
+				+ " order by t.ad " + pageFilter;
 				
 		// connect to DB
 		PreparedStatement pstmt = null;
@@ -633,9 +637,18 @@ public class DAOFunctions {
 			System.out.println(pstmt);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				temp.add(new StokRapor(rs.getInt("id"), rs.getInt("stokid"), rs.getInt("islemyonu"), rs.getString("ad"),
-						rs.getString("kod"), rs.getInt("bilesentipid"), rs.getString("bilesentipad"),
-						rs.getInt("firmaid"), rs.getString("firmaad"), rs.getInt("miktar"), null, // kalan
+				temp.add(new StokRapor(
+						null, //rs.getInt("id"),
+						null, //rs.getInt("stokid"),
+						rs.getInt("islemyonu"),
+						rs.getString("ad"),
+						rs.getString("kod"),
+						rs.getInt("bilesentipid"),
+						rs.getString("bilesentipad"),
+						rs.getInt("firmaid"),
+						rs.getString("firmaad"),
+						rs.getInt("miktar"),
+						null,// kalan
 						rs.getTimestamp("tarih")));
 			}
 		} catch (SQLException e) {
@@ -694,12 +707,14 @@ public class DAOFunctions {
 		String pageFilter = (offset == 0) ? ""
 				: " offset " + (offset - 1) * Genel.ROWPERPAGE + " limit " + Genel.ROWPERPAGE;
 				
-		String searchQuery = "SELECT b.*, s.id stokid, s.islemyonu, s.miktar,f.ad firmaad,bt.ad bilesentipad, "
-				+ "s.islemyonu, case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END as tarih, "
-				+ "sum(CASE s.islemyonu WHEN 1 THEN (-1) * s.miktar ELSE 1 * s.miktar END) OVER "
-				+ "(PARTITION BY s.bilesenid ORDER BY s.id) kalan " + "FROM " + tablename
-				+ " LEFT JOIN stok s on s.bilesenid=b.id " + " JOIN firma f ON f.id=b.firmaid "
-				+ " JOIN bilesentip bt ON bt.id=b.bilesentipid " + " WHERE 1=1 " + filter + " ORDER BY stokid DESC "
+		String searchQuery = "SELECT m.*, s.id stokid, s.islemyonu, s.miktar, f.ad firmaad, bt.ad bilesentipad, "
+				+ " s.islemyonu, case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END as tarih, "
+				+ " sum(CASE s.islemyonu WHEN 1 THEN (-1) * s.miktar ELSE 1 * s.miktar END) OVER "
+				+ " (PARTITION BY s.bilesenid ORDER BY s.id) kalan " + "FROM " + tablename
+				+ " LEFT JOIN stok s on s.bilesenid=m.id "
+				+ " JOIN firma f ON f.id=m.firmaid "
+				+ " JOIN bilesentip bt ON bt.id=m.bilesentipid"
+				+ " WHERE 1=1 " + filter + " ORDER BY stokid DESC "
 				+ pageFilter;
 				
 		// connect to DB
@@ -710,9 +725,18 @@ public class DAOFunctions {
 			System.out.println(pstmt);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				temp.add(new StokRapor(rs.getInt("id"), rs.getInt("stokid"), rs.getInt("islemyonu"), rs.getString("ad"),
-						rs.getString("kod"), rs.getInt("bilesentipid"), rs.getString("bilesentipad"),
-						rs.getInt("firmaid"), rs.getString("firmaad"), rs.getInt("miktar"), rs.getInt("kalan"),
+				temp.add(new StokRapor(
+						rs.getInt("id"),
+						rs.getInt("stokid"),
+						rs.getInt("islemyonu"),
+						rs.getString("ad"),
+						rs.getString("kod"),
+						rs.getInt("bilesentipid"),
+						rs.getString("bilesentipad"),
+						rs.getInt("firmaid"),
+						rs.getString("firmaad"),
+						rs.getInt("miktar"),
+						rs.getInt("kalan"),
 						rs.getTimestamp("tarih")));
 			}
 		} catch (SQLException e) {

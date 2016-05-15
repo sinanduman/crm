@@ -271,7 +271,7 @@
 	</div><!-- row -->
 </div><!-- container -->
 
-<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="js/jquery.min.js" type="text/javascript"></script>
 <script	src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>

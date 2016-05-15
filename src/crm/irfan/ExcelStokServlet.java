@@ -95,7 +95,7 @@ public class ExcelStokServlet extends HttpServlet {
                                 "Bileşen Kodu",
                                 "Bileşen Adı",
                                 "Firma",
-                                "Tarih",
+                                "Son İşlem Tarihi",
                                 "Kalan Miktar" + birim
                                 }
                 );

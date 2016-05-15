@@ -421,7 +421,7 @@
 
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
-<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.min.js"></script>
 <script	src="js/jquery-ui.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/irfan.js"></script>

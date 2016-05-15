@@ -181,7 +181,7 @@ List<Bilesen> yarimamul = (List<Bilesen>) request.getAttribute("yarimamul");
 
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
-<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/irfan.js?<%=System.currentTimeMillis()%>"></script>
 <script src="js/yarimamul.js?<%=System.currentTimeMillis()%>" type="text/javascript"></script>
