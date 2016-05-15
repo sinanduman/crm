@@ -714,7 +714,8 @@ public class DAOFunctions {
 				+ " LEFT JOIN stok s on s.bilesenid=m.id "
 				+ " JOIN firma f ON f.id=m.firmaid "
 				+ " JOIN bilesentip bt ON bt.id=m.bilesentipid"
-				+ " WHERE 1=1 " + filter + " ORDER BY stokid DESC "
+				+ " WHERE 1=1 " + filter 
+				+ " ORDER BY (case when s.islemyonu=0 THEN s.giristarihi ELSE s.cikistarihi END) desc, stokid DESC "
 				+ pageFilter;
 				
 		// connect to DB
